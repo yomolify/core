@@ -12,6 +12,7 @@ from backtrader_plotting import Bokeh
 from backtrader_plotting.schemes import Tradimo
 from btplotting import BacktraderPlotting
 from btplotting.schemes import Tradimo, Blackly
+from termcolor import colored
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -31,107 +32,6 @@ def parse_args():
 
 args = parse_args()
 
-# Create a Stratey
-class TestStrategy(bt.Strategy):
-    params = (
-        ('maperiod', 15),
-    )
-
-    def log(self, txt, dt=None):
-        ''' Logging function for this strategy'''
-        dt = dt or self.datas[0].datetime.date(0)
-        print('%s, %s' % (dt.isoformat(), txt))
-
-    def __init__(self):
-        # Keep a reference to the "close" line in the data[0] dataseries
-        self.dataclose = self.datas[0].close
-
-        # To keep track of pending orders and buy price/commission
-        self.order = None
-        self.buyprice = None
-        self.buycomm = None
-
-        # Add a MovingAverageSimple indicator
-        self.sma = bt.indicators.SimpleMovingAverage(
-            self.datas[0], period=self.params.maperiod)
-
-        # Indicators for the plotting show
-        bt.indicators.ExponentialMovingAverage(self.datas[0], period=25)
-        bt.indicators.WeightedMovingAverage(self.datas[0], period=25,
-                                            subplot=True)
-        bt.indicators.StochasticSlow(self.datas[0])
-        bt.indicators.MACDHisto(self.datas[0])
-        rsi = bt.indicators.RSI(self.datas[0])
-        bt.indicators.SmoothedMovingAverage(rsi, period=10)
-        bt.indicators.ATR(self.datas[0], plot=False)
-
-    def notify_order(self, order):
-        if order.status in [order.Submitted, order.Accepted]:
-            # Buy/Sell order submitted/accepted to/by broker - Nothing to do
-            return
-
-        # Check if an order has been completed
-        # Attention: broker could reject order if not enough cash
-        if order.status in [order.Completed]:
-            if order.isbuy():
-                self.log(
-                    'BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-                    (order.executed.price,
-                     order.executed.value,
-                     order.executed.comm))
-
-                self.buyprice = order.executed.price
-                self.buycomm = order.executed.comm
-            else:  # Sell
-                self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-                         (order.executed.price,
-                          order.executed.value,
-                          order.executed.comm))
-
-            self.bar_executed = len(self)
-
-        elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            self.log('Order Canceled/Margin/Rejected')
-
-        # Write down: no pending order
-        self.order = None
-
-    def notify_trade(self, trade):
-        if not trade.isclosed:
-            return
-
-        self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
-                 (trade.pnl, trade.pnlcomm))
-
-    def next(self):
-        # Simply log the closing price of the series from the reference
-        self.log('Close, %.2f' % self.dataclose[0])
-
-        # Check if an order is pending ... if yes, we cannot send a 2nd one
-        if self.order:
-            return
-
-        # Check if we are in the market
-        if not self.position:
-
-            # Not yet ... we MIGHT BUY if ...
-            if self.dataclose[0] > self.sma[0]:
-
-                # BUY, BUY, BUY!!! (with all possible default parameters)
-                self.log('BUY CREATE, %.2f' % self.dataclose[0])
-
-                # Keep track of the created order to avoid a 2nd order
-                self.order = self.buy()
-
-        else:
-
-            if self.dataclose[0] < self.sma[0]:
-                # SELL, SELL, SELL!!! (with all possible default parameters)
-                self.log('SELL CREATE, %.2f' % self.dataclose[0])
-
-                # Keep track of the created order to avoid a 2nd order
-                self.order = self.sell()
-
 class L1(bt.Strategy):
     params = (
         ('period_bb_sma', 20),
@@ -147,12 +47,30 @@ class L1(bt.Strategy):
         ('maperiod', 15)
     )
 
-    def log(self, txt, dt=None):
-        ''' Logging function for this strategy'''
-        dt = dt or self.datas[0].datetime.date(0)
-        print('%s, %s' % (dt.isoformat(), txt))
+    # def log(self, txt, dt=None):
+    #     ''' Logging function for this strategy'''
+    #     dt = dt or self.datas[0].datetime.date(0)
+    #     print('%s, %s' % (dt.isoformat(), txt))
+
+    def log(self, txt, send_telegram=False, color=None):
+        # if not DEBUG:
+        #     return
+
+        value = datetime.datetime.now()
+        if len(self) > 0:
+            value = self.data0.datetime.datetime()
+
+        if color:
+            txt = colored(txt, color)
+
+        print('[%s] %s' % (value.strftime("%d-%m-%y %H:%M"), txt))
+        # if send_telegram:
+        #     send_telegram_message(txt)
+
 
     def __init__(self):
+        self.buy_price_close = 0
+        self.close_price = 0
         # Keep a reference to the "close" line in the data[0] dataseries
         self.dataclose = self.datas[0].close
 
@@ -162,8 +80,6 @@ class L1(bt.Strategy):
         self.buycomm = None
 
         # Add a MovingAverageSimple indicator
-        self.sma = bt.indicators.SimpleMovingAverage(
-            period=self.params.maperiod)
         
         self.bollinger_bands = bt.indicators.BollingerBands(
             period=self.params.period_bb_sma, devfactor=self.params.period_bb_std)
@@ -173,9 +89,7 @@ class L1(bt.Strategy):
      
         volSMA_slow = bt.indicators.MovingAverageSimple(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot="false")
         volSMA_fast = bt.indicators.MovingAverageSimple(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot="false")
-        # volSMA_slow.plotinfo.plot = False
-        # volSMA_fast.plotinfo.plot = False
-        
+
         vol_condition = volSMA_fast > volSMA_slow
         
         # L1
@@ -187,14 +101,6 @@ class L1(bt.Strategy):
 
         # Indicators for the plotting show
         bt.indicators.BollingerBands(period=self.params.period_bb_sma, devfactor=self.params.period_bb_std)
-        # bt.indicators.ExponentialMovingAverage(self.datas[0], period=25)
-        # bt.indicators.WeightedMovingAverage(self.datas[0], period=25,
-        #                                     subplot=True)
-        # bt.indicators.StochasticSlow(self.datas[0])
-        # bt.indicators.MACDHisto(self.datas[0])
-        # rsi = bt.indicators.RSI(self.datas[0])
-        # bt.indicators.SmoothedMovingAverage(rsi, period=10)
-        # bt.indicators.ATR(self.datas[0], plot=False)
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -234,7 +140,27 @@ class L1(bt.Strategy):
         self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
                  (trade.pnl, trade.pnlcomm))
 
+    def update_indicators(self):
+        self.profit = 0
+        if self.buy_price_close and self.buy_price_close > 0:
+            self.profit = float(self.data0.close[0] - self.buy_price_close) / self.buy_price_close
+        
+        if bool(self.buy_price_close) & bool(self.position):
+            self.profit_percentage = (self.profit/self.position.size)*100
+            
+            if (self.profit_percentage > 40):
+                self.close_price = 1.35*self.buy_price_close
+            elif (self.profit_percentage > 35):
+                self.close_price = 1.30*self.buy_price_close                
+            elif (self.profit_percentage > 30):
+                self.close_price = 1.25*self.buy_price_close
+            elif (self.profit_percentage > 25):
+                self.close_price = 1.20*self.buy_price_close
+            elif (self.profit_percentage > 20):
+                self.close_price = 1.15*self.buy_price_close
+
     def next(self):
+        self.update_indicators()
         # Simply log the closing price of the series from the reference
         # self.log('Close, %.2f' % self.dataclose[0])
 
@@ -244,16 +170,6 @@ class L1(bt.Strategy):
 
         # Check if we are in the market
         if not self.position:
-
-            # # Not yet ... we MIGHT BUY if ...
-            # if self.dataclose[0] > self.sma[0]:
-
-            #     # BUY, BUY, BUY!!! (with all possible default parameters)
-            #     self.log('BUY CREATE, %.2f' % self.dataclose[0])
-
-            #     # Keep track of the created order to avoid a 2nd order
-            #     self.order = self.buy()
-            
             if self.buy_sig:
                 self.log('+++++++++++ BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY +++++++++++')
                 self.low = self.data0.low[0]
@@ -262,19 +178,19 @@ class L1(bt.Strategy):
                 # self.long()
                 # self.log(self.position)
                 self.order = self.buy()
+                self.buy_price_close = self.data0.close[0]
 
         if self.close_sig:
             self.log('----------- SELL SELL SELL SELL SELL SELL SELL SELL SELL -----------')
             self.close()
-        # else:
-
-        #     if self.dataclose[0] < self.sma[0]:
-        #         # SELL, SELL, SELL!!! (with all possible default parameters)
-        #         self.log('SELL CREATE, %.2f' % self.dataclose[0])
-
-        #         # Keep track of the created order to avoid a 2nd order
-        #         self.order = self.sell()
-
+        # STOP LOSS - 5% below low of entry of entry candle
+        if self.data.close[0] <= 0.95*self.low:
+            self.log('XXXXXXXXXXX STOP STOP STOP STOP STOP STOP STOP STOP STOP XXXXXXXXXXX')
+            self.close()
+        if self.data0.close[0] <= self.close_price:
+            # self.log(colored('----------- STOPWIN STOPWIN STOPWIN STOPWIN STOPWIN -----------','blue'), True)
+            self.log('----------- STOPWIN STOPWIN STOPWIN STOPWIN STOPWIN -----------')
+            self.close()
 
 if __name__ == '__main__':
     # Create a cerebro entity
@@ -300,7 +216,7 @@ if __name__ == '__main__':
         # Do not pass values before this date
         # todate=datetime.datetime(2018, 4, 1),
         # todate=datetime.datetime(2016, 5, 1),
-        todate=datetime.datetime(2018, 1, 1),
+        todate=datetime.datetime(2019, 3, 1),
         nullvalue=0.0,
         # Do not pass values after this date
         reverse=False)
