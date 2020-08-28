@@ -38,10 +38,12 @@ class L1(bt.Strategy):
         ('period_bb_std', 2),
         ('period_vol_sma_fast', 10),
         ('period_vol_sma_slow', 50),
+        ('period_bbw_sma_fast', 10),
+        ('period_bbw_sma_slow', 50),
         ('period_macd_ema_fast', 12),
         ('period_macd_ema_slow', 26),
         ('period_macd_ema_signal', 9),
-        ('period_sma_fast', 26),
+        ('period_sma_fast', 20),
         ('period_sma_slow', 50),
         ('period_price_channel_break', 20),
         ('maperiod', 15)
@@ -79,20 +81,26 @@ class L1(bt.Strategy):
         self.buyprice = None
         self.buycomm = None
 
-        # Add a MovingAverageSimple indicator
+        # Add a SMA indicator
         
-        self.bollinger_bands = bt.indicators.BollingerBands(
+        self.bollinger_bands = bt.ind.BollingerBands(
             period=self.params.period_bb_sma, devfactor=self.params.period_bb_std)
+        self.sma_fast = bt.ind.SMA(
+            period=self.params.period_sma_fast)
 
         cross_down_bb_top = self.datas[0] < self.bollinger_bands.lines.top
         cross_down_bb_bot = self.datas[0] < self.bollinger_bands.lines.bot
      
-        volSMA_slow = bt.indicators.MovingAverageSimple(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot="false")
-        volSMA_fast = bt.indicators.MovingAverageSimple(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot="false")
+        volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot="false")
+        volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot="false")
 
         vol_condition = volSMA_fast > volSMA_slow
+
+        bollinger_bands_width = (self.bollinger_bands.lines.top - self.bollinger_bands.lines.bot)/self.bollinger_bands.lines.mid
+        # bbwSMA_slow = bt.ind.SMA(bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_slow, plot="false")
+        # bbwSMA_fast = bt.ind.SMA(bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_fast, plot="false")
+        # bbw_condition = SMA(BBW, per=10) > SMA(BBW, per=50)
         
-        # L1
         self.buy_sig = bt.And(cross_down_bb_top, vol_condition)
         self.close_sig = bt.And(cross_down_bb_bot, vol_condition)
      
@@ -100,7 +108,31 @@ class L1(bt.Strategy):
         self.low = 0
 
         # Indicators for the plotting show
-        bt.indicators.BollingerBands(period=self.params.period_bb_sma, devfactor=self.params.period_bb_std)
+        # bt.ind.BollingerBands(period=self.params.period_bb_sma, devfactor=self.params.period_bb_std)
+
+    def next(self):
+        self.update_indicators()
+
+        # Check if an order is pending ... if yes, we cannot send a 2nd one
+        if self.order:
+            return
+
+        # Check if we are in the market
+        if not self.position:
+            if self.buy_sig:
+                self.low = self.data0.low[0]
+                if self.data0.close[0] > self.sma_fast[0]:
+                    self.order = self.buy()
+                    self.buy_price_close = self.data0.close[0]
+
+        if self.close_sig:
+            self.close()
+        # STOP LOSS - 5% below low of entry of entry candle
+        if self.data.close[0] <= 0.95*self.low:
+            self.close()
+        # STOP WIN
+        if self.data0.close[0] <= self.close_price:
+            self.close()
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -159,38 +191,7 @@ class L1(bt.Strategy):
             elif (self.profit_percentage > 20):
                 self.close_price = 1.15*self.buy_price_close
 
-    def next(self):
-        self.update_indicators()
-        # Simply log the closing price of the series from the reference
-        # self.log('Close, %.2f' % self.dataclose[0])
 
-        # Check if an order is pending ... if yes, we cannot send a 2nd one
-        if self.order:
-            return
-
-        # Check if we are in the market
-        if not self.position:
-            if self.buy_sig:
-                self.log('+++++++++++ BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY BUY +++++++++++')
-                self.low = self.data0.low[0]
-                self.log('Low => {}'.format(self.low))
-                self.log('Close => {}'.format(self.data.close[0]))
-                # self.long()
-                # self.log(self.position)
-                self.order = self.buy()
-                self.buy_price_close = self.data0.close[0]
-
-        if self.close_sig:
-            self.log('----------- SELL SELL SELL SELL SELL SELL SELL SELL SELL -----------')
-            self.close()
-        # STOP LOSS - 5% below low of entry of entry candle
-        if self.data.close[0] <= 0.95*self.low:
-            self.log('XXXXXXXXXXX STOP STOP STOP STOP STOP STOP STOP STOP STOP XXXXXXXXXXX')
-            self.close()
-        if self.data0.close[0] <= self.close_price:
-            # self.log(colored('----------- STOPWIN STOPWIN STOPWIN STOPWIN STOPWIN -----------','blue'), True)
-            self.log('----------- STOPWIN STOPWIN STOPWIN STOPWIN STOPWIN -----------')
-            self.close()
 
 if __name__ == '__main__':
     # Create a cerebro entity
@@ -266,3 +267,4 @@ if __name__ == '__main__':
     p = BacktraderPlotting(style='candle', scheme=Blackly())
     cerebro.plot(p)
 
+# self.log('Low => {}'.format(self.low))
