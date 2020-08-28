@@ -40,6 +40,9 @@ class L1(bt.Strategy):
         ('period_vol_sma_slow', 50),
         ('period_bbw_sma_fast', 10),
         ('period_bbw_sma_slow', 50),
+        ('period_bbw_sma_vli_fast', 200),
+        ('period_bbw_sma_vli_slow', 500),
+        ('period_bbw_stddev', 500),
         ('period_macd_ema_fast', 12),
         ('period_macd_ema_slow', 26),
         ('period_macd_ema_signal', 9),
@@ -96,11 +99,16 @@ class L1(bt.Strategy):
 
         vol_condition = volSMA_fast > volSMA_slow
 
-        bollinger_bands_width = (self.bollinger_bands.lines.top - self.bollinger_bands.lines.bot)/self.bollinger_bands.lines.mid
+        self.bollinger_bands_width = (self.bollinger_bands.lines.top - self.bollinger_bands.lines.bot)/self.bollinger_bands.lines.mid
         # bbwSMA_slow = bt.ind.SMA(bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_slow, plot="false")
         # bbwSMA_fast = bt.ind.SMA(bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_fast, plot="false")
-        # bbw_condition = SMA(BBW, per=10) > SMA(BBW, per=50)
+        # bbw_condition = bbwSMA_slow > bbwSMA_fast
+
+        vli_fast = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_fast, plot="false")
+        vli_slow = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_slow, plot="false")
         
+        self.vli_top = vli_slow + 2*bt.ind.StdDev(self.bollinger_bands_width, period=self.params.period_bbw_stddev)
+
         self.buy_sig = bt.And(cross_down_bb_top, vol_condition)
         self.close_sig = bt.And(cross_down_bb_bot, vol_condition)
      
@@ -122,8 +130,9 @@ class L1(bt.Strategy):
             if self.buy_sig:
                 self.low = self.data0.low[0]
                 if self.data0.close[0] > self.sma_fast[0]:
-                    self.order = self.buy()
-                    self.buy_price_close = self.data0.close[0]
+                    if self.bollinger_bands_width < self.vli_top:
+                        self.order = self.buy()
+                        self.buy_price_close = self.data0.close[0]
 
         if self.close_sig:
             self.close()
@@ -205,19 +214,32 @@ if __name__ == '__main__':
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
     # datapath = os.path.join(modpath, 'data/truncated.csv')
     # datapath = os.path.join(modpath, 'data/bitstampUSD_1-min_data_2015-04-01_to_2018-04-01.csv')
-    datapath = os.path.join(modpath, 'data/BTCUSDT-1h.csv')
+    # datapath = os.path.join(modpath, 'data/bitmex-XBTUSD-1m clean.csv')
+    datapath = os.path.join(modpath, 'data/bitmex-XBTUSD-1h.csv')
+    # datapath = os.path.join(modpath, 'data/BTCUSDT-1h.csv')
 
     # Create a Data Feed
     data = bt.feeds.GenericCSVData(
         dataname=datapath,
-        # dtformat=lambda x: datetime.datetime.utcfromtimestamp(int(x)),
-        # Do not pass values before this date
+        dtformat=("%Y-%m-%d %H:%M:%S+00:00"),
+        open=2,
+        high=3,
+        low=4,
+        close=5,
+        volume=7,
+
+        # BITSTAMP
         # fromdate=datetime.datetime(2016, 4, 1),
-        fromdate=datetime.datetime(2017, 8, 17),
-        # Do not pass values before this date
         # todate=datetime.datetime(2018, 4, 1),
-        # todate=datetime.datetime(2016, 5, 1),
-        todate=datetime.datetime(2019, 3, 1),
+
+        # BITMEX
+        fromdate=datetime.datetime(2015, 9, 25),
+        todate=datetime.datetime(2020, 8, 26),
+
+        # BINANCE
+        # fromdate=datetime.datetime(2017, 8, 17),
+        # todate=datetime.datetime(2020, 8, 1),
+
         nullvalue=0.0,
         # Do not pass values after this date
         reverse=False)
