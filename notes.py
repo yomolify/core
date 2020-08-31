@@ -1,8 +1,32 @@
+# CLI 
+
+# Bitfinex
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2017 --from_month=4 --from_date=25 --to_year=2018 --to_month=8 --to_date=26
+
+# Bitmex
+nodemon main.py --exchange=bitmex --ticker=XBTUSD --data_timeframe=1m --from_year=2017 --from_month=4 --from_date=25 --to_year=2018 --to_month=8 --to_date=26
+
+# Binance
+nodemon main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1m --from_year=2017 --from_month=4 --from_date=25 --to_year=2018 --to_month=8 --to_date=26
+
 # Comments
-
-
 # datapath = os.path.join(modpath, 'data/bitstampUSD_1-min_data_2015-04-01_to_2018-04-01.csv')
 # datapath = os.path.join(modpath, 'data/BTC_USD Bitfinex 1d.csv')
 # datapath = os.path.join(modpath, 'data/BTCUSDT-1h.csv')
 # datapath = os.path.join(modpath, '../Bitfinex-historical-data/BTCUSD/Candles_1m/2013/merged.csv')
 # datapath = os.path.join(modpath, '../Bitfinex-historical-data/BTCUSD/Candles_1m/2013/merged.csv')
+
+
+# BITSTAMP{
+# fromdate=datetime.datetime(2016, 4, 1),
+# todate=datetime.datetime(2018, 4, 1),}
+
+
+# BITMEX
+# fromdate=datetime.datetime(2013, 4, 25),
+# todate=datetime.datetime(2020, 8, 26),
+
+
+# BINANCE
+# fromdate=datetime.datetime(2017, 8, 17),
+# todate=datetime.datetime(2020, 8, 1),

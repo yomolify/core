@@ -16,9 +16,6 @@ from strategies.L7 import L7
 def parse_args():
     parser = argparse.ArgumentParser(description='Core')
 
-    # parser.add_argument('--dataname', default='', required=False,
-    #                     help='File Data to Load')
-
     parser.add_argument('--exchange', default='', required=False,
                         help='Exchange')
 
@@ -53,6 +50,18 @@ def parse_args():
 
 args = parse_args()
 
+ExchangeCSVIndices = {
+    'bitmex': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
+    'binance': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
+    'bitfinex': {'open': 1, 'high': 3, 'low': 4, 'close': 2, 'volume': 5}
+}
+
+ExchangeDTFormat = {
+    'bitmex': "%Y-%m-%d %H:%M:%S+00:00",
+    'binance': '%b %d, %Y',
+    'bitfinex': lambda x: datetime.datetime.utcfromtimestamp(int(x[:-3]))
+}
+
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
     cerebro.addstrategy(L7)
@@ -61,49 +70,22 @@ if __name__ == '__main__':
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
     csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
     datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
+    # datapath = os.path.join(modpath, '../Bitfinex-historical-data/BTCUSD/Candles_1m/2013/merged.csv')
 
     data = bt.feeds.GenericCSVData(
         dataname=datapath,
         # Bitmex
-        dtformat=("%Y-%m-%d %H:%M:%S+00:00"), 
-        # Bitfinex
-        # dtformat=(1), 
+        # dtformat=("%Y-%m-%d %H:%M:%S+00:00"), 
         # dtformat=('%b %d, %Y'),
-        # dtformat=lambda x: datetime.datetime.utcfromtimestamp(int(x[:-3])),
-        # tmformat=None,
-
-        # Bitfinex
-        # open=2,
-        # high=3,
-        # low=4,
-        # close=1,
-        # volume=5,
-
-        # Bitmex
-        open=2,
-        high=3,
-        low=4,
-        close=5,
-        volume=7,
-
-        # BITSTAMP
-        # fromdate=datetime.datetime(2016, 4, 1),
-        # todate=datetime.datetime(2018, 4, 1),
-
-        # BITFINEX
+        dtformat=ExchangeDTFormat[args.exchange],
+        open=ExchangeCSVIndices[args.exchange]['open'],
+        high=ExchangeCSVIndices[args.exchange]['high'],
+        low=ExchangeCSVIndices[args.exchange]['low'],
+        close=ExchangeCSVIndices[args.exchange]['close'],
+        volume=ExchangeCSVIndices[args.exchange]['volume'],
         fromdate=datetime.datetime(args.from_year, args.from_month, args.from_date),
         todate=datetime.datetime(args.to_year, args.to_month, args.to_date),
-
-        # BITMEX
-        # fromdate=datetime.datetime(2013, 4, 25),
-        # todate=datetime.datetime(2020, 8, 26),
-
-        # BINANCE
-        # fromdate=datetime.datetime(2017, 8, 17),
-        # todate=datetime.datetime(2020, 8, 1),
-
         nullvalue=0.0,
-        # Do not pass values after this date
         reverse=False)
 
     resample_timeframes = dict(
