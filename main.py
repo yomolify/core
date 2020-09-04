@@ -9,9 +9,10 @@ import sys  # To find out the script name (in argv[0])
 import backtrader as bt
 
 from btplotting import BacktraderPlotting
-from btplotting.schemes import Blackly
+from btplotting.schemes import Blackly, Tradimo
 
 from strategies.L7 import L7
+from sizer.percent import FullMoney
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Core')
@@ -54,12 +55,14 @@ ExchangeCSVIndices = {
     'bitmex': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
     'binance': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
     'bitfinex': {'open': 1, 'high': 3, 'low': 4, 'close': 2, 'volume': 5}
+    # 'bitfinex': {'open': 0, 'high': 2, 'low': 3, 'close': 1, 'volume': 4}
 }
 
 ExchangeDTFormat = {
     'bitmex': "%Y-%m-%d %H:%M:%S+00:00",
-    'binance': '%b %d, %Y',
+    'binance': '%Y-%m-%d %H:%M:%S',
     'bitfinex': lambda x: datetime.datetime.utcfromtimestamp(int(x[:-3]))
+    # dtformat=('%b %d, %Y'),
 }
 
 if __name__ == '__main__':
@@ -70,13 +73,10 @@ if __name__ == '__main__':
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
     csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
     datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
-    # datapath = os.path.join(modpath, '../Bitfinex-historical-data/BTCUSD/Candles_1m/2013/merged.csv')
+    # datapath = os.path.join(modpath, '../Bitfinex-historical-data/BTCUSD/Candles_1m/2019/merged.csv')
 
     data = bt.feeds.GenericCSVData(
         dataname=datapath,
-        # Bitmex
-        # dtformat=("%Y-%m-%d %H:%M:%S+00:00"), 
-        # dtformat=('%b %d, %Y'),
         dtformat=ExchangeDTFormat[args.exchange],
         open=ExchangeCSVIndices[args.exchange]['open'],
         high=ExchangeCSVIndices[args.exchange]['high'],
@@ -85,6 +85,8 @@ if __name__ == '__main__':
         volume=ExchangeCSVIndices[args.exchange]['volume'],
         fromdate=datetime.datetime(args.from_year, args.from_month, args.from_date),
         todate=datetime.datetime(args.to_year, args.to_month, args.to_date),
+        timeframe=bt.TimeFrame.Minutes, 
+        compression=1,
         nullvalue=0.0,
         reverse=False)
 
@@ -96,23 +98,24 @@ if __name__ == '__main__':
 
     # Bitmex
     # cerebro.resampledata(data,
-    #                      timeframe=tframes["minutes"],
+    #                      timeframe=resample_timeframes["minutes"],
     #                      compression=60)
 
     # Bitfinex
     cerebro.resampledata(data,
-                         timeframe=resample_timeframes["daily"],
-                         compression=1)
+                         timeframe=bt.TimeFrame.Minutes,
+                         compression=60)
     # cerebro.adddata(data)
 
-    cerebro.broker.setcash(100000.0)
-    cerebro.addsizer(bt.sizers.FixedSize, stake=1)
+    cerebro.broker.setcash(10000.0)
+    cerebro.addsizer(FullMoney)
+    # cerebro.addsizer(bt.sizers.FixedSize, stake=1)
     cerebro.broker.setcommission(commission=0.0)
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
     cerebro.run()
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
-    p = BacktraderPlotting(style='candle', scheme=Blackly())
-    # cerebro.plot(p)
+    p = BacktraderPlotting(style='candle', scheme=Tradimo())
+    cerebro.plot(p)
 
 
 

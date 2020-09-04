@@ -58,15 +58,15 @@ class L7(bt.Strategy):
         # Add a SMA indicator
         
         self.bollinger_bands = bt.ind.BollingerBands(
-            period=self.params.period_bb_sma, devfactor=self.params.period_bb_std)
+            period=self.params.period_bb_sma, devfactor=self.params.period_bb_std, plot="false")
         self.sma_fast = bt.ind.SMA(
-            period=self.params.period_sma_fast)
+            period=self.params.period_sma_fast, plot="false")
         self.sma_mid = bt.ind.SMA(
-            period=self.params.period_sma_mid)
+            period=self.params.period_sma_mid, plot="false")
         self.sma_slow = bt.ind.SMA(
-            period=self.params.period_sma_slow)
+            period=self.params.period_sma_slow, plot="false")
         self.sma_veryslow = bt.ind.SMA(
-            period=self.params.period_sma_veryslow)
+            period=self.params.period_sma_veryslow, plot="false")
 
         # Tried crossover / crossdown instead of manually checking - the performance is worse
         # cross_down_bb_top = bt.ind.CrossDown(self.datas[0], self.bollinger_bands.lines.top)
@@ -126,7 +126,7 @@ class L7(bt.Strategy):
                     elif self.sma_slow > self.sma_veryslow:
                         self.order = self.buy()
                         self.buy_price_close = self.data0.close[0]
-                        print('========================================+++++++')
+                        # print('========================================+++++++')
 
                         # SL at low of last candle
                         # Never hit
@@ -142,13 +142,13 @@ class L7(bt.Strategy):
             # print('close signal')
             self.close()
         # STOP LOSS - 5% below low of entry of entry candle
-        if self.data.close[0] <= 0.65*self.low:
-            # print('stoploss')
-            self.close()
+        # if self.data.close[0] <= 0.65*self.low:
+        #     # print('stoploss')
+        #     self.close()
         # STOP WIN
-        if self.data0.close[0] <= self.close_price:
-            # print('stopwin')
-            self.close()
+        # if self.data0.close[0] <= self.close_price:
+        #     # print('stopwin')
+        #     self.close()
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
