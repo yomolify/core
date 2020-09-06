@@ -1,0 +1,1 @@
+backtrader matplotlib cryptocmd pandas termcolor PyYAML bokeh=2.0.0 git+git://github.com/Dave-Vallance/bt-ccxt-store@master#bt-ccxt-store git+https://github.com/happydasch/btplotting requests config backtrader_plotting pyfolio tensorflow seaborn scipy statsmodels theano pymc3 sklearn

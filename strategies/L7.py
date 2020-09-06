@@ -58,15 +58,15 @@ class L7(bt.Strategy):
         # Add a SMA indicator
         
         self.bollinger_bands = bt.ind.BollingerBands(
-            period=self.params.period_bb_sma, devfactor=self.params.period_bb_std, plot="false")
+            period=self.params.period_bb_sma, devfactor=self.params.period_bb_std, plot=False)
         self.sma_fast = bt.ind.SMA(
-            period=self.params.period_sma_fast, plot="false")
+            period=self.params.period_sma_fast, plot=False)
         self.sma_mid = bt.ind.SMA(
-            period=self.params.period_sma_mid, plot="false")
+            period=self.params.period_sma_mid, plot=False)
         self.sma_slow = bt.ind.SMA(
-            period=self.params.period_sma_slow, plot="false")
+            period=self.params.period_sma_slow, plot=False)
         self.sma_veryslow = bt.ind.SMA(
-            period=self.params.period_sma_veryslow, plot="false")
+            period=self.params.period_sma_veryslow, plot=False)
 
         # Tried crossover / crossdown instead of manually checking - the performance is worse
         # cross_down_bb_top = bt.ind.CrossDown(self.datas[0], self.bollinger_bands.lines.top)
@@ -78,18 +78,18 @@ class L7(bt.Strategy):
         cross_down_bb_top = self.datas[0] < self.bollinger_bands.lines.top
         cross_down_bb_bot = self.datas[0] < self.bollinger_bands.lines.bot
      
-        volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot="false")
-        volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot="false")
+        volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot=False)
+        volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot=False)
 
         vol_condition = volSMA_fast > volSMA_slow
 
         self.bollinger_bands_width = (self.bollinger_bands.lines.top - self.bollinger_bands.lines.bot)/self.bollinger_bands.lines.mid
-        # bbwSMA_slow = bt.ind.SMA(bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_slow, plot="false")
-        # bbwSMA_fast = bt.ind.SMA(bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_fast, plot="false")
+        # bbwSMA_slow = bt.ind.SMA(bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_slow, plot=False)
+        # bbwSMA_fast = bt.ind.SMA(bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_fast, plot=False)
         # bbw_condition = bbwSMA_slow > bbwSMA_fast
 
-        vli_fast = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_fast, plot="false")
-        vli_slow = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_slow, plot="false")
+        vli_fast = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_fast, plot=False)
+        vli_slow = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_slow, plot=False)
         
         self.vli_top = vli_slow + 2*bt.ind.StdDev(self.bollinger_bands_width, period=self.params.period_bbw_stddev)
         self.low_volatility_level = vli_fast < vli_slow
@@ -206,4 +206,3 @@ class L7(bt.Strategy):
                 self.close_price = 1.20*self.buy_price_close
             elif (self.profit_percentage > 20):
                 self.close_price = 1.15*self.buy_price_close
-

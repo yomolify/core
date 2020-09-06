@@ -15,7 +15,12 @@ from strategies.L7 import L7
 from sizer.percent import FullMoney
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Core')
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description=(
+            'Core'
+        )
+    )
 
     parser.add_argument('--exchange', default='', required=False,
                         help='Exchange')
@@ -47,6 +52,13 @@ def parse_args():
     parser.add_argument('--to_year', default='', required=False,
                         type=int, help='To year')
 
+    parser.add_argument('--cerebro', required=False, default='',
+                        metavar='kwargs', help='kwargs in key=value format')
+
+    parser.add_argument('--strat', '--strategy', required=False, default='',
+                        metavar='kwargs', help='kwargs in key=value format')
+
+
     return parser.parse_args()
 
 args = parse_args()
@@ -67,7 +79,8 @@ ExchangeDTFormat = {
 
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
-    cerebro.addstrategy(L7)
+    # cerebro.addstrategy(L7)
+    cerebro.addstrategy(L7, **eval('dict(' + args.strat + ')'))
 
     # Get historical data
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
@@ -96,11 +109,6 @@ if __name__ == '__main__':
         weekly=bt.TimeFrame.Weeks,
         monthly=bt.TimeFrame.Months)
 
-    # Bitmex
-    # cerebro.resampledata(data,
-    #                      timeframe=resample_timeframes["minutes"],
-    #                      compression=60)
-
     # Bitfinex
     cerebro.resampledata(data,
                          timeframe=bt.TimeFrame.Minutes,
@@ -112,12 +120,32 @@ if __name__ == '__main__':
     # cerebro.addsizer(bt.sizers.FixedSize, stake=1)
     cerebro.broker.setcommission(commission=0.0)
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
-    cerebro.run()
+
+    cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio')
+    cerebro.addanalyzer(bt.analyzers.Returns, _name='returns')
+    cerebro.addanalyzer(bt.analyzers.AnnualReturn, _name='annual_return')
+    cerebro.addanalyzer(bt.analyzers.DrawDown, _name='drawdown')
+    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
+    cerebro.addanalyzer(bt.analyzers.Transactions, _name='transactions')
+    cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
+
+    cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
+
+    thestrats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
+    thestrat = thestrats[0]
+
+    print('\nSharpe Ratio:', thestrat.analyzers.sharpe_ratio.get_analysis())
+    print('\nReturns:', thestrat.analyzers.returns.get_analysis())
+    print('\nAnnual Return:', thestrat.analyzers.annual_return.get_analysis())
+    print('\nMaximum Drawdown:', thestrat.analyzers.drawdown.get_analysis())
+    print('\nTrade Analyzer:', thestrat.analyzers.trade_analyzer.get_analysis())
+    # print('\nTransactions:', thestrat.analyzers.transactions.get_analysis())
+    print('\nVariability-Weighted Return:', thestrat.analyzers.vwr.get_analysis())
+    print('\nSQN:', thestrat.analyzers.sqn.get_analysis())
+
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
     p = BacktraderPlotting(style='candle', scheme=Tradimo())
     cerebro.plot(p)
-
-
 
 # self.log('Low => {}'.format(self.low))
 
