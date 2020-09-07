@@ -11,7 +11,8 @@ import backtrader as bt
 from btplotting import BacktraderPlotting
 from btplotting.schemes import Blackly, Tradimo
 
-from strategies.L7 import L7
+from strategies import BollingerBands, BuyHold
+
 from sizer.percent import FullMoney
 
 def parse_args():
@@ -55,9 +56,8 @@ def parse_args():
     parser.add_argument('--cerebro', required=False, default='',
                         metavar='kwargs', help='kwargs in key=value format')
 
-    parser.add_argument('--strat', '--strategy', required=False, default='',
-                        metavar='kwargs', help='kwargs in key=value format')
-
+    parser.add_argument('--strategy', required=True, default='',
+                        metavar='kwargs')
 
     return parser.parse_args()
 
@@ -77,10 +77,23 @@ ExchangeDTFormat = {
     # dtformat=('%b %d, %Y'),
 }
 
+Strategy = {
+    # 'BollingerBands.L7': BollingerBands.L7,
+    # 'BollingerBands.L7': BollingerBands.L7,
+    # 'BollingerBands.L7': BollingerBands.L7,
+    # 'BollingerBands.L7': BollingerBands.L7,
+    # 'BollingerBands.L7': BollingerBands.L7,
+    'BollingerBands.L7': BollingerBands.L7,
+    'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
+    'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
+    'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
+    'BuyHold.BuyAndHold_More': BuyHold.BuyAndHold_More,
+    'BuyHold.BuyAndHold_More_Fund': BuyHold.BuyAndHold_More_Fund,
+}
+
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
-    # cerebro.addstrategy(L7)
-    cerebro.addstrategy(L7, **eval('dict(' + args.strat + ')'))
+    cerebro.addstrategy(Strategy[args.strategy])
 
     # Get historical data
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
@@ -117,7 +130,6 @@ if __name__ == '__main__':
 
     cerebro.broker.setcash(10000.0)
     cerebro.addsizer(FullMoney)
-    # cerebro.addsizer(bt.sizers.FixedSize, stake=1)
     cerebro.broker.setcommission(commission=0.0)
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
@@ -128,7 +140,6 @@ if __name__ == '__main__':
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
     cerebro.addanalyzer(bt.analyzers.Transactions, _name='transactions')
     cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
-
     cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
 
     thestrats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
@@ -146,6 +157,3 @@ if __name__ == '__main__':
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
     p = BacktraderPlotting(style='candle', scheme=Tradimo())
     cerebro.plot(p)
-
-# self.log('Low => {}'.format(self.low))
-
