@@ -8,12 +8,13 @@ import sys  # To find out the script name (in argv[0])
 import json
 
 import backtrader as bt
+import backtrader_addons as bta
 
 from btplotting import BacktraderPlotting
 from btplotting.schemes import Blackly, Tradimo
 
 from strategies import BuyHold, BollingerBands_template
-from strategies.BollingerBands import L1, L2
+from strategies.BollingerBands import L1, L2, L3
 
 from sizer.percent import FullMoney
 
@@ -84,6 +85,7 @@ ExchangeDTFormat = {
 Strategy = {
     'BollingerBands.L1': L1.L1,
     'BollingerBands.L2': L2.L2,
+    'BollingerBands.L3': L3.L3,
     'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
@@ -98,9 +100,6 @@ ExecType = {
 
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
-    cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
-    # cerebro.addstrategy(BollingerBands_template)
-
     # Get historical data
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
     csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
@@ -131,7 +130,8 @@ if __name__ == '__main__':
     # Bitfinex
     cerebro.resampledata(data,
                          timeframe=bt.TimeFrame.Minutes,
-                         compression=60)
+                        #  compression=60)
+                         compression=720)
     # cerebro.adddata(data)
 
     cerebro.broker.setcash(10000.0)
@@ -148,6 +148,11 @@ if __name__ == '__main__':
     cerebro.addanalyzer(bt.analyzers.Transactions, _name='transactions')
     cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
     cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
+
+    cerebro.addobserver(bta.observers.SLTPTracking)
+
+    cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
+    # cerebro.addstrategy(BollingerBands_template)
 
     stats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
     stat = stats[0].analyzers
@@ -173,4 +178,4 @@ if __name__ == '__main__':
 
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
     p = BacktraderPlotting(style='candle', scheme=Blackly())
-    # cerebro.plot(p)
+    cerebro.plot(p)
