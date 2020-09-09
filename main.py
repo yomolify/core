@@ -5,13 +5,15 @@ import argparse
 import datetime
 import os.path
 import sys  # To find out the script name (in argv[0])
+import json
 
 import backtrader as bt
 
 from btplotting import BacktraderPlotting
 from btplotting.schemes import Blackly, Tradimo
 
-from strategies import BollingerBands, BuyHold
+from strategies import BuyHold, BollingerBands_template
+from strategies.BollingerBands import L1, L2
 
 from sizer.percent import FullMoney
 
@@ -58,6 +60,8 @@ def parse_args():
 
     parser.add_argument('--strategy', required=True, default='',
                         metavar='kwargs')
+    parser.add_argument('--exectype', required=True, default='',
+                        metavar='kwargs')
 
     return parser.parse_args()
 
@@ -78,12 +82,8 @@ ExchangeDTFormat = {
 }
 
 Strategy = {
-    # 'BollingerBands.L7': BollingerBands.L7,
-    # 'BollingerBands.L7': BollingerBands.L7,
-    # 'BollingerBands.L7': BollingerBands.L7,
-    # 'BollingerBands.L7': BollingerBands.L7,
-    # 'BollingerBands.L7': BollingerBands.L7,
-    'BollingerBands.L7': BollingerBands.L7,
+    'BollingerBands.L1': L1.L1,
+    'BollingerBands.L2': L2.L2,
     'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
@@ -91,9 +91,15 @@ Strategy = {
     'BuyHold.BuyAndHold_More_Fund': BuyHold.BuyAndHold_More_Fund,
 }
 
+ExecType = {
+    'Limit': bt.Order.Limit,
+    'Market': bt.Order.Market,
+}
+
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
-    cerebro.addstrategy(Strategy[args.strategy])
+    cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
+    # cerebro.addstrategy(BollingerBands_template)
 
     # Get historical data
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
@@ -130,10 +136,11 @@ if __name__ == '__main__':
 
     cerebro.broker.setcash(10000.0)
     cerebro.addsizer(FullMoney)
-    cerebro.broker.setcommission(commission=0.0)
+    cerebro.broker.setcommission(commission=0)
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-    cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio')
+    cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)
+    # cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', factor=365)
     cerebro.addanalyzer(bt.analyzers.Returns, _name='returns')
     cerebro.addanalyzer(bt.analyzers.AnnualReturn, _name='annual_return')
     cerebro.addanalyzer(bt.analyzers.DrawDown, _name='drawdown')
@@ -142,18 +149,28 @@ if __name__ == '__main__':
     cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
     cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
 
-    thestrats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
-    thestrat = thestrats[0]
+    stats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
+    stat = stats[0].analyzers
+    
+    print(args.strategy)
+    print('======== PERFORMANCE ========\n')
+    print('Sharpe Ratio: ', json.dumps(stat.sharpe_ratio.get_analysis()["sharperatio"], indent=2))
+    print('Max Drawdown: ', json.dumps(stat.drawdown.get_analysis().max.drawdown, indent=2))
+    print('Number of Trades: ', json.dumps(stat.trade_analyzer.get_analysis().total.total, indent=2))
+    print('VWR: ', json.dumps(stat.vwr.get_analysis()["vwr"], indent=2))
 
-    print('\nSharpe Ratio:', thestrat.analyzers.sharpe_ratio.get_analysis())
-    print('\nReturns:', thestrat.analyzers.returns.get_analysis())
-    print('\nAnnual Return:', thestrat.analyzers.annual_return.get_analysis())
-    print('\nMaximum Drawdown:', thestrat.analyzers.drawdown.get_analysis())
-    print('\nTrade Analyzer:', thestrat.analyzers.trade_analyzer.get_analysis())
-    # print('\nTransactions:', thestrat.analyzers.transactions.get_analysis())
-    print('\nVariability-Weighted Return:', thestrat.analyzers.vwr.get_analysis())
-    print('\nSQN:', thestrat.analyzers.sqn.get_analysis())
+    # print(json.dumps(stat.analyzers.returns.get_analysis(), indent=2))
+    # print(json.dumps(stat.analyzers.annual_return.get_analysis(), indent=2))
+
+    # print('\nSharpe Ratio:', stat.analyzers.sharpe_ratio.get_analysis())
+    # print('\nReturns:', stat.analyzers.returns.get_analysis())
+    # print('\nAnnual Return:', stat.analyzers.annual_return.get_analysis())
+    # print('\nMaximum Drawdown:', stat.analyzers.drawdown.get_analysis())
+    # print('\nTrade Analyzer:', stat.analyzers.trade_analyzer.get_analysis())
+    # print('\nTransactions:', stat.analyzers.transactions.get_analysis())
+    # print('\nVariability-Weighted Return:', stat.analyzers.vwr.get_analysis())
+    # print('\nSQN:', stat.analyzers.sqn.get_analysis())
 
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
-    p = BacktraderPlotting(style='candle', scheme=Tradimo())
-    cerebro.plot(p)
+    p = BacktraderPlotting(style='candle', scheme=Blackly())
+    # cerebro.plot(p)

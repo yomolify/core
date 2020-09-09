@@ -6,7 +6,6 @@ import backtrader as bt
 
 class BuyAndHold_Buy(bt.Strategy):
     def start(self):
-        print('here')
         self.val_start = self.broker.get_cash()  # keep the starting cash
 
     def nextstart(self):
