@@ -101,9 +101,6 @@ class L1(bt.Strategy):
         # cross_down_bb_top = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.top)
         # cross_down_bb_bot = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.bot)
 
-        # cross_down_bb_top = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.top)
-        # cross_down_bb_bot = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.bot)
-
         # cross_down_bb_top = self.dataclose < self.bollinger_bands.lines.top
         # cross_down_bb_bot = self.dataclose < self.bollinger_bands.lines.bot
      

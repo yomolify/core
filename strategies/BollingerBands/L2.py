@@ -3,6 +3,7 @@ import datetime
 
 class L2(bt.Strategy):
     params = (
+        ('exectype', bt.Order.Market),
         ('period_bb_sma', 20),
         ('period_bb_std', 2),
         ('period_vol_sma_fast', 10),
@@ -18,6 +19,7 @@ class L2(bt.Strategy):
         # if not DEBUG:
         #     return
         return
+
         value = datetime.datetime.now()
         if len(self) > 0:
             value = self.data0.datetime.datetime()
@@ -29,6 +31,49 @@ class L2(bt.Strategy):
         # if send_telegram:
         #     send_telegram_message(txt)
 
+    
+    def notify_order(self, order):
+        if order.status in [order.Submitted, order.Accepted]:
+            # Buy/Sell order submitted/accepted to/by broker - Nothing to do
+            return
+
+        # Check if an order has been completed
+        # Attention: broker could reject order if not enough cash
+        if order.status in [order.Completed]:
+            if order.isbuy():
+                self.log(
+                    'BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+                    (order.executed.price,
+                     order.executed.value,
+                     order.executed.comm))
+
+                self.buyprice = order.executed.price
+                self.buycomm = order.executed.comm
+            else:  # Sell
+                self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+                         (order.executed.price,
+                          order.executed.value,
+                          order.executed.comm))
+
+            self.bar_executed = len(self)
+
+        elif order.status in [order.Canceled, order.Margin, order.Rejected]:
+            self.log('Order Canceled/Margin/Rejected')
+
+        # Write down: no pending order
+        self.order = None
+
+    def notify_trade(self, trade):
+        if not trade.isclosed:
+            return
+
+        self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
+                 (trade.pnl, trade.pnlcomm))
+
+    def update_indicators(self):
+        self.profit = 0
+        if self.buy_price_close and self.buy_price_close > 0:
+            self.profit = float(self.data0.close[0] - self.buy_price_close) / self.buy_price_close
 
     def __init__(self):
         self.buy_price_close = 0
@@ -52,9 +97,6 @@ class L2(bt.Strategy):
 
         cross_down_bb_top = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.top)
         cross_down_bb_bot = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.bot)
-
-        # cross_down_bb_top = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.top)
-        # cross_down_bb_bot = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.bot)
 
         # cross_down_bb_top = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.top)
         # cross_down_bb_bot = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.bot)
@@ -91,54 +133,11 @@ class L2(bt.Strategy):
         if not self.position:
             if self.buy_sig:
                 self.low = self.data0.low[0]
-                self.order = self.buy()
+                self.order = self.buy(exectype=self.params.exectype)
 
         if self.close_sig:
-            self.close()
+            self.close(exectype=self.params.exectype)
         
         # STOP LOSS - 5% below low of entry of entry candle
-        if self.data.close[0] <= 0.65*self.low:
-            print('Stop Loss')
-            self.close()
-
-    def notify_order(self, order):
-        if order.status in [order.Submitted, order.Accepted]:
-            # Buy/Sell order submitted/accepted to/by broker - Nothing to do
-            return
-
-        # Check if an order has been completed
-        # Attention: broker could reject order if not enough cash
-        if order.status in [order.Completed]:
-            if order.isbuy():
-                self.log(
-                    'BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-                    (order.executed.price,
-                     order.executed.value,
-                     order.executed.comm))
-
-                self.buyprice = order.executed.price
-                self.buycomm = order.executed.comm
-            else:  # Sell
-                self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-                         (order.executed.price,
-                          order.executed.value,
-                          order.executed.comm))
-
-
-        elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            self.log('Order Canceled/Margin/Rejected')
-
-        # Write down: no pending order
-        self.order = None
-
-    def notify_trade(self, trade):
-        if not trade.isclosed:
-            return
-
-        self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
-                 (trade.pnl, trade.pnlcomm))
-
-    def update_indicators(self):
-        self.profit = 0
-        if self.buy_price_close and self.buy_price_close > 0:
-            self.profit = float(self.data0.close[0] - self.buy_price_close) / self.buy_price_close
+        if self.data.close[0] <= 0.95*self.low:
+            self.close(exectype=self.params.exectype)
