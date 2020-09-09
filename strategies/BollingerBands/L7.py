@@ -2,13 +2,14 @@ import backtrader as bt
 import backtrader_addons as bta
 import datetime
 
-class L3(bt.Strategy):
+class L4(bt.Strategy):
     params = (
         ('exectype', bt.Order.Market),
         ('period_bb_sma', 20),
         ('period_bb_std', 2),
         ('period_vol_sma_fast', 10),
         ('period_vol_sma_slow', 50),
+        ('period_sma_fast', 20),
     )
 
     # def log(self, txt, dt=None):
@@ -89,6 +90,9 @@ class L3(bt.Strategy):
         self.bollinger_bands = bt.ind.BollingerBands(
             period=self.params.period_bb_sma, devfactor=self.params.period_bb_std, plot=False)
 
+        self.sma_fast = bt.ind.SMA(
+            period=self.params.period_sma_fast, plot=False)
+
         # Tried crossover / crossdown instead of manually checking - the performance is worse
         # cross_down_bb_top = bt.ind.CrossDown(self.datas[0], self.bollinger_bands.lines.top)
         # cross_down_bb_bot = bt.ind.CrossDown(self.datas[0], self.bollinger_bands.lines.bot)
@@ -130,9 +134,10 @@ class L3(bt.Strategy):
         # Check if we are in the market
         if not self.position:
             if self.buy_sig:
-                self.low = self.data0.low[0]
-                self.order = self.buy(exectype=self.params.exectype)
-                self.buy_price_close = self.data0.close[0]
+                if self.data0.close[0] > self.sma_fast[0]:
+                    self.low = self.data0.low[0]
+                    self.order = self.buy(exectype=self.params.exectype)
+                    self.buy_price_close = self.data0.close[0]
 
         if self.close_sig:
             self.tp_price = self.data0.close[0]

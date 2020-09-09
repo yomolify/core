@@ -1,4 +1,5 @@
 import backtrader as bt
+import backtrader_addons as bta
 import datetime
 
 class L2(bt.Strategy):
@@ -70,14 +71,11 @@ class L2(bt.Strategy):
         self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
                  (trade.pnl, trade.pnlcomm))
 
-    def update_indicators(self):
-        self.profit = 0
-        if self.buy_price_close and self.buy_price_close > 0:
-            self.profit = float(self.data0.close[0] - self.buy_price_close) / self.buy_price_close
-
     def __init__(self):
+        self.stop_loss = False
+        self.sl_price = None
+        self.tp_price = None
         self.buy_price_close = 0
-        self.close_price = 0
         # Keep a reference to the "close" line in the data[0] dataseries
         self.dataclose = self.datas[0].close
 
@@ -134,10 +132,19 @@ class L2(bt.Strategy):
             if self.buy_sig:
                 self.low = self.data0.low[0]
                 self.order = self.buy(exectype=self.params.exectype)
+                self.buy_price_close = self.data0.close[0]
 
         if self.close_sig:
+            self.tp_price = self.data0.close[0]
             self.close(exectype=self.params.exectype)
         
         # STOP LOSS - 5% below low of entry of entry candle
-        if self.data.close[0] <= 0.95*self.low:
+        if self.stop_loss:
+            self.stop_loss = False
             self.close(exectype=self.params.exectype)
+
+    def update_indicators(self):
+        # Calculate Stop Loss
+        self.sl_price = 0.95*self.low
+        if self.data.close[0] <= self.sl_price:
+            self.stop_loss = True

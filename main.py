@@ -2,6 +2,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import argparse
+import warnings
 import datetime
 import os.path
 import sys  # To find out the script name (in argv[0])
@@ -14,7 +15,7 @@ from btplotting import BacktraderPlotting
 from btplotting.schemes import Blackly, Tradimo
 
 from strategies import BuyHold, BollingerBands_template
-from strategies.BollingerBands import L1, L2, L3
+from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7
 
 from sizer.percent import FullMoney
 
@@ -86,6 +87,10 @@ Strategy = {
     'BollingerBands.L1': L1.L1,
     'BollingerBands.L2': L2.L2,
     'BollingerBands.L3': L3.L3,
+    'BollingerBands.L4': L4.L4,
+    'BollingerBands.L4': L4.L5,
+    'BollingerBands.L4': L4.L6,
+    'BollingerBands.L4': L4.L7,
     'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
@@ -99,6 +104,7 @@ ExecType = {
 }
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
     cerebro = bt.Cerebro()
     # Get historical data
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
@@ -130,8 +136,8 @@ if __name__ == '__main__':
     # Bitfinex
     cerebro.resampledata(data,
                          timeframe=bt.TimeFrame.Minutes,
-                        #  compression=60)
-                         compression=720)
+                         compression=60)
+                        #  compression=720)
     # cerebro.adddata(data)
 
     cerebro.broker.setcash(10000.0)
