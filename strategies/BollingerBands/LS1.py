@@ -2,7 +2,7 @@ import backtrader as bt
 import backtrader_addons as bta
 import datetime
 
-class L5(bt.Strategy):
+class LS1(bt.Strategy):
     params = (
         ('exectype', bt.Order.Market),
         ('period_bb_sma', 20),
@@ -10,6 +10,9 @@ class L5(bt.Strategy):
         ('period_vol_sma_fast', 10),
         ('period_vol_sma_slow', 50),
         ('period_sma_fast', 20),
+        ('period_sma_mid', 50),
+        ('period_sma_slow', 100),
+        ('period_sma_veryslow', 200),
         ('period_bbw_sma_fast', 10),
         ('period_bbw_sma_slow', 50),
         ('period_bbw_sma_vli_fast', 200),
@@ -99,6 +102,12 @@ class L5(bt.Strategy):
 
         self.sma_fast = bt.ind.SMA(
             period=self.params.period_sma_fast, plot=False)
+        self.sma_mid = bt.ind.SMA(
+            period=self.params.period_sma_mid, plot=False)
+        self.sma_slow = bt.ind.SMA(
+            period=self.params.period_sma_slow, plot=False)
+        self.sma_veryslow = bt.ind.SMA(
+            period=self.params.period_sma_veryslow, plot=False)
 
         cross_down_bb_top = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.top)
         cross_down_bb_bot = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.bot)
@@ -141,9 +150,26 @@ class L5(bt.Strategy):
             if self.buy_sig:
                 if self.data0.close[0] > self.sma_fast[0]:
                     if self.bollinger_bands_width < self.vli_top:
-                        self.low = self.data0.low[0]
+                        if self.low_volatility_level:
+                            if self.sma_mid > self.sma_veryslow:
+                                self.low = self.data0.low[0]
+                                self.order = self.buy(exectype=self.params.exectype)
+                                self.buy_price_close = self.data0.close[0]
+                        else:
+                            self.low = self.data0.low[0]
+                            self.order = self.buy(exectype=self.params.exectype)
+                            self.buy_price_close = self.data0.close[0]
+                    elif self.sma_slow > self.sma_veryslow:
+                        self.low_alt = self.data0.low[-1]
                         self.order = self.buy(exectype=self.params.exectype)
                         self.buy_price_close = self.data0.close[0]
+
+                        if self.data.close[0] < self.data0.low[-1]:
+                            self.close(exectype=self.params.exectype)
+                        if self.profit_percentage > 3:
+                            self.sl_price = 1.01*self.buy_price_close
+
+
 
         if self.close_sig:
             self.tp_price = self.data0.close[0]
@@ -152,6 +178,14 @@ class L5(bt.Strategy):
         if self.stop_loss:
             self.stop_loss = False
             self.close(exectype=self.params.exectype)
+
+
+        # Short
+        # ifCrossUpBollingerBotandvolcondition:
+        # short
+        # stoplossatHighestHigh(per20)
+        # iftradeprofitover10%:stoplossatHH(per10)
+        # iftradeprofitover15%:stoplossatHH(per5)
 
     def update_indicators(self):
         # Calculate Stop Loss

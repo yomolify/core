@@ -88,9 +88,9 @@ Strategy = {
     'BollingerBands.L2': L2.L2,
     'BollingerBands.L3': L3.L3,
     'BollingerBands.L4': L4.L4,
-    'BollingerBands.L4': L4.L5,
-    'BollingerBands.L4': L4.L6,
-    'BollingerBands.L4': L4.L7,
+    'BollingerBands.L5': L5.L5,
+    'BollingerBands.L6': L6.L6,
+    'BollingerBands.L7': L7.L7,
     'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
     cerebro.broker.setcash(10000.0)
     cerebro.addsizer(FullMoney)
-    cerebro.broker.setcommission(commission=0)
+    # cerebro.broker.setcommission(commission=0.001)
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
     cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)

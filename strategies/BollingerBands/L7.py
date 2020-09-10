@@ -2,7 +2,7 @@ import backtrader as bt
 import backtrader_addons as bta
 import datetime
 
-class L4(bt.Strategy):
+class L7(bt.Strategy):
     params = (
         ('exectype', bt.Order.Market),
         ('period_bb_sma', 20),
@@ -10,6 +10,16 @@ class L4(bt.Strategy):
         ('period_vol_sma_fast', 10),
         ('period_vol_sma_slow', 50),
         ('period_sma_fast', 20),
+        ('period_sma_mid', 50),
+        ('period_sma_slow', 100),
+        ('period_sma_veryslow', 200),
+        ('period_bbw_sma_fast', 10),
+        ('period_bbw_sma_slow', 50),
+        ('period_bbw_sma_vli_fast', 200),
+        ('period_bbw_sma_vli_slow', 1000),
+        ('period_bbw_stddev', 2),
+        ('period_bb_sma', 20),
+        ('period_bb_std', 2),
     )
 
     # def log(self, txt, dt=None):
@@ -92,25 +102,29 @@ class L4(bt.Strategy):
 
         self.sma_fast = bt.ind.SMA(
             period=self.params.period_sma_fast, plot=False)
-
-        # Tried crossover / crossdown instead of manually checking - the performance is worse
-        # cross_down_bb_top = bt.ind.CrossDown(self.datas[0], self.bollinger_bands.lines.top)
-        # cross_down_bb_bot = bt.ind.CrossDown(self.datas[0], self.bollinger_bands.lines.bot)
+        self.sma_mid = bt.ind.SMA(
+            period=self.params.period_sma_mid, plot=False)
+        self.sma_slow = bt.ind.SMA(
+            period=self.params.period_sma_slow, plot=False)
+        self.sma_veryslow = bt.ind.SMA(
+            period=self.params.period_sma_veryslow, plot=False)
 
         cross_down_bb_top = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.top)
         cross_down_bb_bot = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.bot)
 
-        # cross_down_bb_top = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.top)
-        # cross_down_bb_bot = bt.ind.CrossOver(self.datas[0], self.bollinger_bands.lines.bot)
-
-        # cross_down_bb_top = self.dataclose < self.bollinger_bands.lines.top
-        # cross_down_bb_bot = self.dataclose < self.bollinger_bands.lines.bot
-     
         volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot=False)
         volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot=False)
 
         vol_condition = volSMA_fast > volSMA_slow
 
+        self.bollinger_bands_width = (self.bollinger_bands.lines.top - self.bollinger_bands.lines.bot)/self.bollinger_bands.lines.mid
+
+        vli_fast = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_fast, plot=False)
+        vli_slow = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_slow, plot=False)
+        
+        self.vli_top = vli_slow + 2*bt.ind.StdDev(self.bollinger_bands_width, period=self.params.period_bbw_sma_vli_slow)
+        self.low_volatility_level = vli_fast < vli_slow
+  
         self.buy_sig = bt.And(cross_down_bb_top, vol_condition)
         self.close_sig = bt.And(cross_down_bb_bot, vol_condition)
 
@@ -135,9 +149,25 @@ class L4(bt.Strategy):
         if not self.position:
             if self.buy_sig:
                 if self.data0.close[0] > self.sma_fast[0]:
-                    self.low = self.data0.low[0]
-                    self.order = self.buy(exectype=self.params.exectype)
-                    self.buy_price_close = self.data0.close[0]
+                    if self.bollinger_bands_width < self.vli_top:
+                        if self.low_volatility_level:
+                            if self.sma_mid > self.sma_veryslow:
+                                self.low = self.data0.low[0]
+                                self.order = self.buy(exectype=self.params.exectype)
+                                self.buy_price_close = self.data0.close[0]
+                        else:
+                            self.low = self.data0.low[0]
+                            self.order = self.buy(exectype=self.params.exectype)
+                            self.buy_price_close = self.data0.close[0]
+                    elif self.sma_slow > self.sma_veryslow:
+                        self.low_alt = self.data0.low[-1]
+                        self.order = self.buy(exectype=self.params.exectype)
+                        self.buy_price_close = self.data0.close[0]
+
+                        if self.data.close[0] < self.data0.low[-1]:
+                            self.close(exectype=self.params.exectype)
+                        if self.profit_percentage > 3:
+                            self.sl_price = 1.01*self.buy_price_close
 
         if self.close_sig:
             self.tp_price = self.data0.close[0]
