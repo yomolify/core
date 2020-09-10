@@ -179,40 +179,24 @@ class L7(bt.Strategy):
 
     def update_indicators(self):
         # Calculate Stop Loss
-        self.sl_price = 0.95*self.low
-        if self.data.close[0] <= self.sl_price:
-            self.stop_loss = True
-
+        
         # Calculate Stop Win
         # Position size is in BTC
         # Profit is in USD
         self.profit = 0
-        if self.position.size and self.buy_price_close and self.buy_price_close > 0:
-            # self.profit = float(self.data0.close[0] - self.buy_price_close) / self.buy_price_close
-            # self.profit = (self.data0.close[0] - self.buy_price_close)*self.position.size
+        if self.position.size > 0:
+            self.sl_price = 0.95*self.low
             self.profit = self.data0.close[0] - self.buy_price_close
             self.profit_percentage = (self.profit/self.buy_price_close)*100
-
-            # print('\nBuy Price Close:', self.buy_price_close)
-            # print('Current Price:', self.data0.close[0])
-            # print('Profit:', self.profit)
-            # print('Size:', self.position.size)
-            # print('Profit percentage:', self.profit_percentage)
-
-            # print('self.profit_percentage', self.profit_percentage)
-            
             if (self.profit_percentage > 20):
                 self.sl_price = 1.15*self.buy_price_close
-                self.stop_loss = True
             elif (self.profit_percentage > 25):
                 self.sl_price = 1.20*self.buy_price_close
-                self.stop_loss = True
             elif (self.profit_percentage > 30):
                 self.sl_price = 1.25*self.buy_price_close
-                self.stop_loss = True
             elif (self.profit_percentage > 35):
                 self.sl_price = 1.30*self.buy_price_close    
-                self.stop_loss = True
             elif (self.profit_percentage > 40):
                 self.sl_price = 1.35*self.buy_price_close
+            if self.data.close[0] <= self.sl_price:
                 self.stop_loss = True
