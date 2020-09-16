@@ -15,7 +15,7 @@ from btplotting import BacktraderPlotting
 from btplotting.schemes import Blackly, Tradimo
 
 from strategies import BuyHold, BollingerBands_template
-from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7, LS1
+from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7, LS1, LS2
 
 from sizer.percent import FullMoney
 
@@ -92,6 +92,7 @@ Strategy = {
     'BollingerBands.L6': L6.L6,
     'BollingerBands.L7': L7.L7,
     'BollingerBands.LS1': LS1.LS1,
+    'BollingerBands.LS2': LS2.LS2,
     'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
@@ -110,6 +111,7 @@ if __name__ == '__main__':
     # Get historical data
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
     csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
+    # if binance, csvpath = {}-{}.csv'.format(args.ticker, args.data_timeframe)
     datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
     # datapath = os.path.join(modpath, '../Bitfinex-historical-data/BTCUSD/Candles_1m/2019/merged.csv')
 
@@ -143,7 +145,7 @@ if __name__ == '__main__':
 
     cerebro.broker.setcash(10000.0)
     cerebro.addsizer(FullMoney)
-    # cerebro.broker.setcommission(commission=0.001)
+    cerebro.broker.setcommission(commission=0.0006)
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
     cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)
@@ -166,6 +168,8 @@ if __name__ == '__main__':
     
     print(args.strategy)
     print('======== PERFORMANCE ========\n')
+    # print('{}'.format(csvpath))
+    print('{}, {}, {} to {}, {}, {}'.format(args.from_year, args.from_month, args.from_date, args.to_year, args.to_month, args.to_date))
     print('Sharpe Ratio: ', json.dumps(stat.sharpe_ratio.get_analysis()["sharperatio"], indent=2))
     print('Max Drawdown: ', json.dumps(stat.drawdown.get_analysis().max.drawdown, indent=2))
     print('Number of Trades: ', json.dumps(stat.trade_analyzer.get_analysis().total.total, indent=2))
@@ -185,4 +189,4 @@ if __name__ == '__main__':
 
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
     p = BacktraderPlotting(style='candle', scheme=Blackly())
-    # cerebro.plot(p)
+    cerebro.plot(p)
