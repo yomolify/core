@@ -12,10 +12,3 @@ requests
 config
 backtrader_plotting
 pyfolio
-tensorflow
-seaborn
-scipy
-statsmodels
-theano
-pymc3
-sklearn

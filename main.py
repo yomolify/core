@@ -1,12 +1,12 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import argparse
 import warnings
 import datetime
 import os.path
 import sys  # To find out the script name (in argv[0])
 import json
+import args
 
 import backtrader as bt
 import backtrader_addons as bta
@@ -14,96 +14,11 @@ import backtrader_addons as bta
 from btplotting import BacktraderPlotting
 from btplotting.schemes import Blackly, Tradimo
 
-from strategies import BuyHold, BollingerBands_template
-from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7, LS1, LS2
+from dicts import ExchangeCSVIndex, ExchangeDTFormat, Strategy, ExecType 
 
 from sizer.percent import FullMoney
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description=(
-            'Core'
-        )
-    )
-
-    parser.add_argument('--exchange', default='', required=False,
-                        help='Exchange')
-
-    parser.add_argument('--ticker', default='', required=False,
-                        help='Ticker')
-    
-    parser.add_argument('--data_timeframe', default='', required=False,
-                        help='Timeframe of provided data')
-
-    parser.add_argument('--resample_timeframe', default='weekly', required=False,
-                        choices=['daily', 'weekly', 'monhtly'],
-                        help='Timeframe to resample to')
-    
-    parser.add_argument('--compression', default=1, required=False, type=int,
-                        help='Compress n bars into 1')
-
-    # Backtest from & to datetime
-    parser.add_argument('--from_date', default='', required=False,
-                        type=int, help='From date')
-    parser.add_argument('--from_month', default='', required=False,
-                        type=int, help='From month')
-    parser.add_argument('--from_year', default='', required=False,
-                        type=int, help='From year')
-    parser.add_argument('--to_date', default='', required=False,
-                        type=int, help='To Date')
-    parser.add_argument('--to_month', default='', required=False,
-                        type=int, help='To month')
-    parser.add_argument('--to_year', default='', required=False,
-                        type=int, help='To year')
-
-    parser.add_argument('--cerebro', required=False, default='',
-                        metavar='kwargs', help='kwargs in key=value format')
-
-    parser.add_argument('--strategy', required=True, default='',
-                        metavar='kwargs')
-    parser.add_argument('--exectype', required=True, default='',
-                        metavar='kwargs')
-
-    return parser.parse_args()
-
-args = parse_args()
-
-ExchangeCSVIndices = {
-    'bitmex': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
-    'binance': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
-    'bitfinex': {'open': 1, 'high': 3, 'low': 4, 'close': 2, 'volume': 5}
-    # 'bitfinex': {'open': 0, 'high': 2, 'low': 3, 'close': 1, 'volume': 4}
-}
-
-ExchangeDTFormat = {
-    'bitmex': "%Y-%m-%d %H:%M:%S+00:00",
-    'binance': '%Y-%m-%d %H:%M:%S',
-    'bitfinex': lambda x: datetime.datetime.utcfromtimestamp(int(x[:-3]))
-    # dtformat=('%b %d, %Y'),
-}
-
-Strategy = {
-    'BollingerBands.L1': L1.L1,
-    'BollingerBands.L2': L2.L2,
-    'BollingerBands.L3': L3.L3,
-    'BollingerBands.L4': L4.L4,
-    'BollingerBands.L5': L5.L5,
-    'BollingerBands.L6': L6.L6,
-    'BollingerBands.L7': L7.L7,
-    'BollingerBands.LS1': LS1.LS1,
-    'BollingerBands.LS2': LS2.LS2,
-    'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
-    'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
-    'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
-    'BuyHold.BuyAndHold_More': BuyHold.BuyAndHold_More,
-    'BuyHold.BuyAndHold_More_Fund': BuyHold.BuyAndHold_More_Fund,
-}
-
-ExecType = {
-    'Limit': bt.Order.Limit,
-    'Market': bt.Order.Market,
-}
+args = args.parse()
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
@@ -118,11 +33,11 @@ if __name__ == '__main__':
     data = bt.feeds.GenericCSVData(
         dataname=datapath,
         dtformat=ExchangeDTFormat[args.exchange],
-        open=ExchangeCSVIndices[args.exchange]['open'],
-        high=ExchangeCSVIndices[args.exchange]['high'],
-        low=ExchangeCSVIndices[args.exchange]['low'],
-        close=ExchangeCSVIndices[args.exchange]['close'],
-        volume=ExchangeCSVIndices[args.exchange]['volume'],
+        open=ExchangeCSVIndex[args.exchange]['open'],
+        high=ExchangeCSVIndex[args.exchange]['high'],
+        low=ExchangeCSVIndex[args.exchange]['low'],
+        close=ExchangeCSVIndex[args.exchange]['close'],
+        volume=ExchangeCSVIndex[args.exchange]['volume'],
         fromdate=datetime.datetime(args.from_year, args.from_month, args.from_date),
         todate=datetime.datetime(args.to_year, args.to_month, args.to_date),
         timeframe=bt.TimeFrame.Minutes, 
