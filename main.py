@@ -25,10 +25,11 @@ if __name__ == '__main__':
     cerebro = bt.Cerebro()
     # Get historical data
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
+    # TODO - prefix binance to all binance data and remove below line
+    # if args.exchange == 'binance':
+    #     csvpath = '{}-{}.csv'.format(args.ticker, args.data_timeframe)
     csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
-    # if binance, csvpath = {}-{}.csv'.format(args.ticker, args.data_timeframe)
     datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
-    # datapath = os.path.join(modpath, '../Bitfinex-historical-data/BTCUSD/Candles_1m/2019/merged.csv')
 
     data = bt.feeds.GenericCSVData(
         dataname=datapath,
@@ -103,5 +104,6 @@ if __name__ == '__main__':
     # print('\nSQN:', stat.analyzers.sqn.get_analysis())
 
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
-    p = BacktraderPlotting(style='candle', scheme=Blackly())
-    cerebro.plot(p)
+    if args.plot:
+        p = BacktraderPlotting(style='candle', scheme=Blackly())
+        cerebro.plot(p)

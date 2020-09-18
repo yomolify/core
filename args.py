@@ -23,6 +23,9 @@ def parse():
     
     parser.add_argument('--compression', default=1, required=False, type=int,
                         help='Compress n bars into 1')
+    
+    parser.add_argument('--plot', default=False, required=False, type=bool,
+                        help='To plot or not to plot')
 
     # Backtest from & to datetime
     parser.add_argument('--from_date', default='', required=False,
