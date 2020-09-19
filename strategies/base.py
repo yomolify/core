@@ -6,18 +6,16 @@ from utils import send_telegram_message
 
 class StrategyBase(bt.Strategy):
     def __init__(self):
+        self.sl_price = 0
+        self.tp_price = 0
         self.order = None
         self.last_operation = "SELL"
         self.status = "DISCONNECTED"
         self.bar_executed = 0
         self.buy_price_close = None
-        self.soft_sell = False
-        self.hard_sell = False
         self.log("Base strategy initialized")
 
     def reset_sell_indicators(self):
-        self.soft_sell = False
-        self.hard_sell = False
         self.buy_price_close = None
 
     def notify_data(self, data, status, *args, **kwargs):
@@ -26,36 +24,22 @@ class StrategyBase(bt.Strategy):
         if status == data.LIVE:
             self.log("LIVE DATA - Ready to trade")
 
-    def short(self):
-        if self.last_operation == "SELL":
-            return
-
-        if ENV == DEVELOPMENT:
-            self.log("Sell ordered: $%.2f" % self.data0.close[0])
-            return self.sell()
-
-        cash, value = self.broker.get_wallet_balance(COIN_TARGET)
-        amount = value*0.99
-        self.log("Sell ordered: $%.2f. Amount %.6f %s - $%.2f USDT" % (self.data0.close[0],
-                                                                       amount, COIN_TARGET, value), True)
-        return self.sell(size=amount)
-
-    def long(self):
-        if self.last_operation == "BUY":
-            return
-
-        self.log("Buy ordered: $%.2f" % self.data0.close[0], True)
-        self.buy_price_close = self.data0.close[0]
+    def exec_trade(self, direction, exectype):
+        # self.log("%s ordered: $%.2f" % direction, self.data0.close[0], True)
+        self.log("{} ordered @ ${}".format(direction, self.data0.close[0]))
         price = self.data0.close[0]
-
-        if ENV == DEVELOPMENT:
-            return self.buy()
-
-        cash, value = self.broker.get_wallet_balance(COIN_REFER)
-        amount = (value / price) * 0.99  # Workaround to avoid precision issues
-        self.log("Buy ordered: $%.2f. Amount %.6f %s. Balance $%.2f USDT" % (self.data0.close[0],
+        
+        if ENV == PRODUCTION:
+            cash, value = self.broker.get_wallet_balance(COIN_REFER)
+            amount = (value / price) * 0.99  # Workaround to avoid precision issues
+            self.log("%s ordered: $%.2f. Amount %.6f %s. Balance $%.2f USDT" % (direction, self.data0.close[0],
                                                                               amount, COIN_TARGET, value), True)
-        return self.buy(size=amount)
+        if direction == "buy":
+            (return self.buy(exectype=exectype), return self.buy(size=amount, exectype=exectype))[ENV == DEVELOPMENT]
+        elif direction == "sell":
+            (return self.sell(exectype=exectype), return self.sell(size=amount, exectype=exectype))[ENV == DEVELOPMENT]
+        elif direction == "close":
+            (return self.close(exectype=exectype), return self.close(size=amount, exectype=exectype))[ENV == DEVELOPMENT]
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -108,7 +92,8 @@ class StrategyBase(bt.Strategy):
     def log(self, txt, send_telegram=False, color=None):
         if not DEBUG:
             return
-
+        # Remove for detailed logs
+        return
         value = datetime.now()
         if len(self) > 0:
             value = self.data0.datetime.datetime()

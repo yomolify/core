@@ -1,7 +1,9 @@
 import backtrader as bt
 import datetime
+from strategies.base import StrategyBase
 
-class L1(bt.Strategy):
+
+class L1(StrategyBase):
     params = (
         ('exectype', bt.Order.Market),
         ('period_bb_sma', 20),
@@ -10,65 +12,43 @@ class L1(bt.Strategy):
         ('period_vol_sma_slow', 50),
     )
 
-    # def log(self, txt, dt=None):
-    #     ''' Logging function for this strategy'''
-    #     dt = dt or self.datas[0].datetime.date(0)
-    #     print('%s, %s' % (dt.isoformat(), txt))
+    # def notify_order(self, order):
+    #     if order.status in [order.Submitted, order.Accepted]:
+    #         # Buy/Sell order submitted/accepted to/by broker - Nothing to do
+    #         return
 
-    def log(self, txt, send_telegram=False, color=None):
-        # if not DEBUG:
-        #     return
-        return
+    #     # Check if an order has been completed
+    #     # Attention: broker could reject order if not enough cash
+    #     if order.status in [order.Completed]:
+    #         if order.isbuy():
+    #             self.log(
+    #                 'BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+    #                 (order.executed.price,
+    #                  order.executed.value,
+    #                  order.executed.comm))
 
-        value = datetime.datetime.now()
-        if len(self) > 0:
-            value = self.data0.datetime.datetime()
+    #             self.buyprice = order.executed.price
+    #             self.buycomm = order.executed.comm
+    #         else:  # Sell
+    #             self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+    #                      (order.executed.price,
+    #                       order.executed.value,
+    #                       order.executed.comm))
 
-        if color:
-            txt = colored(txt, color)
+    #         self.bar_executed = len(self)
 
-        print('[%s] %s' % (value.strftime("%d-%m-%y %H:%M"), txt))
-        # if send_telegram:
-        #     send_telegram_message(txt)
+    #     elif order.status in [order.Canceled, order.Margin, order.Rejected]:
+    #         self.log('Order Canceled/Margin/Rejected')
 
-    
-    def notify_order(self, order):
-        if order.status in [order.Submitted, order.Accepted]:
-            # Buy/Sell order submitted/accepted to/by broker - Nothing to do
-            return
+    #     # Write down: no pending order
+    #     self.order = None
 
-        # Check if an order has been completed
-        # Attention: broker could reject order if not enough cash
-        if order.status in [order.Completed]:
-            if order.isbuy():
-                self.log(
-                    'BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-                    (order.executed.price,
-                     order.executed.value,
-                     order.executed.comm))
+    # def notify_trade(self, trade):
+    #     if not trade.isclosed:
+    #         return
 
-                self.buyprice = order.executed.price
-                self.buycomm = order.executed.comm
-            else:  # Sell
-                self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-                         (order.executed.price,
-                          order.executed.value,
-                          order.executed.comm))
-
-            self.bar_executed = len(self)
-
-        elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            self.log('Order Canceled/Margin/Rejected')
-
-        # Write down: no pending order
-        self.order = None
-
-    def notify_trade(self, trade):
-        if not trade.isclosed:
-            return
-
-        self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
-                 (trade.pnl, trade.pnlcomm))
+    #     self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
+    #              (trade.pnl, trade.pnlcomm))
 
     def update_indicators(self):
         self.profit = 0
@@ -76,6 +56,7 @@ class L1(bt.Strategy):
             self.profit = float(self.data0.close[0] - self.buy_price_close) / self.buy_price_close
 
     def __init__(self):
+        StrategyBase.__init__(self)
         self.buy_price_close = 0
         self.close_price = 0
         # Keep a reference to the "close" line in the data[0] dataseries
@@ -130,7 +111,9 @@ class L1(bt.Strategy):
         # Check if we are in the market
         if not self.position:
             if self.buy_sig:
-                self.order = self.buy(exectype=self.params.exectype)
+                # self.order = self.exec_buy(exectype=self.params.exectype)
+                self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
 
         if self.close_sig:
-            self.close(exectype=self.params.exectype)
+            # self.exec_close(exectype=self.params.exectype)
+            self.order = self.exec_trade(direction="close", exectype=self.params.exectype)

@@ -59,9 +59,9 @@ if __name__ == '__main__':
                         #  compression=720)
     # cerebro.adddata(data)
 
-    cerebro.broker.setcash(100000.0)
+    cerebro.broker.setcash(10000.0)
     cerebro.addsizer(FullMoney)
-    cerebro.broker.setcommission(commission=0.001)
+    # cerebro.broker.setcommission(commission=0.001)
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
     cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)
