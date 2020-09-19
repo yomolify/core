@@ -12,3 +12,5 @@ requests
 config
 backtrader_plotting
 pyfolio
+termcolor
+config

@@ -2,16 +2,17 @@ import argparse
 import datetime
 
 import backtrader as bt
+from strategies.base import StrategyBase
 
-
-class BuyAndHold_Buy(bt.Strategy):
+class BuyAndHold_Buy(StrategyBase):
     def start(self):
         self.val_start = self.broker.get_cash()  # keep the starting cash
 
     def nextstart(self):
         # Buy all the available cash
         size = int(self.broker.get_cash() / self.data)
-        self.buy(size=size)
+        # self.buy(size=size)
+        self.long()
 
     def stop(self):
         # calculate the actual returns

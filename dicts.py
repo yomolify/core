@@ -1,7 +1,7 @@
 import backtrader as bt
 import datetime
 
-from strategies import BuyHold, BollingerBands_template
+from strategies import BuyHold, BollingerBands_template, RSI_EMA
 from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7, LS1, LS2
 
 ExchangeCSVIndex = {
@@ -28,6 +28,7 @@ Strategy = {
     'BollingerBands.L7': L7.L7,
     'BollingerBands.LS1': LS1.LS1,
     'BollingerBands.LS2': LS2.LS2,
+    'RSI_EMA': RSI_EMA.RSA_EMA,
     'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
     'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,

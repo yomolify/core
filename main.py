@@ -59,9 +59,9 @@ if __name__ == '__main__':
                         #  compression=720)
     # cerebro.adddata(data)
 
-    cerebro.broker.setcash(10000.0)
+    cerebro.broker.setcash(100000.0)
     cerebro.addsizer(FullMoney)
-    cerebro.broker.setcommission(commission=0.0006)
+    cerebro.broker.setcommission(commission=0.001)
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
     cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     cerebro.addanalyzer(bt.analyzers.DrawDown, _name='drawdown')
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
     cerebro.addanalyzer(bt.analyzers.Transactions, _name='transactions')
-    cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
+    # cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
     cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
 
     cerebro.addobserver(bta.observers.SLTPTracking)
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     print('Sharpe Ratio: ', json.dumps(stat.sharpe_ratio.get_analysis()["sharperatio"], indent=2))
     print('Max Drawdown: ', json.dumps(stat.drawdown.get_analysis().max.drawdown, indent=2))
     print('Number of Trades: ', json.dumps(stat.trade_analyzer.get_analysis().total.total, indent=2))
-    print('VWR: ', json.dumps(stat.vwr.get_analysis()["vwr"], indent=2))
+    # print('VWR: ', json.dumps(stat.vwr.get_analysis()["vwr"], indent=2))
 
     # print(json.dumps(stat.analyzers.returns.get_analysis(), indent=2))
     # print(json.dumps(stat.analyzers.annual_return.get_analysis(), indent=2))
