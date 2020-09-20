@@ -36,18 +36,15 @@ class L2(StrategyBase):
 
     def next(self):
         self.update_indicators()
-
-        # Check if an order is pending ... if yes, we cannot send a 2nd one
         if self.order:
             return
 
-        # Check if we are in the market
         if not self.position:
             if self.buy_sig:
                 self.low = self.data0.low[0]
                 self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
                 self.buy_price_close = self.data0.close[0]
-                
+
         if self.close_sig:
             self.tp_price = self.data0.close[0]
             self.exec_trade(direction="close", exectype=self.params.exectype)
