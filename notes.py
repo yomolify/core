@@ -18,7 +18,7 @@ nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_y
 # -------------- STRATEGY #1 - Long & Short ---------------
 # In sample for L1 - L7
 # April 1st 2015 to April 1st 2018
-nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --strategy=BuyHold.BuyAndHold_Buy
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BuyHold.BuyAndHold_Buy
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L1 
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L2
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L3

@@ -5,41 +5,41 @@ import backtrader as bt
 from strategies.base import StrategyBase
 
 class BuyAndHold_Buy(StrategyBase):
+    params = (
+        ('exectype', bt.Order.Market),
+        ('random_param', 20)
+    )
+    def __init__(self):
+        StrategyBase.__init__(self)
+
     def start(self):
         self.val_start = self.broker.get_cash()  # keep the starting cash
 
     def nextstart(self):
         # Buy all the available cash
         size = int(self.broker.get_cash() / self.data)
-        # self.buy(size=size)
-        self.long()
+        self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
 
-    def stop(self):
-        # calculate the actual returns
-        self.roi = (self.broker.get_value() / self.val_start) - 1.0
-        print('ROI:        {:.2f}%'.format(100.0 * self.roi))
+class BuyAndHold_Target(StrategyBase):
+    def __init__(self):
+        StrategyBase.__init__(self)
 
-
-class BuyAndHold_Target(bt.Strategy):
     def start(self):
         self.val_start = self.broker.get_cash()  # keep the starting cash
 
     def nextstart(self):
         # Buy all the available cash
         size = int(self.broker.get_cash() / self.data)
-        self.buy(size=size)
+        self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
 
-    def stop(self):
-        # calculate the actual returns
-        self.roi = (self.broker.get_value() / self.val_start) - 1.0
-        print('ROI:        {:.2f}%'.format(100.0 * self.roi))
-
-
-class BuyAndHold_More(bt.Strategy):
+class BuyAndHold_More(StrategyBase):
     params = dict(
         monthly_cash=1000.0,  # amount of cash to buy every month
     )
 
+    def __init__(self):
+        StrategyBase.__init__(self)
+        
     def start(self):
         self.cash_start = self.broker.get_cash()
         self.val_start = 100.0
@@ -59,16 +59,14 @@ class BuyAndHold_More(bt.Strategy):
         target_value = self.broker.get_value() + self.p.monthly_cash
         self.order_target_value(target=target_value)
 
-    def stop(self):
-        # calculate the actual returns
-        self.roi = (self.broker.get_value() / self.cash_start) - 1.0
-        print('ROI:        {:.2f}%'.format(100.0 * self.roi))
 
-
-class BuyAndHold_More_Fund(bt.Strategy):
+class BuyAndHold_More_Fund(StrategyBase):
     params = dict(
         monthly_cash=1000.0,  # amount of cash to buy every month
     )
+    
+    def __init__(self):
+        StrategyBase.__init__(self)
 
     def start(self):
         # Activate the fund mode and set the default value at 100
@@ -91,103 +89,3 @@ class BuyAndHold_More_Fund(bt.Strategy):
         # buy available cash
         target_value = self.broker.get_value() + self.p.monthly_cash
         self.order_target_value(target=target_value)
-
-    def stop(self):
-        # calculate the actual returns
-        self.roi = (self.broker.get_value() / self.cash_start) - 1.0
-        self.froi = self.broker.get_fundvalue() - self.val_start
-        print('ROI:        {:.2f}%'.format(100.0 * self.roi))
-        print('Fund Value: {:.2f}%'.format(self.froi))
-
-
-def run(args=None):
-    args = parse_args(args)
-
-    cerebro = bt.Cerebro()
-
-    # Data feed kwargs
-    kwargs = dict(**eval('dict(' + args.dargs + ')'))
-
-    # Parse from/to-date
-    dtfmt, tmfmt = '%Y-%m-%d', 'T%H:%M:%S'
-    for a, d in ((getattr(args, x), x) for x in ['fromdate', 'todate']):
-        if a:
-            strpfmt = dtfmt + tmfmt * ('T' in a)
-            kwargs[d] = datetime.datetime.strptime(a, strpfmt)
-
-    data = bt.feeds.BacktraderCSVData(dataname=args.data, **kwargs)
-    cerebro.adddata(data)
-
-
-    cerebro.addstrategy(stclass, **eval('dict(' + args.strat + ')'))
-
-    # Broker
-    broker_kwargs = dict(coc=True)  # default is cheat-on-close active
-    broker_kwargs.update(eval('dict(' + args.broker + ')'))
-    cerebro.broker = bt.brokers.BackBroker(**broker_kwargs)
-
-    # Sizer
-    cerebro.addsizer(bt.sizers.FixedSize, **eval('dict(' + args.sizer + ')'))
-
-    # Execute
-    cerebro.run(**eval('dict(' + args.cerebro + ')'))
-
-    if args.plot:  # Plot if requested to
-        cerebro.plot(**eval('dict(' + args.plot + ')'))
-
-
-def parse_args(pargs=None):
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description=(
-            'Backtrader Basic Script'
-        )
-    )
-
-    parser.add_argument('--data', default='../../datas/2005-2006-day-001.txt',
-                        required=False, help='Data to read in')
-
-    parser.add_argument('--dargs', required=False, default='',
-                        metavar='kwargs', help='kwargs in key=value format')
-
-    # Defaults for dates
-    parser.add_argument('--fromdate', required=False, default='',
-                        help='Date[time] in YYYY-MM-DD[THH:MM:SS] format')
-
-    parser.add_argument('--todate', required=False, default='',
-                        help='Date[time] in YYYY-MM-DD[THH:MM:SS] format')
-
-    parser.add_argument('--cerebro', required=False, default='',
-                        metavar='kwargs', help='kwargs in key=value format')
-
-    parser.add_argument('--broker', required=False, default='',
-                        metavar='kwargs', help='kwargs in key=value format')
-
-    parser.add_argument('--sizer', required=False, default='',
-                        metavar='kwargs', help='kwargs in key=value format')
-
-    parser.add_argument('--strat', '--strategy', required=False, default='',
-                        metavar='kwargs', help='kwargs in key=value format')
-
-    parser.add_argument('--plot', required=False, default='',
-                        nargs='?', const='{}',
-                        metavar='kwargs', help='kwargs in key=value format')
-
-    pgroup = parser.add_mutually_exclusive_group(required=True)
-    pgroup.add_argument('--bh-buy', required=False, action='store_true',
-                        help='Buy and Hold with buy method')
-
-    pgroup.add_argument('--bh-target', required=False, action='store_true',
-                        help='Buy and Hold with order_target method')
-
-    pgroup.add_argument('--bh-more', required=False, action='store_true',
-                        help='Buy and Hold More')
-
-    pgroup.add_argument('--bh-more-fund', required=False, action='store_true',
-                        help='Buy and Hold More with Fund ROI')
-
-    return parser.parse_args(pargs)
-
-
-if __name__ == '__main__':
-    run()
