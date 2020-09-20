@@ -6,7 +6,7 @@ from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7, LS1, LS2
 
 ExchangeCSVIndex = {
     'bitmex': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
-    'binance': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
+    'binance': {'open': 1, 'high': 2, 'low': 3, 'close': 4, 'volume': 5},
     'bitfinex': {'open': 1, 'high': 3, 'low': 4, 'close': 2, 'volume': 5}
     # 'bitfinex': {'open': 0, 'high': 2, 'low': 3, 'close': 1, 'volume': 4}
 }

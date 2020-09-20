@@ -34,7 +34,7 @@ nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_y
 # April 1st 2018 to March 1st 2019
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=4 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --strategy=BuyHold.BuyAndHold_Buy
 
-nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=4 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --strategy=BollingerBands.L7
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=4 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --exectype=Market --strategy=BollingerBands.L7
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=4 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --strategy=BuyHold.BuyAndHold_Target
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=4 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --strategy=BuyHold.BuyAndHold_More
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=4 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --strategy=BuyHold.BuyAndHold_More_Fund

@@ -25,7 +25,7 @@ class StrategyBase(bt.Strategy):
         if status == data.LIVE:
             self.log("LIVE DATA - Ready to trade")
 
-    def exec_trade(self, direction, exectype):
+    def exec_trade(self, direction, exectype, size=None):
         self.log("{} ordered @ ${}".format(direction.capitalize(), self.data0.close[0]))
         price = self.data0.close[0]
         
@@ -36,15 +36,15 @@ class StrategyBase(bt.Strategy):
                                                                               amount, COIN_TARGET, value), True)
         if direction == "buy":
             if ENV == DEVELOPMENT:
-                return self.buy(exectype=exectype)
+                return self.buy(size=size, exectype=exectype)
             return self.buy(size=amount, exectype=exectype)
         elif direction == "sell":
             if ENV == DEVELOPMENT:
-                return self.sell(exectype=exectype)
+                return self.sell(size=size, exectype=exectype)
             return self.sell(size=amount, exectype=exectype)
         elif direction == "close":
             if ENV == DEVELOPMENT:
-                return self.close(exectype=exectype)
+                return self.close(size=size, exectype=exectype)
             return self.close(size=amount, exectype=exectype)
 
     def notify_order(self, order):

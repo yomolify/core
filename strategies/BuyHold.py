@@ -18,7 +18,7 @@ class BuyAndHold_Buy(StrategyBase):
     def nextstart(self):
         # Buy all the available cash
         size = int(self.broker.get_cash() / self.data)
-        self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
+        self.order = self.exec_trade(direction="buy", exectype=self.params.exectype, size=size)
 
 class BuyAndHold_Target(StrategyBase):
     def __init__(self):
@@ -30,7 +30,7 @@ class BuyAndHold_Target(StrategyBase):
     def nextstart(self):
         # Buy all the available cash
         size = int(self.broker.get_cash() / self.data)
-        self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
+        self.order = self.exec_trade(direction="buy", exectype=self.params.exectype, size=size)
 
 class BuyAndHold_More(StrategyBase):
     params = dict(
