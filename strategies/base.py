@@ -4,6 +4,7 @@ from termcolor import colored
 from config import DEVELOPMENT, COIN_TARGET, COIN_REFER, ENV, PRODUCTION, DEBUG
 from utils import send_telegram_message
 
+# Implementation of exec_trade, notifications & logging 
 class StrategyBase(bt.Strategy):
     def __init__(self):
         self.sl_price = 0
@@ -25,7 +26,6 @@ class StrategyBase(bt.Strategy):
             self.log("LIVE DATA - Ready to trade")
 
     def exec_trade(self, direction, exectype):
-        # self.log("%s ordered: $%.2f" % direction, self.data0.close[0], True)
         self.log("{} ordered @ ${}".format(direction.capitalize(), self.data0.close[0]))
         price = self.data0.close[0]
         
@@ -48,9 +48,15 @@ class StrategyBase(bt.Strategy):
             return self.close(size=amount, exectype=exectype)
 
     def notify_order(self, order):
-        if order.status in [order.Submitted, order.Accepted]:
-            # Buy/Sell order submitted/accepted to/by broker - Nothing to do
-            self.log('ORDER ACCEPTED/SUBMITTED')
+        if order.status in [order.Submitted]:
+            # Buy/Sell order submitted to/by broker - Nothing to do
+            self.log('ORDER SUBMITTED')
+            self.order = order
+            return
+
+        if order.status in [order.Accepted]:
+            # Buy/Sell order accepted to/by broker - Nothing to do
+            self.log('ORDER ACCEPTED')
             self.order = order
             return
 

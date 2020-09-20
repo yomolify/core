@@ -12,44 +12,6 @@ class L1(StrategyBase):
         ('period_vol_sma_slow', 50),
     )
 
-    # def notify_order(self, order):
-    #     if order.status in [order.Submitted, order.Accepted]:
-    #         # Buy/Sell order submitted/accepted to/by broker - Nothing to do
-    #         return
-
-    #     # Check if an order has been completed
-    #     # Attention: broker could reject order if not enough cash
-    #     if order.status in [order.Completed]:
-    #         if order.isbuy():
-    #             self.log(
-    #                 'BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-    #                 (order.executed.price,
-    #                  order.executed.value,
-    #                  order.executed.comm))
-
-    #             self.buyprice = order.executed.price
-    #             self.buycomm = order.executed.comm
-    #         else:  # Sell
-    #             self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-    #                      (order.executed.price,
-    #                       order.executed.value,
-    #                       order.executed.comm))
-
-    #         self.bar_executed = len(self)
-
-    #     elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-    #         self.log('Order Canceled/Margin/Rejected')
-
-    #     # Write down: no pending order
-    #     self.order = None
-
-    # def notify_trade(self, trade):
-    #     if not trade.isclosed:
-    #         return
-
-    #     self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
-    #              (trade.pnl, trade.pnlcomm))
-
     def update_indicators(self):
         self.profit = 0
         if self.buy_price_close and self.buy_price_close > 0:
@@ -70,7 +32,7 @@ class L1(StrategyBase):
         # Add a SMA indicator
         
         self.bollinger_bands = bt.ind.BollingerBands(
-            period=self.params.period_bb_sma, devfactor=self.params.period_bb_std, plot=False)
+            period=self.params.period_bb_sma, devfactor=self.params.period_bb_std, plot=True)
 
         # Tried crossover / crossdown instead of manually checking - the performance is worse
         # cross_down_bb_top = bt.ind.CrossDown(self.datas[0], self.bollinger_bands.lines.top)
@@ -85,8 +47,8 @@ class L1(StrategyBase):
         # cross_down_bb_top = self.dataclose < self.bollinger_bands.lines.top
         # cross_down_bb_bot = self.dataclose < self.bollinger_bands.lines.bot
      
-        volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot=False)
-        volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot=False)
+        volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period=self.params.period_vol_sma_slow, plot=True)
+        volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period=self.params.period_vol_sma_fast, plot=True)
 
         vol_condition = volSMA_fast > volSMA_slow
 
@@ -111,9 +73,7 @@ class L1(StrategyBase):
         # Check if we are in the market
         if not self.position:
             if self.buy_sig:
-                # self.order = self.exec_buy(exectype=self.params.exectype)
                 self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
-
-        if self.close_sig:
-            # self.exec_close(exectype=self.params.exectype)
-            self.order = self.exec_trade(direction="close", exectype=self.params.exectype)
+        else:
+            if self.close_sig:
+                self.order = self.exec_trade(direction="close", exectype=self.params.exectype)
