@@ -14,7 +14,6 @@ class L2(StrategyBase):
 
     def __init__(self):
         StrategyBase.__init__(self)
-
         self.bollinger_bands = bt.ind.BollingerBands(
             period=self.params.period_bb_sma, devfactor=self.params.period_bb_std, plot=False)
         cross_down_bb_top = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.top)
@@ -22,10 +21,8 @@ class L2(StrategyBase):
         volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot=False)
         volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot=False)
         vol_condition = volSMA_fast > volSMA_slow
-
         self.buy_sig = bt.And(cross_down_bb_top, vol_condition)
         self.close_sig = bt.And(cross_down_bb_bot, vol_condition)
-
         self.low = 0
     
     def update_indicators(self):

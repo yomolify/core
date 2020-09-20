@@ -13,7 +13,6 @@ class L1(StrategyBase):
 
     def __init__(self):
         StrategyBase.__init__(self)
-
         self.bollinger_bands = bt.ind.BollingerBands(
             period=self.params.period_bb_sma, devfactor=self.params.period_bb_std, plot=True)
 
