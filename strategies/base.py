@@ -7,12 +7,12 @@ from utils import send_telegram_message
 # Implementation of exec_trade, notifications & logging 
 class StrategyBase(bt.Strategy):
     def __init__(self):
-        self.sl_price = 0
-        self.tp_price = 0
+        self.sl_price = None
+        self.tp_price = None
+        self.stop_loss = False
         self.order = None
         self.last_operation = "SELL"
         self.status = "DISCONNECTED"
-        self.bar_executed = 0
         self.buy_price_close = None
         self.log("Base strategy initialized")
 
@@ -105,7 +105,7 @@ class StrategyBase(bt.Strategy):
         if not DEBUG:
             return
         # Uncomment for detailed logs
-        # return
+        return
         value = datetime.now()
         if len(self) > 0:
             value = self.data0.datetime.datetime()
@@ -116,3 +116,12 @@ class StrategyBase(bt.Strategy):
         print('[%s] %s' % (value.strftime("%d-%m-%y %H:%M"), txt))
         if send_telegram:
             send_telegram_message(txt)
+    
+    def start(self):
+        self.val_start = self.broker.get_cash()
+
+    def stop(self):
+        # Calculate ROI
+        self.roi = (self.broker.get_value() / self.val_start) - 1.0
+        print('\nROI:        {:.2f}%'.format(100.0 * self.roi))  
+
