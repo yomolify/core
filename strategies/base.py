@@ -26,7 +26,7 @@ class StrategyBase(bt.Strategy):
 
     def exec_trade(self, direction, exectype):
         # self.log("%s ordered: $%.2f" % direction, self.data0.close[0], True)
-        self.log("{} ordered @ ${}".format(direction, self.data0.close[0]))
+        self.log("{} ordered @ ${}".format(direction.capitalize(), self.data0.close[0]))
         price = self.data0.close[0]
         
         if ENV == PRODUCTION:
@@ -35,11 +35,17 @@ class StrategyBase(bt.Strategy):
             self.log("%s ordered: $%.2f. Amount %.6f %s. Balance $%.2f USDT" % (direction, self.data0.close[0],
                                                                               amount, COIN_TARGET, value), True)
         if direction == "buy":
-            (return self.buy(exectype=exectype), return self.buy(size=amount, exectype=exectype))[ENV == DEVELOPMENT]
+            if ENV == DEVELOPMENT:
+                return self.buy(exectype=exectype)
+            return self.buy(size=amount, exectype=exectype)
         elif direction == "sell":
-            (return self.sell(exectype=exectype), return self.sell(size=amount, exectype=exectype))[ENV == DEVELOPMENT]
+            if ENV == DEVELOPMENT:
+                return self.sell(exectype=exectype)
+            return self.sell(size=amount, exectype=exectype)
         elif direction == "close":
-            (return self.close(exectype=exectype), return self.close(size=amount, exectype=exectype))[ENV == DEVELOPMENT]
+            if ENV == DEVELOPMENT:
+                return self.close(exectype=exectype)
+            return self.close(size=amount, exectype=exectype)
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -92,8 +98,8 @@ class StrategyBase(bt.Strategy):
     def log(self, txt, send_telegram=False, color=None):
         if not DEBUG:
             return
-        # Remove for detailed logs
-        return
+        # Uncomment for detailed logs
+        # return
         value = datetime.now()
         if len(self) > 0:
             value = self.data0.datetime.datetime()
