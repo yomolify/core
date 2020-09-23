@@ -25,9 +25,6 @@ if __name__ == '__main__':
     cerebro = bt.Cerebro()
     # Get historical data
     modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
-    # TODO - prefix binance to all binance data and remove below line
-    # if args.exchange == 'binance':
-    #     csvpath = '{}-{}.csv'.format(args.ticker, args.data_timeframe)
     csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
     datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
 
