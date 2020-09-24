@@ -29,11 +29,11 @@ Strategy = {
     'BollingerBands.LS1': LS1.LS1,
     'BollingerBands.LS2': LS2.LS2,
     'RSI_EMA': RSI_EMA.RSA_EMA,
-    'BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
-    'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
-    'BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
-    'BuyHold.BuyAndHold_More': BuyHold.BuyAndHold_More,
-    'BuyHold.BuyAndHold_More_Fund': BuyHold.BuyAndHold_More_Fund,
+    'Misc.BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
+    'Misc.BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
+    'Misc.BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
+    'Misc.BuyHold.BuyAndHold_More': BuyHold.BuyAndHold_More,
+    'Misc.BuyHold.BuyAndHold_More_Fund': BuyHold.BuyAndHold_More_Fund,
 }
 
 ExecType = {

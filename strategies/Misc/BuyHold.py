@@ -10,6 +10,7 @@ class BuyAndHold_Buy(StrategyBase):
         ('random_param', 20)
     )
     def __init__(self):
+        print('hereoo0000')
         StrategyBase.__init__(self)
 
     def start(self):

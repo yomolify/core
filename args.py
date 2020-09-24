@@ -21,6 +21,9 @@ def parse():
                         choices=['daily', 'weekly', 'monhtly'],
                         help='Timeframe to resample to')
     
+    # parser.add_argument('--production', default=False, required=True,
+    #                     help='Run in production?')
+    
     parser.add_argument('--compression', default=1, required=False, type=int,
                         help='Compress n bars into 1')
     

@@ -105,7 +105,7 @@ class StrategyBase(bt.Strategy):
         if not DEBUG:
             return
         # Uncomment for detailed logs
-        return
+        # return
         value = datetime.now()
         if len(self) > 0:
             value = self.data0.datetime.datetime()

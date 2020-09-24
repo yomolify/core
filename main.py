@@ -1,12 +1,16 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-
+import time
 import warnings
 import datetime
 import os.path
 import sys  # To find out the script name (in argv[0])
 import json
 import args
+from config import BINANCE, ENV, PRODUCTION, COIN_TARGET, COIN_REFER, DEBUG
+
+if ENV == PRODUCTION:
+    from ccxtbt import CCXTStore
 
 import backtrader as bt
 import backtrader_addons as bta
@@ -21,45 +25,95 @@ from sizer.percent import FullMoney
 args = args.parse()
 
 if __name__ == '__main__':
+    cerebro = bt.Cerebro(quicknotify=True)
     warnings.filterwarnings("ignore")
-    cerebro = bt.Cerebro()
-    # Get historical data
-    modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
-    csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
-    datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
+    print(ENV)
 
-    data = bt.feeds.GenericCSVData(
-        dataname=datapath,
-        dtformat=ExchangeDTFormat[args.exchange],
-        open=ExchangeCSVIndex[args.exchange]['open'],
-        high=ExchangeCSVIndex[args.exchange]['high'],
-        low=ExchangeCSVIndex[args.exchange]['low'],
-        close=ExchangeCSVIndex[args.exchange]['close'],
-        volume=ExchangeCSVIndex[args.exchange]['volume'],
-        fromdate=datetime.datetime(args.from_year, args.from_month, args.from_date),
-        todate=datetime.datetime(args.to_year, args.to_month, args.to_date),
-        timeframe=bt.TimeFrame.Minutes, 
-        compression=1,
-        nullvalue=0.0,
-        reverse=False)
+    if ENV == PRODUCTION:  # Live trading with Binance
+        print('live trading')
+        broker_config = {
+            'apiKey': BINANCE.get("key"),
+            'secret': BINANCE.get("secret"),
+            'nonce': lambda: str(int(time.time() * 1000)),
+            'enableRateLimit': True,
+        }
 
-    resample_timeframes = dict(
-        minutes=bt.TimeFrame.Minutes,
-        daily=bt.TimeFrame.Days,
-        weekly=bt.TimeFrame.Weeks,
-        monthly=bt.TimeFrame.Months)
+        store = CCXTStore(exchange='binance', currency=COIN_REFER, config=broker_config, retries=5, debug=DEBUG)
 
-    # Bitfinex
-    cerebro.resampledata(data,
-                         timeframe=bt.TimeFrame.Minutes,
-                         compression=60)
-                        #  compression=720)
-    # cerebro.adddata(data)
+        broker_mapping = {
+            'order_types': {
+                bt.Order.Market: 'market',
+                bt.Order.Limit: 'limit',
+                bt.Order.Stop: 'stop-loss',
+                bt.Order.StopLimit: 'stop limit'
+            },
+            'mappings': {
+                'closed_order': {
+                    'key': 'status',
+                    'value': 'closed'
+                },
+                'canceled_order': {
+                    'key': 'status',
+                    'value': 'canceled'
+                }
+            }
+        }
 
-    cerebro.broker.setcash(10000.0)
-    cerebro.addsizer(FullMoney)
-    # cerebro.broker.setcommission(commission=0.001)
+        broker = store.getbroker(broker_mapping=broker_mapping)
+        cerebro.setbroker(broker)
+
+        hist_start_date = datetime.datetime.utcnow() - datetime.timedelta(minutes=30000)
+        data = store.getdata(
+            dataname='%s/%s' % (COIN_TARGET, COIN_REFER),
+            name='%s%s' % (COIN_TARGET, COIN_REFER),
+            timeframe=bt.TimeFrame.Minutes,
+            fromdate=hist_start_date,
+            compression=30,
+            ohlcv_limit=99999
+        )
+
+        # Add the feed
+        cerebro.adddata(data)
+
+    else:  # Backtesting with CSV file
+        modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
+        csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
+        datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
+
+        data = bt.feeds.GenericCSVData(
+            dataname=datapath,
+            dtformat=ExchangeDTFormat[args.exchange],
+            open=ExchangeCSVIndex[args.exchange]['open'],
+            high=ExchangeCSVIndex[args.exchange]['high'],
+            low=ExchangeCSVIndex[args.exchange]['low'],
+            close=ExchangeCSVIndex[args.exchange]['close'],
+            volume=ExchangeCSVIndex[args.exchange]['volume'],
+            fromdate=datetime.datetime(args.from_year, args.from_month, args.from_date),
+            todate=datetime.datetime(args.to_year, args.to_month, args.to_date),
+            timeframe=bt.TimeFrame.Minutes, 
+            compression=1,
+            nullvalue=0.0,
+            reverse=False)
+
+        resample_timeframes = dict(
+            minutes=bt.TimeFrame.Minutes,
+            daily=bt.TimeFrame.Days,
+            weekly=bt.TimeFrame.Weeks,
+            monthly=bt.TimeFrame.Months)
+
+        # Bitfinex
+        cerebro.resampledata(data,
+                            timeframe=bt.TimeFrame.Minutes,
+                            compression=60)
+                            #  compression=720)
+
+        cerebro.broker.setcash(10000.0)
+        cerebro.addsizer(FullMoney)
+        # cerebro.broker.setcommission(commission=0.001)
+
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
+
+    cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)
     # cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', factor=365)
@@ -73,7 +127,6 @@ if __name__ == '__main__':
 
     cerebro.addobserver(bta.observers.SLTPTracking)
 
-    cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
     # cerebro.addstrategy(BollingerBands_template)
 
     stats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
