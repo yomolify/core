@@ -32,8 +32,6 @@ class LiveDemoStrategy(bt.Strategy):
 with open('params.json', 'r') as f:
     params = json.load(f)
 
-cerebro = bt.Cerebro(quicknotify=True)
-
 config = {'apiKey': params["binance"]["apikey"],
           'secret': params["binance"]["secret"],
           'enableRateLimit': True,
@@ -59,8 +57,10 @@ broker_mapping = {
     }
 }
 
+cerebro = bt.Cerebro()
 broker = store.getbroker(broker_mapping=broker_mapping)
 cerebro.setbroker(broker)
+cerebro.addstrategy(LiveDemoStrategy)
 
 def _run_resampler(data_timeframe,
                    data_compression,
@@ -74,16 +74,12 @@ def _run_resampler(data_timeframe,
                    num_data=1,
                    ) -> bt.Strategy:
     _logger.info("Constructing Cerebro")
-    cerebro = bt.Cerebro()
-    cerebro.addstrategy(LiveDemoStrategy)
 
     cerebro.addanalyzer(RecorderAnalyzer)
-
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
-
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
-
+    
     hist_start_date = datetime.utcnow() - timedelta(hours=1000)
     data = store.getdata(dataname='BNB/USDT', name="BNBUSDT",
                      timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,

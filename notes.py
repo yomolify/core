@@ -1,5 +1,9 @@
 # CLI
 
+# !!!!!!!! LIVE TRADING !!!!!!!!
+nodemon --exec python main.py --exchange=binance --ticker=BTCUSD --data_timeframe=1m --backtest=False --strategy=BollingerBands.L1 --exectype=Market
+
+
 # Bitfinex
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2017 --from_month=4 --from_date=25 --to_year=2018 --to_month=8 --to_date=26
 
@@ -12,9 +16,6 @@ nodemon main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1m --from_y
 # April 1st 2015 to May 1st 2015
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2015 --to_month=5 --to_date=1
 
-
-
-
 # -------------- STRATEGY #1 - Long & Short ---------------
 # In sample for L1 - L7
 # April 1st 2015 to April 1st 2018
@@ -26,6 +27,9 @@ nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_y
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L5
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L6
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L7
+
+# For bt-ccxt-store to run
+nodemon --exec python main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BuyHold.BuyAndHold_Buy
 
 # Out sample for L1 - L7
 # June 1st 2013 to April 1st 2015

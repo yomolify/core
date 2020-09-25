@@ -2,11 +2,14 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import time
 import warnings
-import datetime
+# import datetime
+from datetime import datetime, timedelta
 import os.path
 import sys  # To find out the script name (in argv[0])
 import json
 import args
+import logging
+
 from config import BINANCE, ENV, PRODUCTION, COIN_TARGET, COIN_REFER, DEBUG
 
 if ENV == PRODUCTION:
@@ -15,8 +18,9 @@ if ENV == PRODUCTION:
 import backtrader as bt
 import backtrader_addons as bta
 
-from btplotting import BacktraderPlotting
+from btplotting import BacktraderPlotting, BacktraderPlottingLive
 from btplotting.schemes import Blackly, Tradimo
+from btplotting.analyzers import RecorderAnalyzer
 
 from dicts import ExchangeCSVIndex, ExchangeDTFormat, Strategy, ExecType 
 
@@ -24,56 +28,93 @@ from sizer.percent import FullMoney
 
 args = args.parse()
 
+_logger = logging.getLogger(__name__)
+
+if ENV == PRODUCTION:  # Live trading with Binance
+    with open('params.json', 'r') as f:
+        params = json.load(f)
+
+    config = {'apiKey': params["binance"]["apikey"],
+            'secret': params["binance"]["secret"],
+            'enableRateLimit': True,
+            }
+
+    store = CCXTStore(exchange='binance', currency='BNB', config=config, retries=5, debug=False)
+
+    broker_mapping = {
+        'order_types': {
+            bt.Order.Market: 'market',
+            bt.Order.Limit: 'limit',
+            bt.Order.Stop: 'stop-loss', #stop-loss for kraken, stop for bitmex
+            bt.Order.StopLimit: 'stop limit'
+        },
+        'mappings':{
+            'closed_order':{
+                'key': 'status',
+                'value':'closed'
+            },
+            'canceled_order':{
+                'key': 'result',
+                'value':1}
+        }
+    }
+
+cerebro = bt.Cerebro()
+broker = store.getbroker(broker_mapping=broker_mapping)
+cerebro.setbroker(broker)
+# cerebro.addstrategy(LiveDemoStrategy)
+
+def _run_resampler(data_timeframe,
+                   data_compression,
+                   resample_timeframe,
+                   resample_compression,
+                   runtime_seconds=27,
+                   starting_value=200,
+                   tick_interval=timedelta(seconds=1),
+                   num_gen_bars=None,
+                   start_delays=None,
+                   num_data=1,
+                   ) -> bt.Strategy:
+    _logger.info("Constructing Cerebro")
+
+    cerebro.addanalyzer(RecorderAnalyzer)
+    cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
+        hovertool_timeformat='%F %R:%S'), lookback=12000)
+    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
+    
+    # hist_start_date = datetime.utcnow() - timedelta(hours=1000)
+    hist_start_date = datetime.utcnow() - timedelta(minutes=60)
+    data = store.getdata(dataname='BNB/USDT', name="BNBUSDT",
+                     timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                    #  compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
+                     compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
+
+    cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
+
+    # return the recorded bars attribute from the first strategy
+    res = cerebro.run()
+    return cerebro, res[0]
+
+
 if __name__ == '__main__':
     cerebro = bt.Cerebro(quicknotify=True)
     warnings.filterwarnings("ignore")
     print(ENV)
 
     if ENV == PRODUCTION:  # Live trading with Binance
-        print('live trading')
-        broker_config = {
-            'apiKey': BINANCE.get("key"),
-            'secret': BINANCE.get("secret"),
-            'nonce': lambda: str(int(time.time() * 1000)),
-            'enableRateLimit': True,
-        }
-
-        store = CCXTStore(exchange='binance', currency=COIN_REFER, config=broker_config, retries=5, debug=DEBUG)
-
-        broker_mapping = {
-            'order_types': {
-                bt.Order.Market: 'market',
-                bt.Order.Limit: 'limit',
-                bt.Order.Stop: 'stop-loss',
-                bt.Order.StopLimit: 'stop limit'
-            },
-            'mappings': {
-                'closed_order': {
-                    'key': 'status',
-                    'value': 'closed'
-                },
-                'canceled_order': {
-                    'key': 'status',
-                    'value': 'canceled'
-                }
-            }
-        }
-
-        broker = store.getbroker(broker_mapping=broker_mapping)
-        cerebro.setbroker(broker)
-
-        hist_start_date = datetime.datetime.utcnow() - datetime.timedelta(minutes=30000)
-        data = store.getdata(
-            dataname='%s/%s' % (COIN_TARGET, COIN_REFER),
-            name='%s%s' % (COIN_TARGET, COIN_REFER),
-            timeframe=bt.TimeFrame.Minutes,
-            fromdate=hist_start_date,
-            compression=30,
-            ohlcv_limit=99999
-        )
-
-        # Add the feed
-        cerebro.adddata(data)
+        logging.basicConfig(format='%(asctime)s %(name)s:%(levelname)s:%(message)s', level=logging.INFO)
+        cerebro, strat = _run_resampler(data_timeframe=bt.TimeFrame.Minutes,
+                                        # data_compression=60,
+                                        data_compression=1,
+                                        resample_timeframe=bt.TimeFrame.Minutes,
+                                        # resample_compression=60,
+                                        resample_compression=1,
+                                        runtime_seconds=60000,
+                                        tick_interval=timedelta(seconds=60),
+                                        start_delays=[None, None],
+                                        num_gen_bars=[0, 10],
+                                        num_data=2,
+                                        )
 
     else:  # Backtesting with CSV file
         modpath = os.path.dirname(os.path.abspath(sys.argv[0]))

@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 def parse():
     parser = argparse.ArgumentParser(
@@ -7,6 +8,9 @@ def parse():
             'Core'
         )
     )
+
+    parser.add_argument('--backtest', default=False, required=True,
+                        help='Backtest or live trade?')
 
     parser.add_argument('--exchange', default='', required=False,
                         help='Exchange')
@@ -31,17 +35,17 @@ def parse():
                         help='To plot or not to plot')
 
     # Backtest from & to datetime
-    parser.add_argument('--from_date', default='', required=False,
+    parser.add_argument('--from_date', required='--backtest' in sys.argv,
                         type=int, help='From date')
-    parser.add_argument('--from_month', default='', required=False,
+    parser.add_argument('--from_month', required='--backtest' in sys.argv,
                         type=int, help='From month')
-    parser.add_argument('--from_year', default='', required=False,
+    parser.add_argument('--from_year', required='--backtest' in sys.argv,
                         type=int, help='From year')
-    parser.add_argument('--to_date', default='', required=False,
+    parser.add_argument('--to_date', required='--backtest' in sys.argv,
                         type=int, help='To Date')
-    parser.add_argument('--to_month', default='', required=False,
+    parser.add_argument('--to_month', required='--backtest' in sys.argv,
                         type=int, help='To month')
-    parser.add_argument('--to_year', default='', required=False,
+    parser.add_argument('--to_year', required='--backtest' in sys.argv,
                         type=int, help='To year')
 
     parser.add_argument('--cerebro', required=False, default='',
