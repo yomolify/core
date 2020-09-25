@@ -100,7 +100,6 @@ cerebro.setbroker(broker)
 # Drop newest will prevent us from loading partial data from incomplete candles
 hist_start_date = datetime.utcnow() - timedelta(minutes=30)
 
-
 def _run_resampler(data_timeframe,
                    data_compression,
                    resample_timeframe,

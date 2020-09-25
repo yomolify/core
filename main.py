@@ -39,9 +39,9 @@ class LiveDemoStrategy(bt.Strategy):
     def __init__(self):
         pass
         sma1 = bt.indicators.SMA(self.data0.close, subplot=True)
-        sma2 = bt.indicators.SMA(self.data1.close, subplot=True)
+        # sma2 = bt.indicators.SMA(self.data1.close, subplot=True)
         rsi = bt.ind.RSI()
-        cross = bt.ind.CrossOver(sma1, sma2)
+        # cross = bt.ind.CrossOver(sma1, sma2)
 
     def next(self):
         pos = len(self.data)
@@ -57,6 +57,8 @@ class LiveDemoStrategy(bt.Strategy):
 if ENV == PRODUCTION:  # Live trading with Binance
     with open('params.json', 'r') as f:
         params = json.load(f)
+    cerebro = bt.Cerebro(quicknotify=True)
+
 
     config = {'apiKey': params["binance"]["apikey"],
             'secret': params["binance"]["secret"],
@@ -82,11 +84,12 @@ if ENV == PRODUCTION:  # Live trading with Binance
                 'value':1}
         }
     }
+    broker = store.getbroker(broker_mapping=broker_mapping)
+    cerebro.setbroker(broker)
 
-cerebro = bt.Cerebro()
-broker = store.getbroker(broker_mapping=broker_mapping)
-cerebro.setbroker(broker)
-cerebro.addstrategy(LiveDemoStrategy)
+# cerebro = bt.Cerebro()
+
+# cerebro.addstrategy(LiveDemoStrategy)
 
 def _run_resampler(data_timeframe,
                    data_compression,
@@ -100,6 +103,11 @@ def _run_resampler(data_timeframe,
                    num_data=1,
                    ) -> bt.Strategy:
     _logger.info("Constructing Cerebro")
+
+    # cerebro = bt.Cerebro()
+    # broker = store.getbroker(broker_mapping=broker_mapping)
+    # cerebro.setbroker(broker)
+    cerebro.addstrategy(LiveDemoStrategy)
 
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
