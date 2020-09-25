@@ -30,6 +30,30 @@ args = args.parse()
 
 _logger = logging.getLogger(__name__)
 
+class LiveDemoStrategy(bt.Strategy):
+    params = (
+        ('modbuy', 2),
+        ('modsell', 3),
+    )
+
+    def __init__(self):
+        pass
+        sma1 = bt.indicators.SMA(self.data0.close, subplot=True)
+        sma2 = bt.indicators.SMA(self.data1.close, subplot=True)
+        rsi = bt.ind.RSI()
+        cross = bt.ind.CrossOver(sma1, sma2)
+
+    def next(self):
+        pos = len(self.data)
+        if pos % self.p.modbuy == 0:
+            if self.broker.getposition(self.datas[0]).size == 0:
+                self.buy(self.datas[0], size=None)
+
+        if pos % self.p.modsell == 0:
+            if self.broker.getposition(self.datas[0]).size > 0:
+                self.sell(self.datas[0], size=None)
+
+
 if ENV == PRODUCTION:  # Live trading with Binance
     with open('params.json', 'r') as f:
         params = json.load(f)
@@ -62,7 +86,7 @@ if ENV == PRODUCTION:  # Live trading with Binance
 cerebro = bt.Cerebro()
 broker = store.getbroker(broker_mapping=broker_mapping)
 cerebro.setbroker(broker)
-# cerebro.addstrategy(LiveDemoStrategy)
+cerebro.addstrategy(LiveDemoStrategy)
 
 def _run_resampler(data_timeframe,
                    data_compression,
@@ -154,7 +178,7 @@ if __name__ == '__main__':
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-    cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
+    # cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)
     # cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', factor=365)

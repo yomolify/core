@@ -18,6 +18,7 @@ from btplotting.feeds import FakeFeed
 
 _logger = logging.getLogger(__name__)
 
+
 class LiveDemoStrategy(bt.Strategy):
     params = (
         ('modbuy', 2),
@@ -27,18 +28,53 @@ class LiveDemoStrategy(bt.Strategy):
     def __init__(self):
         pass
         sma1 = bt.indicators.SMA(self.data0.close, subplot=True)
+        # sma2 = bt.indicators.SMA(self.data1.close, subplot=True)
         rsi = bt.ind.RSI()
+        # cross = bt.ind.CrossOver(sma1, sma2)
+
+    def next(self):
+        pos = len(self.data)
+        if pos % self.p.modbuy == 0:
+            if self.broker.getposition(self.datas[0]).size == 0:
+                self.buy(self.datas[0], size=None)
+
+        if pos % self.p.modsell == 0:
+            if self.broker.getposition(self.datas[0]).size > 0:
+                self.sell(self.datas[0], size=None)
+
+
+def _get_trading_calendar(open_hour, close_hour, close_minute):
+    cal = bt.TradingCalendar(open=datetime.time(hour=open_hour), close=datetime.time(hour=close_hour, minute=close_minute))
+    return cal
+
 
 with open('params.json', 'r') as f:
     params = json.load(f)
 
+cerebro = bt.Cerebro(quicknotify=True)
+
+
+# Add the strategy
+# cerebro.addstrategy(TestStrategy)
+
+# Create our store
 config = {'apiKey': params["binance"]["apikey"],
           'secret': params["binance"]["secret"],
           'enableRateLimit': True,
           }
 
+
+# IMPORTANT NOTE - Kraken (and some other exchanges) will not return any values
+# for get cash or value if You have never held any BNB coins in your account.
+# So switch BNB to a coin you have funded previously if you get errors
 store = CCXTStore(exchange='binance', currency='BNB', config=config, retries=5, debug=False)
 
+
+# Get the broker and pass any kwargs if needed.
+# ----------------------------------------------
+# Broker mappings have been added since some exchanges expect different values
+# to the defaults. Case in point, Kraken vs Bitmex. NOTE: Broker mappings are not
+# required if the broker uses the same values as the defaults in CCXTBroker.
 broker_mapping = {
     'order_types': {
         bt.Order.Market: 'market',
@@ -57,10 +93,13 @@ broker_mapping = {
     }
 }
 
-cerebro = bt.Cerebro()
 broker = store.getbroker(broker_mapping=broker_mapping)
 cerebro.setbroker(broker)
-cerebro.addstrategy(LiveDemoStrategy)
+
+# Get our data
+# Drop newest will prevent us from loading partial data from incomplete candles
+hist_start_date = datetime.utcnow() - timedelta(minutes=30)
+
 
 def _run_resampler(data_timeframe,
                    data_compression,
@@ -74,16 +113,19 @@ def _run_resampler(data_timeframe,
                    num_data=1,
                    ) -> bt.Strategy:
     _logger.info("Constructing Cerebro")
+    #  paper trading with bt.cerebro here, without it tries to place order on binance since it uses setbroker above
+    # cerebro = bt.Cerebro()
+    cerebro.addstrategy(LiveDemoStrategy)
 
     cerebro.addanalyzer(RecorderAnalyzer)
-    cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
-        hovertool_timeformat='%F %R:%S'), lookback=12000)
+
+    cerebro.addanalyzer(BacktraderPlottingLive, volume=False, scheme=Blackly(
+        hovertool_timeformat='%F %R:%S'), lookback=120)
+
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
-    
-    hist_start_date = datetime.utcnow() - timedelta(hours=1000)
     data = store.getdata(dataname='BNB/USDT', name="BNBUSDT",
                      timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-                     compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
+                     compression=1, ohlcv_limit=50, drop_newest=True) #, historical=True)
 
     cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
 
@@ -91,12 +133,14 @@ def _run_resampler(data_timeframe,
     res = cerebro.run()
     return cerebro, res[0]
 
+
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(name)s:%(levelname)s:%(message)s', level=logging.INFO)
+    print('gere')
     cerebro, strat = _run_resampler(data_timeframe=bt.TimeFrame.Minutes,
-                                    data_compression=60,
+                                    data_compression=1,
                                     resample_timeframe=bt.TimeFrame.Minutes,
-                                    resample_compression=60,
+                                    resample_compression=1,
                                     runtime_seconds=60000,
                                     tick_interval=timedelta(seconds=60),
                                     start_delays=[None, None],
