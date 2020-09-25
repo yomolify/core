@@ -118,7 +118,10 @@ class StrategyBase(bt.Strategy):
             send_telegram_message(txt)
     
     def start(self):
-        self.val_start = self.broker.get_cash()
+        if ENV == PRODUCTION:
+            self.val_start = self.broker.get_wallet_balance(COIN_TARGET)
+        else:
+            self.val_start = self.broker.get_cash()
 
     def stop(self):
         # Calculate ROI

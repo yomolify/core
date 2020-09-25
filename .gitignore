@@ -2,6 +2,7 @@
 config.py
 /data
 .vscode
+params.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

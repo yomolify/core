@@ -13,13 +13,11 @@ class BuyAndHold_Buy(StrategyBase):
         print('hereoo0000')
         StrategyBase.__init__(self)
 
-    def start(self):
-        self.val_start = self.broker.get_cash()  # keep the starting cash
-
     def nextstart(self):
         # Buy all the available cash
-        size = int(self.broker.get_cash() / self.data)
-        self.order = self.exec_trade(direction="buy", exectype=self.params.exectype, size=size)
+        size = int(self.val_start / self.data)
+        print('siZe', size)
+        # self.order = self.exec_trade(direction="buy", exectype=self.params.exectype, size=size)
 
 class BuyAndHold_Target(StrategyBase):
     def __init__(self):
