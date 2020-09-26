@@ -29,18 +29,21 @@ class StrategyBase(bt.Strategy):
         color = ('red', 'green')[direction=='buy']
         price = self.data0.close[0]
 
-        # TODO Print out buying/selling what for what???
-
         if ENV != PRODUCTION:
             self.log("{} ordered @ ${}".format(direction.capitalize(), price))
         
         if ENV == PRODUCTION:
-            cash, value = self.broker.get_wallet_balance(QUOTE)
-            self.log('QUOTE currency available: {} {}'.format(cash, QUOTE), color='yellow')
+            # BUY/SELL BASE coin for QUOTE
+            target = (BASE, QUOTE)[direction=='buy']
+            cash, value = self.broker.get_wallet_balance(target)
+            self.log('{} available: {}'.format(target, cash), color='yellow')
 
+            # QUOTE amount
             # amount = (value / price) * 0.99  # Workaround to avoid precision issues
-            amount = 0.4  # Workaround to avoid precision issues
-            self.log("%sing %s for %s! \nPrice: $%.2f \nAmount %.6f %s \nBalance $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
+            amount = ((cash, cash/price)[direction=='buy'])*0.99
+
+            # amount = 0.4  # Workaround to avoid precision issues
+            self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
                                                                               amount, BASE, value), True, color)
 
         if direction == "buy":
@@ -130,6 +133,8 @@ class StrategyBase(bt.Strategy):
         if ENV == PRODUCTION:
             self.val_start = (self.broker.get_wallet_balance(BASE))[0]
             self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
+            self.quote_available = (self.broker.get_wallet_balance(QUOTE))[0]
+            self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
 
         else:
             self.val_start = self.broker.get_cash()
