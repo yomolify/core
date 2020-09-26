@@ -18,6 +18,11 @@ def parse():
     parser.add_argument('--ticker', default='', required=False,
                         help='Ticker')
     
+    parser.add_argument('--base', default='', required=False,
+                        help='Base Currency')
+    parser.add_argument('--quote', default='', required=False,
+                        help='Quote Currency')
+    
     parser.add_argument('--data_timeframe', default='', required=False,
                         help='Timeframe of provided data')
 

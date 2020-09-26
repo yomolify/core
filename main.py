@@ -10,7 +10,7 @@ import json
 import args
 import logging
 
-from config import BINANCE, ENV, PRODUCTION, COIN_TARGET, COIN_REFER, DEBUG
+from config import BINANCE, ENV, PRODUCTION, BASE, QUOTE, DEBUG
 
 if ENV == PRODUCTION:
     from ccxtbt import CCXTStore
@@ -50,15 +50,15 @@ class LiveDemoStrategy(bt.Strategy):
                 self.buy(self.datas[0], size=None)
 
         if pos % self.p.modsell == 0:
-            if self.broker.getposition(self.datas[0]).size > 0:
-                self.sell(self.datas[0], size=None)
+            print('sellfin')
+            # if self.broker.getposition(self.datas[0]).size > 0:
+            self.sell(self.datas[0], size=0.4)
 
 
 if ENV == PRODUCTION:  # Live trading with Binance
     with open('params.json', 'r') as f:
         params = json.load(f)
     cerebro = bt.Cerebro(quicknotify=True)
-
 
     config = {'apiKey': params["binance"]["apikey"],
             'secret': params["binance"]["secret"],
@@ -84,12 +84,6 @@ if ENV == PRODUCTION:  # Live trading with Binance
                 'value':1}
         }
     }
-    broker = store.getbroker(broker_mapping=broker_mapping)
-    cerebro.setbroker(broker)
-
-# cerebro = bt.Cerebro()
-
-# cerebro.addstrategy(LiveDemoStrategy)
 
 def _run_resampler(data_timeframe,
                    data_compression,
@@ -105,9 +99,12 @@ def _run_resampler(data_timeframe,
     _logger.info("Constructing Cerebro")
 
     # cerebro = bt.Cerebro()
-    # broker = store.getbroker(broker_mapping=broker_mapping)
-    # cerebro.setbroker(broker)
-    cerebro.addstrategy(LiveDemoStrategy)
+    # Comment below two lines for paper trading. When uncommented, live trading will occur
+    broker = store.getbroker(broker_mapping=broker_mapping)
+    cerebro.setbroker(broker)
+    # Till here
+    # cerebro.addstrategy(LiveDemoStrategy)
+    cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
@@ -116,7 +113,8 @@ def _run_resampler(data_timeframe,
     
     # hist_start_date = datetime.utcnow() - timedelta(hours=1000)
     hist_start_date = datetime.utcnow() - timedelta(minutes=60)
-    data = store.getdata(dataname='BNB/USDT', name="BNBUSDT",
+    dataname="{}/{}".format(args.base, args.quote)
+    data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
                      timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
                     #  compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
                      compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
@@ -161,8 +159,8 @@ if __name__ == '__main__':
             low=ExchangeCSVIndex[args.exchange]['low'],
             close=ExchangeCSVIndex[args.exchange]['close'],
             volume=ExchangeCSVIndex[args.exchange]['volume'],
-            fromdate=datetime.datetime(args.from_year, args.from_month, args.from_date),
-            todate=datetime.datetime(args.to_year, args.to_month, args.to_date),
+            fromdate=datetime(args.from_year, args.from_month, args.from_date),
+            todate=datetime(args.to_year, args.to_month, args.to_date),
             timeframe=bt.TimeFrame.Minutes, 
             compression=1,
             nullvalue=0.0,
@@ -183,10 +181,10 @@ if __name__ == '__main__':
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
         # cerebro.broker.setcommission(commission=0.001)
+        cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-    # cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)
     # cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', factor=365)
@@ -198,7 +196,7 @@ if __name__ == '__main__':
     # cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
     cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
 
-    cerebro.addobserver(bta.observers.SLTPTracking)
+    # cerebro.addobserver(bta.observers.SLTPTracking)
 
     # cerebro.addstrategy(BollingerBands_template)
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 import backtrader as bt
 from termcolor import colored
-from config import DEVELOPMENT, COIN_TARGET, COIN_REFER, ENV, PRODUCTION, DEBUG
+from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG
 from utils import send_telegram_message
 
 # Implementation of exec_trade, notifications & logging 
@@ -30,10 +30,12 @@ class StrategyBase(bt.Strategy):
         price = self.data0.close[0]
         
         if ENV == PRODUCTION:
-            cash, value = self.broker.get_wallet_balance(COIN_REFER)
+            cash, value = self.broker.get_wallet_balance(QUOTE)
+            print('cash', cash)
+            print('value', value)
             amount = (value / price) * 0.99  # Workaround to avoid precision issues
-            self.log("%s ordered: $%.2f. Amount %.6f %s. Balance $%.2f USDT" % (direction, self.data0.close[0],
-                                                                              amount, COIN_TARGET, value), True)
+            self.log("[PRODUCTION]: %s ordered: $%.2f. Amount %.6f %s. Balance $%.2f USDT" % (direction, self.data0.close[0],
+                                                                              amount, BASE, value), True)
         if direction == "buy":
             if ENV == DEVELOPMENT:
                 return self.buy(size=size, exectype=exectype)
@@ -119,7 +121,7 @@ class StrategyBase(bt.Strategy):
     
     def start(self):
         if ENV == PRODUCTION:
-            self.val_start = self.broker.get_wallet_balance(COIN_TARGET)
+            self.val_start = self.broker.get_wallet_balance(BASE)
         else:
             self.val_start = self.broker.get_cash()
 

@@ -4,20 +4,23 @@ import datetime
 import backtrader as bt
 from strategies.base import StrategyBase
 
+# TODO print our nextstart prints in backtest run, why aren't they printing out?
 class BuyAndHold_Buy(StrategyBase):
     params = (
         ('exectype', bt.Order.Market),
         ('random_param', 20)
     )
     def __init__(self):
-        print('hereoo0000')
         StrategyBase.__init__(self)
 
     def nextstart(self):
         # Buy all the available cash
-        size = int(self.val_start / self.data)
-        print('siZe', size)
+        print('self.val_start', self.val_start)
+        print('self.data', self.data)
+        # size = int(self.val_start / self.data)
+        # print('siZe----------', size)
         # self.order = self.exec_trade(direction="buy", exectype=self.params.exectype, size=size)
+        self.order = self.exec_trade(direction="sell", exectype=self.params.exectype)
 
 class BuyAndHold_Target(StrategyBase):
     def __init__(self):
