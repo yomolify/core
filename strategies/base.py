@@ -29,15 +29,20 @@ class StrategyBase(bt.Strategy):
         color = ('red', 'green')[direction=='buy']
         price = self.data0.close[0]
 
+        # TODO Print out buying/selling what for what???
+
         if ENV != PRODUCTION:
             self.log("{} ordered @ ${}".format(direction.capitalize(), price))
         
         if ENV == PRODUCTION:
             cash, value = self.broker.get_wallet_balance(QUOTE)
             self.log('QUOTE currency available: {} {}'.format(cash, QUOTE), color='yellow')
-            amount = (value / price) * 0.99  # Workaround to avoid precision issues
-            self.log("%s ordered: $%.2f. Amount %.6f %s. Balance $%.2f USDT" % (direction.capitalize(), price,
+
+            # amount = (value / price) * 0.99  # Workaround to avoid precision issues
+            amount = 0.4  # Workaround to avoid precision issues
+            self.log("%sing %s for %s! \nPrice: $%.2f \nAmount %.6f %s \nBalance $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
                                                                               amount, BASE, value), True, color)
+
         if direction == "buy":
             if ENV == DEVELOPMENT:
                 return self.buy(size=size, exectype=exectype)
