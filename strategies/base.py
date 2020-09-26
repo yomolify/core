@@ -26,16 +26,18 @@ class StrategyBase(bt.Strategy):
             self.log("LIVE DATA - Ready to trade")
 
     def exec_trade(self, direction, exectype, size=None):
-        self.log("{} ordered @ ${}".format(direction.capitalize(), self.data0.close[0]))
+        color = ('red', 'green')[direction=='buy']
         price = self.data0.close[0]
+
+        if ENV != PRODUCTION:
+            self.log("{} ordered @ ${}".format(direction.capitalize(), price))
         
         if ENV == PRODUCTION:
             cash, value = self.broker.get_wallet_balance(QUOTE)
-            print('cash', cash)
-            print('value', value)
+            self.log('QUOTE currency available: {} {}'.format(cash, QUOTE), color='yellow')
             amount = (value / price) * 0.99  # Workaround to avoid precision issues
-            self.log("[PRODUCTION]: %s ordered: $%.2f. Amount %.6f %s. Balance $%.2f USDT" % (direction, self.data0.close[0],
-                                                                              amount, BASE, value), True)
+            self.log("%s ordered: $%.2f. Amount %.6f %s. Balance $%.2f USDT" % (direction.capitalize(), price,
+                                                                              amount, BASE, value), True, color)
         if direction == "buy":
             if ENV == DEVELOPMENT:
                 return self.buy(size=size, exectype=exectype)
@@ -103,7 +105,7 @@ class StrategyBase(bt.Strategy):
 
         self.log(colored('OPERATION PROFIT, GROSS %.2f, NET %.2f\n' % (trade.pnl, trade.pnlcomm), color), True)
 
-    def log(self, txt, send_telegram=False, color=None):
+    def log(self, txt, send_telegram=False, color=None, highlight=None, attrs=None):
         if not DEBUG:
             return
         # Uncomment for detailed logs
@@ -113,7 +115,7 @@ class StrategyBase(bt.Strategy):
             value = self.data0.datetime.datetime()
 
         if color:
-            txt = colored(txt, color)
+            txt = colored(txt, color, highlight, attrs)
 
         print('[%s] %s' % (value.strftime("%d-%m-%y %H:%M"), txt))
         if send_telegram:
@@ -121,7 +123,9 @@ class StrategyBase(bt.Strategy):
     
     def start(self):
         if ENV == PRODUCTION:
-            self.val_start = self.broker.get_wallet_balance(BASE)
+            self.val_start = (self.broker.get_wallet_balance(BASE))[0]
+            self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
+
         else:
             self.val_start = self.broker.get_cash()
 

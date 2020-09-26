@@ -15,8 +15,6 @@ class BuyAndHold_Buy(StrategyBase):
 
     def nextstart(self):
         # Buy all the available cash
-        print('self.val_start', self.val_start)
-        print('self.data', self.data)
         # size = int(self.val_start / self.data)
         # print('siZe----------', size)
         # self.order = self.exec_trade(direction="buy", exectype=self.params.exectype, size=size)
