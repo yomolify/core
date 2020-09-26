@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 import backtrader as bt
 from termcolor import colored
@@ -31,6 +32,7 @@ class StrategyBase(bt.Strategy):
 
         if ENV != PRODUCTION:
             self.log("{} ordered @ ${}".format(direction.capitalize(), price))
+            amount = size
         
         if ENV == PRODUCTION:
             # BUY/SELL BASE coin for QUOTE
@@ -38,26 +40,22 @@ class StrategyBase(bt.Strategy):
             cash, value = self.broker.get_wallet_balance(target)
             self.log('{} available: {}'.format(target, cash), color='yellow')
 
-            # QUOTE amount
-            # amount = (value / price) * 0.99  # Workaround to avoid precision issues
             amount = ((cash, cash/price)[direction=='buy'])*0.99
 
             # amount = 0.4  # Workaround to avoid precision issues
             self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
                                                                               amount, BASE, value), True, color)
 
-        if direction == "buy":
-            if ENV == DEVELOPMENT:
-                return self.buy(size=size, exectype=exectype)
-            return self.buy(size=amount, exectype=exectype)
-        elif direction == "sell":
-            if ENV == DEVELOPMENT:
-                return self.sell(size=size, exectype=exectype)
-            return self.sell(size=amount, exectype=exectype)
-        elif direction == "close":
-            if ENV == DEVELOPMENT:
-                return self.close(size=size, exectype=exectype)
-            return self.close(size=amount, exectype=exectype)
+        try:
+            if direction == "buy":
+                return self.buy(size=amount, exectype=exectype)
+            elif direction == "sell":
+                return self.sell(size=amount, exectype=exectype)
+            elif direction == "close":
+                return self.close(size=amount, exectype=exectype)
+        except Exception as e:
+            self.log("ERROR: {}".format(sys.exc_info()[0]), color='red')
+            self.log("{}".format(e), color='red')
 
     def notify_order(self, order):
         if order.status in [order.Submitted]:
@@ -78,23 +76,27 @@ class StrategyBase(bt.Strategy):
         elif order.status in [order.Completed]:
             if order.isbuy():
                 self.last_operation = "BUY"
-                self.log(
-                    'BUY EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
-                    (order.executed.price,
-                     order.executed.value/order.executed.price,
-                     order.executed.value,
-                     order.executed.comm), True)
                 if ENV == PRODUCTION:
                     print(order.__dict__)
+                    print(order.executed.__dict__)
+                # self.log(
+                #     'BUY EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
+                #     (order.executed.price,
+                #      order.executed.value/order.executed.price,
+                #      order.executed.value,
+                #      order.executed.comm), True)
 
             else:  # Sell
                 self.last_operation = "SELL"
                 self.reset_sell_indicators()
-                self.log('SELL EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
-                         (order.executed.price,
-                          order.executed.value/order.executed.price,
-                          order.executed.value,
-                          order.executed.comm), True)
+                if ENV == PRODUCTION:
+                    print(order.__dict__)
+                    print(order.executed.__dict__)
+                # self.log('SELL EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
+                #          (order.executed.price,
+                #           order.executed.value/order.executed.price,
+                #           order.executed.value,
+                #           order.executed.comm), True)
 
             # Sentinel to None: new orders allowed
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:

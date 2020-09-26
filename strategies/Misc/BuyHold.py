@@ -18,7 +18,7 @@ class BuyAndHold_Buy(StrategyBase):
         # size = int(self.val_start / self.data)
         # print('siZe----------', size)
         # self.order = self.exec_trade(direction="buy", exectype=self.params.exectype, size=size)
-        self.order = self.exec_trade(direction="sell", exectype=self.params.exectype)
+        self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
 
 class BuyAndHold_Target(StrategyBase):
     def __init__(self):
