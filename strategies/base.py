@@ -40,9 +40,11 @@ class StrategyBase(bt.Strategy):
             cash, value = self.broker.get_wallet_balance(target)
             self.log('{} available: {}'.format(target, cash), color='yellow')
 
-            amount = ((cash, cash/price)[direction=='buy'])*0.99
+            if size == None:
+                amount = ((cash, cash/price)[direction=='buy'])*0.99
+            else:
+                amount = size
 
-            # amount = 0.4  # Workaround to avoid precision issues
             self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
                                                                               amount, BASE, value), True, color)
 
