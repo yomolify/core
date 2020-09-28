@@ -1,5 +1,5 @@
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 import backtrader as bt
 from termcolor import colored
 from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG
@@ -35,18 +35,33 @@ class StrategyBase(bt.Strategy):
             amount = size
         
         if ENV == PRODUCTION:
+            self.log('Data time: {}, Computer Time: {}'.format(self.data0.datetime.datetime(), datetime.now() - timedelta(minutes=63)))
+            if self.data0.datetime.datetime() < datetime.now() - timedelta(minutes=63):
+                self.log('Historical data, so not placing real order')
+                return
             # BUY/SELL BASE coin for QUOTE
             target = (BASE, QUOTE)[direction=='buy']
-            cash, value = self.broker.get_wallet_balance(target)
-            self.log('{} available: {}'.format(target, cash), color='yellow')
+            # cash, value = self.broker.get_wallet_balance(target)
+            cash = self.broker.get_cash()
+            # self.log('{} available: {}'.format(target, cash), color='yellow')
 
             if size == None:
                 amount = ((cash, cash/price)[direction=='buy'])*0.99
             else:
                 amount = size
 
-            self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
-                                                                              amount, BASE, value), True, color)
+            # self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
+            #                                                                   amount, BASE, value), True, color)
+            # self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
+            #                                                                   amount, BASE, cash), True, color)
+
+            self.log('''
+                %sing %.2f %s for %.2f %s! \n
+                Price: $%.2f \n
+                Amount: %.2f %s \n
+                Cost: %.2f %s \n
+                Balance: $%.2f USDT'''
+                % (direction.capitalize(), amount, BASE, price*amount, QUOTE, price, amount, BASE, price*amount, QUOTE, cash), True, color)
 
         try:
             if direction == "buy":
@@ -54,7 +69,7 @@ class StrategyBase(bt.Strategy):
             elif direction == "sell":
                 return self.sell(size=amount, exectype=exectype)
             elif direction == "close":
-                return self.close(size=amount, exectype=exectype)
+                return self.close()
         except Exception as e:
             self.log("ERROR: {}".format(sys.exc_info()[0]), color='red')
             self.log("{}".format(e), color='red')
@@ -135,13 +150,11 @@ class StrategyBase(bt.Strategy):
     
     def start(self):
         if ENV == PRODUCTION:
-            self.val_start = (self.broker.get_wallet_balance(BASE))[0]
-            self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
-            self.quote_available = (self.broker.get_wallet_balance(QUOTE))[0]
-            self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
-
-        else:
-            self.val_start = self.broker.get_cash()
+            # self.val_start = (self.broker.get_wallet_balance(BASE))[0]
+            # self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
+            # self.quote_available = (self.broker.get_wallet_balance(QUOTE))[0]
+            # self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
+            pass
 
     def stop(self):
         # Calculate ROI

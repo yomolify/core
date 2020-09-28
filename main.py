@@ -100,10 +100,12 @@ def _run_resampler(data_timeframe,
 
     # cerebro = bt.Cerebro()
     # Comment below two lines for paper trading. When uncommented, live trading will occur
-    broker = store.getbroker(broker_mapping=broker_mapping)
-    cerebro.setbroker(broker)
+    # broker = store.getbroker(broker_mapping=broker_mapping)
+    # cerebro.setbroker(broker)
     # Till here
     # cerebro.addstrategy(LiveDemoStrategy)
+    cerebro.broker.setcash(10000.0)
+    cerebro.addsizer(FullMoney)
     cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     cerebro.addanalyzer(RecorderAnalyzer)
@@ -112,7 +114,7 @@ def _run_resampler(data_timeframe,
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
     
     # hist_start_date = datetime.utcnow() - timedelta(hours=1000)
-    hist_start_date = datetime.utcnow() - timedelta(minutes=60)
+    hist_start_date = datetime.utcnow() - timedelta(minutes=10)
     dataname="{}/{}".format(args.base, args.quote)
     data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
                      timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
@@ -181,6 +183,7 @@ if __name__ == '__main__':
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
         # cerebro.broker.setcommission(commission=0.001)
+        print('Starting {}'.format(Strategy[args.strategy]))
         cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
