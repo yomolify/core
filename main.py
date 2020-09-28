@@ -10,7 +10,7 @@ import json
 import args
 import logging
 
-from config import BINANCE, ENV, PRODUCTION, BASE, QUOTE, DEBUG
+from config import BINANCE, ENV, PRODUCTION, BASE, QUOTE, DEBUG, TRADING
 
 if ENV == PRODUCTION:
     from ccxtbt import CCXTStore
@@ -29,30 +29,6 @@ from sizer.percent import FullMoney
 args = args.parse()
 
 _logger = logging.getLogger(__name__)
-
-class LiveDemoStrategy(bt.Strategy):
-    params = (
-        ('modbuy', 2),
-        ('modsell', 3),
-    )
-
-    def __init__(self):
-        pass
-        sma1 = bt.indicators.SMA(self.data0.close, subplot=True)
-        # sma2 = bt.indicators.SMA(self.data1.close, subplot=True)
-        rsi = bt.ind.RSI()
-        # cross = bt.ind.CrossOver(sma1, sma2)
-
-    def next(self):
-        pos = len(self.data)
-        if pos % self.p.modbuy == 0:
-            if self.broker.getposition(self.datas[0]).size == 0:
-                self.buy(self.datas[0], size=None)
-
-        if pos % self.p.modsell == 0:
-            print('sellfin')
-            # if self.broker.getposition(self.datas[0]).size > 0:
-            self.sell(self.datas[0], size=0.4)
 
 
 if ENV == PRODUCTION:  # Live trading with Binance
@@ -99,12 +75,12 @@ def _run_resampler(data_timeframe,
     _logger.info("Constructing Cerebro")
 
     # cerebro = bt.Cerebro()
-    # Comment below two lines for paper trading. When uncommented, live trading will occur
-    # broker = store.getbroker(broker_mapping=broker_mapping)
-    # cerebro.setbroker(broker)
-    # Till here
+    if TRADING == 'LIVE':
+        broker = store.getbroker(broker_mapping=broker_mapping)
+        cerebro.setbroker(broker)
+    else:
     # cerebro.addstrategy(LiveDemoStrategy)
-    cerebro.broker.setcash(10000.0)
+        cerebro.broker.setcash(10000.0)
     cerebro.addsizer(FullMoney)
     cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
@@ -131,7 +107,7 @@ def _run_resampler(data_timeframe,
 if __name__ == '__main__':
     cerebro = bt.Cerebro(quicknotify=True)
     warnings.filterwarnings("ignore")
-    print(ENV)
+    print("Running in {} and {} trading".format(ENV, TRADING))
 
     if ENV == PRODUCTION:  # Live trading with Binance
         logging.basicConfig(format='%(asctime)s %(name)s:%(levelname)s:%(message)s', level=logging.INFO)

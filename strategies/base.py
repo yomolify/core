@@ -2,7 +2,7 @@ import sys
 from datetime import datetime, timedelta
 import backtrader as bt
 from termcolor import colored
-from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG
+from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG, TRADING
 from utils import send_telegram_message
 
 # Implementation of exec_trade, notifications & logging 
@@ -15,7 +15,8 @@ class StrategyBase(bt.Strategy):
         self.last_operation = "SELL"
         self.status = "DISCONNECTED"
         self.buy_price_close = None
-        self.log("Base strategy initialized")
+        self.log("Base strategy initialized", send_telegram=True)
+        self.log("Trading: {}".format(TRADING))
 
     def reset_sell_indicators(self):
         self.buy_price_close = None
@@ -35,15 +36,20 @@ class StrategyBase(bt.Strategy):
             amount = size
         
         if ENV == PRODUCTION:
-            self.log('Data time: {}, Computer Time: {}'.format(self.data0.datetime.datetime(), datetime.now() - timedelta(minutes=63)))
+            self.log('{}'.format(self.position), color='magenta', send_telegram=True)
+            # self.log('Data time: {}, Computer Time: {}'.format(self.data0.datetime.datetime(), datetime.now() - timedelta(minutes=63)))
             if self.data0.datetime.datetime() < datetime.now() - timedelta(minutes=63):
                 self.log('Historical data, so not placing real order')
                 return
             # BUY/SELL BASE coin for QUOTE
             target = (BASE, QUOTE)[direction=='buy']
-            # cash, value = self.broker.get_wallet_balance(target)
-            cash = self.broker.get_cash()
-            # self.log('{} available: {}'.format(target, cash), color='yellow')
+            if TRADING == "LIVE":
+                cash, value = self.broker.get_wallet_balance(target)
+                self.log('{} available: {}'.format(target, cash), color='yellow')
+                self.log('Portfolio Value: {}: {}'.format(target, value), color='yellow')
+            else:
+                cash = self.broker.get_cash()
+                value = self.broker.get_value()
 
             if size == None:
                 amount = ((cash, cash/price)[direction=='buy'])*0.99
@@ -55,11 +61,13 @@ class StrategyBase(bt.Strategy):
             # self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
             #                                                                   amount, BASE, cash), True, color)
 
+            # if direction != "buy":
+            #     amount = self.position.size
             self.log('''
-                %sing %.2f %s for %.2f %s! \n
-                Price: $%.2f \n
-                Amount: %.2f %s \n
-                Cost: %.2f %s \n
+                %sing %.2f %s for %.2f %s!
+                Price: $%.2f
+                Amount: %.2f %s
+                Cost: %.2f %s
                 Balance: $%.2f USDT'''
                 % (direction.capitalize(), amount, BASE, price*amount, QUOTE, price, amount, BASE, price*amount, QUOTE, cash), True, color)
 
@@ -145,16 +153,18 @@ class StrategyBase(bt.Strategy):
             txt = colored(txt, color, highlight, attrs)
 
         print('[%s] %s' % (value.strftime("%d-%m-%y %H:%M"), txt))
-        if send_telegram:
+        if TRADING == "LIVE" and send_telegram:
             send_telegram_message(txt)
     
     def start(self):
         if ENV == PRODUCTION:
-            # self.val_start = (self.broker.get_wallet_balance(BASE))[0]
-            # self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
-            # self.quote_available = (self.broker.get_wallet_balance(QUOTE))[0]
-            # self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
-            pass
+            if TRADING == "LIVE":
+                self.val_start = (self.broker.get_wallet_balance(BASE))[0]
+                self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
+                self.quote_available = (self.broker.get_wallet_balance(QUOTE))[0]
+                self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
+            else:
+                pass
 
     def stop(self):
         # Calculate ROI
