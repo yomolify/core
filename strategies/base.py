@@ -46,7 +46,6 @@ class StrategyBase(bt.Strategy):
             if TRADING == "LIVE":
                 cash, value = self.broker.get_wallet_balance(target)
                 self.log('{} available: {}'.format(target, cash), color='yellow')
-                self.log('Portfolio Value: {}: {}'.format(target, value), color='yellow')
             else:
                 cash = self.broker.get_cash()
                 value = self.broker.get_value()
@@ -55,11 +54,6 @@ class StrategyBase(bt.Strategy):
                 amount = ((cash, cash/price)[direction=='buy'])*0.99
             else:
                 amount = size
-
-            # self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
-            #                                                                   amount, BASE, value), True, color)
-            # self.log("%sing %s for %s! \nPrice: $%.2f \nAmount: %.6f %s \nBalance: $%.2f USDT" % (direction.capitalize(), BASE, QUOTE, price,
-            #                                                                   amount, BASE, cash), True, color)
 
             # if direction != "buy":
             #     amount = self.position.size
