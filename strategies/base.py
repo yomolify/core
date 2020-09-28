@@ -55,8 +55,10 @@ class StrategyBase(bt.Strategy):
             else:
                 amount = size
 
-            # if direction != "buy":
-            #     amount = self.position.size
+            # Hack for correct logs while paper trading
+            if TRADING == "PAPER":
+                if direction != "buy":
+                    amount = self.position.size
             self.log('''
                 %sing %.2f %s for %.2f %s!
                 Price: $%.2f
@@ -97,7 +99,7 @@ class StrategyBase(bt.Strategy):
                 self.last_operation = "BUY"
                 if ENV == PRODUCTION:
                     print(order.__dict__)
-                    print(order.executed.__dict__)
+                    # print(order.executed.__dict__)
                 # self.log(
                 #     'BUY EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
                 #     (order.executed.price,
@@ -110,7 +112,7 @@ class StrategyBase(bt.Strategy):
                 self.reset_sell_indicators()
                 if ENV == PRODUCTION:
                     print(order.__dict__)
-                    print(order.executed.__dict__)
+                    # print(order.executed.__dict__)
                 # self.log('SELL EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
                 #          (order.executed.price,
                 #           order.executed.value/order.executed.price,
