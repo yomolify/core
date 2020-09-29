@@ -9,8 +9,8 @@ def parse():
         )
     )
 
-    parser.add_argument('--backtest', default=False, required=True,
-                        help='Backtest or live trade?')
+    # parser.add_argument('--backtest', default=False, required=True,
+    #                     help='Backtest or live trade?')
 
     parser.add_argument('--exchange', default='', required=False,
                         help='Exchange')

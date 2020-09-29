@@ -100,7 +100,7 @@ class LS1(StrategyBase):
         if self.order:
             return
 
-        if not self.position:
+        if abs(self.broker.getposition(self.datas[0]).size) < 0.01:
             if self.buy_sig:
                 if self.data0.close[0] > self.sma_fast[0]:
                     if self.bollinger_bands_width < self.vli_top:

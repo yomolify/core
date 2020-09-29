@@ -7,6 +7,7 @@ nodemon --exec python main.py --exchange=binance --ticker=BTCUSD --data_timefram
 # Debugging to compare values with backtest runs
 nodemon --exec python main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1m --backtest=True --strategy=Misc.BuyHold.BuyAndHold_Buy --exectype=Market --from_year=2017 --from_month=4 --from_date=25 --to_year=2018 --to_month=8 --to_date=26
 nodemon --exec python main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1m --backtest=True --strategy=BollingerBands.L1 --exectype=Market --from_year=2017 --from_month=4 --from_date=25 --to_year=2018 --to_month=8 --to_date=26
+nodemon --exec python main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1m --backtest=True --strategy=Misc.SMA --exectype=Market --from_year=2017 --from_month=4 --from_date=25 --to_year=2018 --to_month=8 --to_date=26
 
 # Bitfinex
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2017 --from_month=4 --from_date=25 --to_year=2018 --to_month=8 --to_date=26

@@ -140,7 +140,7 @@ class StrategyBase(bt.Strategy):
         if not DEBUG:
             return
         # Uncomment for detailed logs
-        # return
+        return
         value = datetime.now()
         if len(self) > 0:
             value = self.data0.datetime.datetime()
@@ -160,7 +160,9 @@ class StrategyBase(bt.Strategy):
                 self.quote_available = (self.broker.get_wallet_balance(QUOTE))[0]
                 self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
             else:
-                pass
+                self.val_start = self.broker.get_cash()
+        else:
+            self.val_start = self.broker.get_cash()
 
     def stop(self):
         # Calculate ROI

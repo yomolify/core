@@ -159,7 +159,7 @@ if __name__ == '__main__':
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
         # cerebro.broker.setcommission(commission=0.001)
-        print('Starting {}'.format(Strategy[args.strategy]))
+        print('Starting {}'.format(args.strategy))
         cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
@@ -174,20 +174,28 @@ if __name__ == '__main__':
     cerebro.addanalyzer(bt.analyzers.Transactions, _name='transactions')
     # cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
     cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
+    cerebro.addobserver(bta.observers.SLTPTracking)
 
-    # cerebro.addobserver(bta.observers.SLTPTracking)
-
-    # cerebro.addstrategy(BollingerBands_template)
+    # Add the analyzers we are interested in
+    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name="ta")
+    cerebro.addanalyzer(bt.analyzers.SQN, _name="sqn")
 
     stats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
     stat = stats[0].analyzers
     
+    # printTradeAnalysis(firstStrat.analyzers.trade_analyzer.get_analysis())
+    # printSQN(firstStrat.analyzers.sqn.get_analysis())
+    
     print(args.strategy)
     print('======== PERFORMANCE ========\n')
+    # print the analyzers
+
     # print('{}'.format(csvpath))
     print('{}, {}, {} to {}, {}, {}'.format(args.from_year, args.from_month, args.from_date, args.to_year, args.to_month, args.to_date))
     print('Sharpe Ratio: ', json.dumps(stat.sharpe_ratio.get_analysis()["sharperatio"], indent=2))
     print('Max Drawdown: ', json.dumps(stat.drawdown.get_analysis().max.drawdown, indent=2))
+    print('Max Moneydown: ', json.dumps(stat.drawdown.get_analysis().max.moneydown, indent=2))
+    print('Max Drawdown Length: ', json.dumps(stat.drawdown.get_analysis().max.len, indent=2))
     print('Number of Trades: ', json.dumps(stat.trade_analyzer.get_analysis().total.total, indent=2))
     # print('VWR: ', json.dumps(stat.vwr.get_analysis()["vwr"], indent=2))
 
