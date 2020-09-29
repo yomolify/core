@@ -17,7 +17,7 @@ if ENV == PRODUCTION:
 
 import backtrader as bt
 import backtrader_addons as bta
-
+from analyzers import *
 from btplotting import BacktraderPlotting, BacktraderPlottingLive
 from btplotting.schemes import Blackly, Tradimo
 from btplotting.analyzers import RecorderAnalyzer
@@ -87,7 +87,7 @@ def _run_resampler(data_timeframe,
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
-    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
+    addAnalyzers(cerebro)
     
     # hist_start_date = datetime.utcnow() - timedelta(hours=1000)
     hist_start_date = datetime.utcnow() - timedelta(minutes=10)
@@ -164,54 +164,18 @@ if __name__ == '__main__':
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-
-    cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', timeframe=bt.TimeFrame.Years, factor=365)
-    # cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name='sharpe_ratio', factor=365)
-    cerebro.addanalyzer(bt.analyzers.Returns, _name='returns')
-    cerebro.addanalyzer(bt.analyzers.AnnualReturn, _name='annual_return')
-    cerebro.addanalyzer(bt.analyzers.DrawDown, _name='drawdown')
-    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
-    cerebro.addanalyzer(bt.analyzers.Transactions, _name='transactions')
-    # cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
-    cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
-    cerebro.addobserver(bta.observers.SLTPTracking)
-
-    # Add the analyzers we are interested in
-    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name="ta")
-    cerebro.addanalyzer(bt.analyzers.SQN, _name="sqn")
+    addAnalyzers(cerebro)
 
     stats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
     stat = stats[0].analyzers
     
-    # printTradeAnalysis(firstStrat.analyzers.trade_analyzer.get_analysis())
-    # printSQN(firstStrat.analyzers.sqn.get_analysis())
-    
     print(args.strategy)
     print('======== PERFORMANCE ========\n')
-    # print the analyzers
-
-    # print('{}'.format(csvpath))
+    print('{}'.format(csvpath))
     print('{}, {}, {} to {}, {}, {}'.format(args.from_year, args.from_month, args.from_date, args.to_year, args.to_month, args.to_date))
-    print('Sharpe Ratio: ', json.dumps(stat.sharpe_ratio.get_analysis()["sharperatio"], indent=2))
-    print('Max Drawdown: ', json.dumps(stat.drawdown.get_analysis().max.drawdown, indent=2))
-    print('Max Moneydown: ', json.dumps(stat.drawdown.get_analysis().max.moneydown, indent=2))
-    print('Max Drawdown Length: ', json.dumps(stat.drawdown.get_analysis().max.len, indent=2))
-    print('Number of Trades: ', json.dumps(stat.trade_analyzer.get_analysis().total.total, indent=2))
-    # print('VWR: ', json.dumps(stat.vwr.get_analysis()["vwr"], indent=2))
-
-    # print(json.dumps(stat.analyzers.returns.get_analysis(), indent=2))
-    # print(json.dumps(stat.analyzers.annual_return.get_analysis(), indent=2))
-
-    # print('\nSharpe Ratio:', stat.analyzers.sharpe_ratio.get_analysis())
-    # print('\nReturns:', stat.analyzers.returns.get_analysis())
-    # print('\nAnnual Return:', stat.analyzers.annual_return.get_analysis())
-    # print('\nMaximum Drawdown:', stat.analyzers.drawdown.get_analysis())
-    # print('\nTrade Analyzer:', stat.analyzers.trade_analyzer.get_analysis())
-    # print('\nTransactions:', stat.analyzers.transactions.get_analysis())
-    # print('\nVariability-Weighted Return:', stat.analyzers.vwr.get_analysis())
-    # print('\nSQN:', stat.analyzers.sqn.get_analysis())
-
+    getAnalysis(stat)
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
+
     if args.plot:
         p = BacktraderPlotting(style='candle', scheme=Blackly())
         cerebro.plot(p)
