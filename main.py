@@ -90,7 +90,7 @@ def _run_resampler(data_timeframe,
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
     
     # hist_start_date = datetime.utcnow() - timedelta(hours=1000)
-    hist_start_date = datetime.utcnow() - timedelta(minutes=10)
+    hist_start_date = datetime.utcnow() - timedelta(minutes=1000)
     dataname="{}/{}".format(args.base, args.quote)
     data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
                      timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
