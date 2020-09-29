@@ -87,7 +87,7 @@ def _run_resampler(data_timeframe,
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
-    addAnalyzers(cerebro)
+    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
     
     # hist_start_date = datetime.utcnow() - timedelta(hours=1000)
     hist_start_date = datetime.utcnow() - timedelta(minutes=10)
