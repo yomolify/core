@@ -76,7 +76,11 @@ nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_y
 
 # ALL HISTORICAL DATA
 # June 1st 2013 to March 1st 2019
-nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=6 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --strategy=BollingerBands.L1
+# LS1
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=6 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --exectype=Market --strategy=BollingerBands.LS1 --plot=True
+
+# LS3
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=6 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --exectype=Market --strategy=BollingerBands.LS3 --plot=True
 
 # OPTIMIZED (Disables plotting)
 nodemon main.py --cerebro exactbars=True,stdstats=False --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=6 --from_date=1 --to_year=2019 --to_month=3 --to_date=1

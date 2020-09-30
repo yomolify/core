@@ -80,6 +80,9 @@ class StrategyBase(bt.Strategy):
             self.log("{}".format(e), color='red')
 
     def notify_order(self, order):
+        if abs(self.broker.getposition(self.datas[0]).size) < 0.01:
+            self.sl_price = 0
+            self.tp_price = 0
         if order.status in [order.Submitted]:
             # Buy/Sell order submitted to/by broker - Nothing to do
             self.log('ORDER SUBMITTED')
