@@ -158,8 +158,9 @@ if __name__ == '__main__':
 
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
-        # cerebro.broker.setcommission(commission=0.001)
+        cerebro.broker.setcommission(commission=0.0006)
         print('Starting {}'.format(args.strategy))
+        cerebro.addobserver(bta.observers.SLTPTracking)
         cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())

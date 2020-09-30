@@ -8,18 +8,19 @@ from utils import send_telegram_message
 # Implementation of exec_trade, notifications & logging 
 class StrategyBase(bt.Strategy):
     def __init__(self):
-        self.sl_price = None
-        self.tp_price = None
+        self.sl_price = 0
+        self.tp_price = 0
         self.stop_loss = False
         self.order = None
         self.last_operation = "SELL"
         self.status = "DISCONNECTED"
-        self.buy_price_close = None
+        self.buy_price_close = 0
+        self.sell_price_close = 0
         self.log("Base strategy initialized", send_telegram=True)
         self.log("Trading: {}".format(TRADING))
 
-    def reset_sell_indicators(self):
-        self.buy_price_close = None
+    # def reset_sell_indicators(self):
+    #     self.buy_price_close = None
 
     def notify_data(self, data, status, *args, **kwargs):
         self.status = data._getstatusname(status)
@@ -96,6 +97,7 @@ class StrategyBase(bt.Strategy):
 
         elif order.status in [order.Completed]:
             if order.isbuy():
+                self.buy_price_close = order.executed.price
                 self.last_operation = "BUY"
                 if ENV == PRODUCTION:
                     print(order.__dict__)
@@ -108,8 +110,9 @@ class StrategyBase(bt.Strategy):
                 #      order.executed.comm), True)
 
             else:  # Sell
+                self.sell_price_close = order.executed.price
                 self.last_operation = "SELL"
-                self.reset_sell_indicators()
+                # self.reset_sell_indicators()
                 if ENV == PRODUCTION:
                     print(order.__dict__)
                     # print(order.executed.__dict__)
@@ -139,8 +142,8 @@ class StrategyBase(bt.Strategy):
     def log(self, txt, send_telegram=False, color=None, highlight=None, attrs=None):
         if not DEBUG:
             return
-        if ENV == DEVELOPMENT:
-            return
+        # if ENV == DEVELOPMENT:
+        #     return
         value = datetime.now()
         if len(self) > 0:
             value = self.data0.datetime.datetime()
