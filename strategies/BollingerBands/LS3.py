@@ -106,9 +106,10 @@ class LS3(StrategyBase):
             # self.log('self.position.size in Short: {}'.format(self.position.size))
 
             self.sl_price = self.highest_high_slow[0]
+            self.log('SL Price in Short: {}'.format(self.sl_price))
+            
             # self.log('self.highest_high_slow[0] in Short: ', self.highest_high_slow[0])
             # self.log('self.sell_price_close in Short: {}'.format(self.sell_price_close))
-            # self.log('SL Price in Short: ', self.sl_price)
 
             self.profit = self.sell_price_close - self.data0.close[0]
             self.profit_percentage = (self.profit/self.sell_price_close)*100
@@ -175,19 +176,16 @@ class LS3(StrategyBase):
                                 self.low = self.data0.low[0]
                                 self.log('low volatility')
                                 self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
-                                # self.buy_price_close = self.data0.close[0]
                         else:
                             self.low = self.data0.low[0]
                             self.log('regular volatility')
                             # self.log('self.data0.low[0]: {}'.format(self.data0.low[0]))
                             # self.log('self.low: {}'.format(self.low))
                             self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
-                            # self.buy_price_close = self.data0.close[0]
                     elif self.sma_slow > self.sma_veryslow:
                         self.low_alt = self.data0.low[-1]
                         self.log('sma_slow > sma_veryslow')
                         self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
-                        # self.buy_price_close = self.data0.close[0]
 
                         if self.data.close[0] < self.data0.low[-1]:
                             self.log('self.data.close[0] < self.data0.low[-1]')
@@ -197,7 +195,6 @@ class LS3(StrategyBase):
             
             elif self.sell_sig:
                 # if self.bollinger_bands_width < self.vli_slow:
-                # self.sell_price_close = self.data0.close[0]
                 self.order = self.exec_trade(direction="sell", exectype=self.params.exectype)
 
         if self.stop_loss:
