@@ -28,6 +28,7 @@ class LS3(StrategyBase):
 
     def __init__(self):
         StrategyBase.__init__(self)
+        self.slow_sma_stop = False
         self.position_bar = None
         self.position_highest = None
         self.bollinger_bands = bt.ind.BollingerBands(
@@ -66,11 +67,18 @@ class LS3(StrategyBase):
         self.profit = 0
         # LONG
         if self.position.size > 0:
-            self.log('self.buy_price_close in Long: {}'.format(self.buy_price_close))
+            # self.log('self.buy_price_close in Long: {}'.format(self.buy_price_close))
             
             self.sl_price = 0.95*self.low
             # self.log('self.low in Long: {}'.format(self.low))
             # self.log('self.sl_price in Long: {}'.format(self.sl_price))
+            if self.slow_sma_stop == True:
+                self.log('++++++++++++++++self.slow_sma_stop == True:++++++++++++++++')
+                if self.profit_percentage > 3:
+                    self.slow_sma_stop = False
+                    self.log('++++++++++++++++self.profit_percentage > 3++++++++++++++++')
+                    self.sl_price = 1.01*self.buy_price_close
+                    self.stop_loss = True
 
             self.profit = self.data0.close[0] - self.buy_price_close
             self.profit_percentage = (self.profit/self.buy_price_close)*100
@@ -98,6 +106,8 @@ class LS3(StrategyBase):
                 self.log('IN >20')
                 self.sl_price = 1.15*self.buy_price_close
                 self.stop_loss = True
+            
+
 
             if self.data.close[0] <= self.sl_price:
                 self.stop_loss = True
@@ -106,7 +116,7 @@ class LS3(StrategyBase):
             # self.log('self.position.size in Short: {}'.format(self.position.size))
 
             self.sl_price = self.highest_high_slow[0]
-            self.log('SL Price in Short: {}'.format(self.sl_price))
+            # self.log('SL Price in Short: {}'.format(self.sl_price))
             
             # self.log('self.highest_high_slow[0] in Short: ', self.highest_high_slow[0])
             # self.log('self.sell_price_close in Short: {}'.format(self.sell_price_close))
@@ -149,17 +159,6 @@ class LS3(StrategyBase):
             if self.data.close[0] >= self.sl_price:
                 self.stop_loss = True
 
-            
-            # elif (self.profit_percentage > 25):
-            #     self.sl_price = 1.20*self.sell_price_close
-            # elif (self.profit_percentage > 30):
-            #     self.sl_price = 1.25*self.sell_price_close
-            # elif (self.profit_percentage > 35):
-            #     self.sl_price = 1.30*self.sell_price_close    
-            # elif (self.profit_percentage > 40):
-            #     self.sl_price = 1.35*self.buy_price_close
-
-
     def next(self):
         self.update_indicators()
         if self.position_bar:
@@ -182,16 +181,12 @@ class LS3(StrategyBase):
                             # self.log('self.data0.low[0]: {}'.format(self.data0.low[0]))
                             # self.log('self.low: {}'.format(self.low))
                             self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
-                    elif self.sma_slow > self.sma_veryslow:
-                        self.low_alt = self.data0.low[-1]
-                        self.log('sma_slow > sma_veryslow')
+                    elif self.sma_slow[0] > self.sma_veryslow[0]:
+                        self.sl_price = self.data0.low[-1]
+                        self.stop_loss = True
+                        self.log('++++++++++++++++sma_slow > sma_veryslow++++++++++++++++')
                         self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
-
-                        if self.data.close[0] < self.data0.low[-1]:
-                            self.log('self.data.close[0] < self.data0.low[-1]')
-                            self.exec_trade(direction="close", exectype=self.params.exectype)
-                        if self.profit_percentage > 3:
-                            self.sl_price = 1.01*self.buy_price_close
+                        self.slow_sma_stop = True
             
             elif self.sell_sig:
                 # if self.bollinger_bands_width < self.vli_slow:
@@ -199,9 +194,9 @@ class LS3(StrategyBase):
 
         if self.stop_loss:
             self.stop_loss = False
-            self.log('stop_loss')
+            # self.log('stop_loss')
             self.exec_trade(direction="close", exectype=self.params.exectype)
         elif self.close_sig:
             self.tp_price = self.data0.close[0]
-            self.log('close_sig')
+            # self.log('close_sig')
             self.exec_trade(direction="close", exectype=self.params.exectype)
