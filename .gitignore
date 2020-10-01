@@ -1,9 +1,8 @@
 /venv
 config.py
 /data
-.vscode
 params.json
-.vscode/settings.json
+/.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
