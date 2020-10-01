@@ -37,11 +37,11 @@ nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_y
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L7
 # LS1
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.LS1 --plot=True
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # LS3
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.LS3 --plot=True
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=1 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.LS3 --plot=True
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2017 --from_month=1 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.LS3 --plot=True
 
@@ -109,3 +109,8 @@ nodemon -x pypy3 main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m
 # BINANCE
 # fromdate=datetime.datetime(2017, 8, 17),
 # todate=datetime.datetime(2020, 8, 1),
+
+
+
+
+# "python.pythonPath": "C:\\Program Files\\Python38\\python.exe",

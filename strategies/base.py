@@ -145,8 +145,8 @@ class StrategyBase(bt.Strategy):
     def log(self, txt, send_telegram=False, color=None, highlight=None, attrs=None):
         if not DEBUG:
             return
-        # if ENV == DEVELOPMENT:
-        #     return
+        if ENV == DEVELOPMENT:
+            return
         value = datetime.now()
         if len(self) > 0:
             value = self.data0.datetime.datetime()

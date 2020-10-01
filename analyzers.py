@@ -12,11 +12,11 @@ def addAnalyzers(cerebro):
     # cerebro.addanalyzer(bt.analyzers.VWR, _name='vwr')
     cerebro.addanalyzer(bt.analyzers.SQN, _name='sqn')
 
-    # cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
+    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
 
 
 def getAnalysis(stat):
-    # printTradeAnalysis(stat.trade_analyzer.get_analysis())
+    printTradeAnalysis(stat.trade_analyzer.get_analysis())
     printSQN(stat.sqn.get_analysis())
     printSummary(stat)
 
@@ -63,6 +63,7 @@ def printSummary(stat):
     print('Max Drawdown Length: ', json.dumps(stat.drawdown.get_analysis().max.len, indent=2))
     print('Annual Return:', json.dumps(stat.annual_return.get_analysis(), indent=2))
     # print('VWR: ', json.dumps(stat.vwr.get_analysis()["vwr"], indent=2))
+    
     # print('Number of Trades: ', json.dumps(stat.trade_analyzer.get_analysis().total.total, indent=2))
 
     # print(json.dumps(stat.returns.get_analysis(), indent=2))
