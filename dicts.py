@@ -2,7 +2,7 @@ import backtrader as bt
 import datetime
 
 from strategies.Misc import BuyHold, BollingerBands_template, RSI_EMA, SMA
-from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7, LS1, LS2, LS3
+from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7, LS1, LS2, LS3, NL, NLS1, NLS2
 
 ExchangeCSVIndex = {
     'bitmex': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
@@ -29,6 +29,9 @@ Strategy = {
     'BollingerBands.LS1': LS1.LS1,
     'BollingerBands.LS2': LS2.LS2,
     'BollingerBands.LS3': LS3.LS3,
+    'BollingerBands.NL': NL.NL,
+    'BollingerBands.NLS1': NLS1.NLS1,
+    'BollingerBands.NLS2': NLS2.NLS2,
     'RSI_EMA': RSI_EMA.RSA_EMA,
     'Misc.BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
     'Misc.BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,

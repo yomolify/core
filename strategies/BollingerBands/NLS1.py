@@ -3,7 +3,7 @@ import backtrader_addons as bta
 import datetime
 from strategies.base import StrategyBase
 
-class LS3(StrategyBase):
+class NLS1(StrategyBase):
     params = (
         ('exectype', bt.Order.Market),
         ('period_bb_sma', 20),
@@ -72,14 +72,11 @@ class LS3(StrategyBase):
         # LONG
         if self.position.size > 0:
             # self.log('self.buy_price_close in Long: {}'.format(self.buy_price_close))
-            
             self.sl_price = 0.95*self.low
             # self.log('self.low in Long: {}'.format(self.low))
             # self.log('self.sl_price in Long: {}'.format(self.sl_price))
             if self.stop_loss_slow_sma == True:
-                self.log('++++++++++++++++self.stop_loss_slow_sma == True:++++++++++++++++')
                 if self.profit_percentage > 3:
-                    self.log('++++++++++++++++self.profit_percentage > 3++++++++++++++++')
                     self.sl_price_slow_sma = 1.01*self.buy_price_close
 
             self.profit = self.data0.close[0] - self.buy_price_close
@@ -88,38 +85,29 @@ class LS3(StrategyBase):
                 self.log('IN >40')
                 self.sl_price = 1.35*self.buy_price_close
                 self.stop_loss = True
-
             elif (self.profit_percentage > 35):
                 self.log('IN >35')
                 self.sl_price = 1.30*self.buy_price_close  
                 self.stop_loss = True
-
             elif (self.profit_percentage > 30):
                 self.log('IN >30')
                 self.sl_price = 1.25*self.buy_price_close
                 self.stop_loss = True
-
             elif (self.profit_percentage > 25):
                 self.log('IN >25')
                 self.sl_price = 1.20*self.buy_price_close
                 self.stop_loss = True
-
             elif (self.profit_percentage > 20):
                 self.log('IN >20')
                 self.sl_price = 1.15*self.buy_price_close
                 self.stop_loss = True
-            
-
-
             if self.data.close[0] <= self.sl_price:
                 self.stop_loss = True
         # SHORT
         elif self.position.size < 0:
             # self.log('self.position.size in Short: {}'.format(self.position.size))
-
             self.sl_price = self.highest_high_slow[0]
             # self.log('SL Price in Short: {}'.format(self.sl_price))
-            
             # self.log('self.sell_price_close in Short: {}'.format(self.sell_price_close))
 
             self.profit = self.sell_price_close - self.data0.close[0]
@@ -127,36 +115,27 @@ class LS3(StrategyBase):
             if (self.profit_percentage > 35):
                 self.log('IN >35')
                 self.log(self.profit_percentage)
-                
                 self.sl_price = 0.7*self.sell_price_close    
             elif (self.profit_percentage > 30):
                 self.log('IN > 30')
                 self.log(self.profit_percentage)
-                
                 self.sl_price = 0.75*self.sell_price_close
                 self.stop_loss = True
-
             elif (self.profit_percentage > 25):
                 self.log('IN > 25')
                 self.log(self.profit_percentage)
-                
                 self.sl_price = 0.8*self.sell_price_close
                 self.stop_loss = True
-
             elif self.profit_percentage > 15:
                 self.log('IN > 15')
                 self.log(self.profit_percentage)
-                
                 self.sl_price = self.highest_high_fast[0]
                 self.stop_loss = True
-
             elif self.profit_percentage > 10:
                 self.log('IN > 10')
                 self.log(self.profit_percentage)
-                
                 self.sl_price = self.highest_high_mid[0]
                 self.stop_loss = True
-
             if self.data.close[0] >= self.sl_price:
                 self.stop_loss = True
 
@@ -174,32 +153,24 @@ class LS3(StrategyBase):
                         if self.low_volatility_level:
                             if self.sma_mid[0] > self.sma_veryslow[0]:
                                 self.low = self.data0.low[0]
-                                self.log('low volatility')
                                 self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
-                        else:
+                        elif not (self.sma_veryslow[0] > self.sma_slow[0] > self.sma_mid[0]):
                             self.low = self.data0.low[0]
-                            self.log('regular volatility')
-                            # self.log('self.data0.low[0]: {}'.format(self.data0.low[0]))
-                            # self.log('self.low: {}'.format(self.low))
                             self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
                     elif self.sma_slow[0] > self.sma_veryslow[0]:
                         self.sl_price_slow_sma = self.data0.low[-1]
-                        self.log('++++++++++++++++sma_slow > sma_veryslow++++++++++++++++')
                         self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
                         self.stop_loss_slow_sma = True
             
             elif self.sell_sig:
-                # if self.bollinger_bands_width < self.vli_slow:
-                # if self.sma_veryfast[0] < self.sma_mid[0]:
                 self.order = self.exec_trade(direction="sell", exectype=self.params.exectype)
 
-        if self.stop_loss_slow_sma:
-            if self.data.close[0] >= self.sl_price_slow_sma:
-                self.stop_loss_slow_sma = False
-                self.stop_loss = False
-                self.exec_trade(direction="close", exectype=self.params.exectype)
-
         if abs(self.broker.getposition(self.datas[0]).size) > 0.01:
+            if self.stop_loss_slow_sma:
+                if self.data.close[0] >= self.sl_price_slow_sma:
+                    self.stop_loss_slow_sma = False
+                    self.stop_loss = False
+                    self.exec_trade(direction="close", exectype=self.params.exectype)
             if self.stop_loss:
                 self.stop_loss = False
                 self.stop_loss_slow_sma = False
