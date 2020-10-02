@@ -70,10 +70,13 @@ class StrategyBase(bt.Strategy):
 
         try:
             if direction == "buy":
+                self.last_operation = "BUY"
                 return self.buy(size=amount, exectype=exectype)
             elif direction == "sell":
+                self.last_operation = "SELL"
                 return self.sell(size=amount, exectype=exectype)
             elif direction == "close":
+                self.last_operation = "CLOSE"
                 return self.close()
         except Exception as e:
             self.log("ERROR: {}".format(sys.exc_info()[0]), color='red')
@@ -101,7 +104,7 @@ class StrategyBase(bt.Strategy):
         elif order.status in [order.Completed]:
             if order.isbuy():
                 self.buy_price_close = order.executed.price
-                self.last_operation = "BUY"
+                # self.last_operation = "BUY"
                 if ENV == PRODUCTION:
                     print(order.__dict__)
                     # print(order.executed.__dict__)
@@ -114,7 +117,7 @@ class StrategyBase(bt.Strategy):
 
             else:  # Sell
                 self.sell_price_close = order.executed.price
-                self.last_operation = "SELL"
+                # self.last_operation = "SELL"
                 # self.reset_sell_indicators()
                 if ENV == PRODUCTION:
                     print(order.__dict__)

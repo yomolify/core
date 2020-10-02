@@ -78,7 +78,6 @@ class NL_alt(StrategyBase):
             if self.stop_loss_slow_sma == True:
                 if self.profit_percentage > 3:
                     self.sl_price_slow_sma = 1.01*self.buy_price_close
-
             self.profit = self.data0.close[0] - self.buy_price_close
             self.profit_percentage = (self.profit/self.buy_price_close)*100
             if (self.profit_percentage > 40):
@@ -165,30 +164,47 @@ class NL_alt(StrategyBase):
             elif self.sell_sig:
                 self.order = self.exec_trade(direction="sell", exectype=self.params.exectype)
 
+        # if abs(self.broker.getposition(self.datas[0]).size) > 0.01:
+        #     if self.stop_loss_slow_sma:
+        #         if self.data.close[0] >= self.sl_price_slow_sma:
+        #             self.stop_loss_slow_sma = False
+        #             self.stop_loss = False
+        #             self.exec_trade(direction="close", exectype=self.params.exectype)
+        #     if self.stop_loss:
+        #         self.stop_loss = False
+        #         self.stop_loss_slow_sma = False
+        #         self.log('stop_loss')
+        #         self.exec_trade(direction="close", exectype=self.params.exectype)
+        #     elif self.close_sig:
+        #         self.stop_loss_slow_sma = False
+        #         self.stop_loss = False
+        #         self.tp_price = self.data0.close[0]
+        #         self.log('close_sig')
+        #         self.exec_trade(direction="close", exectype=self.params.exectype)
+
+        # Checking sl_price against the close price here
         if abs(self.broker.getposition(self.datas[0]).size) > 0.01:
-            if self.close_sig:
-                self.stop_loss_slow_sma = False
-                self.stop_loss = False
-                self.tp_price = self.data0.close[0]
-                self.log('close_sig')
-                self.exec_trade(direction="close", exectype=self.params.exectype)
             if self.stop_loss_slow_sma:
                 if self.data.close[0] >= self.sl_price_slow_sma:
                     self.stop_loss_slow_sma = False
                     self.stop_loss = False
                     self.exec_trade(direction="close", exectype=self.params.exectype)
             if self.stop_loss:
-                # Long so close < sl_price
-                if self.broker.getposition(self.datas[0]).size > 0.01:
+                if self.last_operation == "BUY":
                     if self.data.close[0] <= self.sl_price:
                         self.stop_loss = False
                         self.stop_loss_slow_sma = False
-                        self.log('stop_loss')
+                        self.log('BUY stop_loss')
                         self.exec_trade(direction="close", exectype=self.params.exectype)
-                # Short so close > sl_price
-                elif self.broker.getposition(self.datas[0]).size < 0.01:
+                if self.last_operation == "SELL":
                     if self.data.close[0] >= self.sl_price:
                         self.stop_loss = False
                         self.stop_loss_slow_sma = False
-                        self.log('stop_loss')
+                        self.log('SELL stop_loss')
                         self.exec_trade(direction="close", exectype=self.params.exectype)
+            if self.close_sig:
+                self.stop_loss_slow_sma = False
+                self.stop_loss = False
+                self.tp_price = self.data0.close[0]
+                self.log('close_sig')
+                self.exec_trade(direction="close", exectype=self.params.exectype)

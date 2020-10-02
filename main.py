@@ -177,6 +177,6 @@ if __name__ == '__main__':
     getAnalysis(stat)
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-    if args.plot:
-        p = BacktraderPlotting(style='candle', scheme=Blackly())
-        cerebro.plot(p)
+    # if args.plot == True:
+    #     p = BacktraderPlotting(style='candle', scheme=Blackly())
+    #     cerebro.plot(p)
