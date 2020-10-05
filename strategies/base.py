@@ -14,6 +14,7 @@ class StrategyBase(bt.Strategy):
     def __init__(self):
         self.sl_price = None
         self.tp_price = None
+        self.profit_percentage = None
         self.stop_loss = False
         self.order = None
         self.last_operation = "SELL"
@@ -116,6 +117,7 @@ class StrategyBase(bt.Strategy):
         elif order.status in [order.Completed]:
             if order.isbuy():
                 self.buy_price_close = order.executed.price
+                self.log(f'Executed BUY price: {self.buy_price_close}')
                 # self.last_operation = "BUY"
                 if ENV == PRODUCTION:
                     print(order.__dict__)
@@ -129,6 +131,7 @@ class StrategyBase(bt.Strategy):
 
             elif order.issell():
                 self.sell_price_close = order.executed.price
+                self.log(f'Executed SELL price: {self.sell_price_close}')
                 # self.last_operation = "SELL"
                 # self.reset_sell_indicators()
                 if ENV == PRODUCTION:
@@ -155,6 +158,9 @@ class StrategyBase(bt.Strategy):
         if not trade.isclosed:
             return
 
+        self.sl_price = None
+        self.tp_price = None
+        self.profit_percentage = None
         color = 'green'
         if trade.pnl < 0:
             color = 'red'
