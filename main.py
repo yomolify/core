@@ -158,7 +158,7 @@ if __name__ == '__main__':
 
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
-        cerebro.broker.setcommission(commission=0.0006)
+        # cerebro.broker.setcommission(commission=0.0006)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
         cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
@@ -177,6 +177,6 @@ if __name__ == '__main__':
     getAnalysis(stat)
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-    # if args.plot == True:
-    #     p = BacktraderPlotting(style='candle', scheme=Blackly())
-    #     cerebro.plot(p)
+    if args.plot == True:
+        p = BacktraderPlotting(style='candle', scheme=Blackly())
+        cerebro.plot(p)

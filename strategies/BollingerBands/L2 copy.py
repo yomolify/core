@@ -25,31 +25,28 @@ class L2(StrategyBase):
         self.close_sig = bt.And(cross_down_bb_bot, vol_condition)
         self.low = 0
     
-    # def update_indicators(self):
-    #     # Calculate Stop Loss
-    #     self.sl_price = 0.95*self.low
-    #     if self.data.close[0] <= self.sl_price:
-    #         self.stop_loss = True
+    def update_indicators(self):
+        # Calculate Stop Loss
+        self.sl_price = 0.95*self.low
+        if self.data.close[0] <= self.sl_price:
+            self.stop_loss = True
 
     def next(self):
-        # self.update_indicators()
-        # if self.order:
-        #     return
+        self.update_indicators()
+        if self.order:
+            return
 
         if not self.position:
-            self.sl_price = 0
-            self.tp_price = 0
             if self.buy_sig:
-                # not in the market and signal triggered
-                self.sl_price = 0.95*self.data0.low[0]
-                # Having a double buy increases the ROI (IDK)
-                # self.buy()
-                self.buy_order = self.exec_trade(direction="buy", exectype=self.params.exectype)
-                self.stop_order = self.exec_trade(direction="sell", price=self.sl_price, exectype=bt.Order.Stop)
-        
-        elif self.position and self.close_sig:
+                self.low = self.data0.low[0]
+                self.order = self.exec_trade(direction="buy", exectype=self.params.exectype)
+                self.buy_price_close = self.data0.close[0]
+
+        if self.close_sig:
             self.tp_price = self.data0.close[0]
-            self.log('-----Close Signal-----')
-            self.cancel_stop_order = self.exec_trade(direction="cancel", exectype=self.params.exectype, ref=self.stop_order)
-            self.close_order = self.exec_trade(direction="close", exectype=self.params.exectype)
-            self.sl_price = 0
+            self.exec_trade(direction="close", exectype=self.params.exectype)
+        
+        # STOP LOSS - 5% below low of entry of entry candle
+        if self.stop_loss:
+            self.stop_loss = False
+            self.exec_trade(direction="close", exectype=self.params.exectype)

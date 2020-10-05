@@ -35,6 +35,22 @@ nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_y
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L5
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L6
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L7
+# Buy&Hold
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=Misc.BuyHold.BuyAndHold_Buy --plot=True
+# L1
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L1 --plot=True
+# L2
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L2 --plot=True
+# L3
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L3 --plot=True
+# L4
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L4 --plot=True
+# L5
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L5 --plot=True
+# L6
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L6 --plot=True
+# L7
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L7 --plot=True
 # LS1
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.LS1 --plot=True
 # LS3
@@ -45,6 +61,11 @@ nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_y
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 # NLS2
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.NLS2 --plot=True
+# NL_alt
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.NL_alt --plot=False
+
+# Worst drawdown
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2017 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=1 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.LS3 --plot=True
@@ -59,12 +80,20 @@ nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_y
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=2 --from_date=18 --to_year=2019 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L1 
 # LS3
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=2 --from_date=18 --to_year=2019 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.LS3 --plot=True
+# NLS1
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=2 --from_date=18 --to_year=2019 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+
 # Small period LS3
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2018 --from_month=6 --from_date=1 --to_year=2019 --to_month=2 --to_date=1 --exectype=Market --strategy=BollingerBands.LS3 --plot=True
 
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BollingerBands.L7
 # All historical data
 nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=6 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --exectype=Market --strategy=BollingerBands.L7
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=6 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --exectype=Market --strategy=BollingerBands.L7
+# Buy&Hold
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=6 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --exectype=Market --strategy=Misc.BuyHold.BuyAndHold_Buy --plot=True
+# NLS1
+nodemon main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=6 --from_date=1 --to_year=2019 --to_month=3 --to_date=1 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 
 # For bt-ccxt-store to run
 nodemon --exec python main.py --exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2015 --from_month=4 --from_date=1 --to_year=2018 --to_month=4 --to_date=1 --exectype=Market --strategy=BuyHold.BuyAndHold_Buy

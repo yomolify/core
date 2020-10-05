@@ -101,10 +101,6 @@ class NLS1(StrategyBase):
                 self.log('IN >20')
                 self.sl_price = 1.15*self.buy_price_close
                 self.stop_loss = True
-            # elif (self.profit_percentage < -8):
-            #     self.log('IN <-10')
-            #     self.sl_price = self.data0.close[0]
-            #     self.stop_loss = True
             if self.data.close[0] <= self.sl_price:
                 self.stop_loss = True
         # SHORT
