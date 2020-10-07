@@ -13,10 +13,15 @@ LONG = "LONG"
 class StrategyBase(bt.Strategy):
     def __init__(self):
         self.sl_price = None
+        self.new_sl_price = None
         self.tp_price = None
         self.profit_percentage = None
-        self.stop_loss = False
-        self.order = None
+        self.long_order = None
+        self.long_stop_order = None
+        self.short_order = None
+        self.short_stop_order = None
+        self.stop_order = None
+        self.slow_sma_stop_win = False
         self.last_operation = "SELL"
         self.status = "DISCONNECTED"
         self.buy_price_close = None
@@ -36,7 +41,7 @@ class StrategyBase(bt.Strategy):
     def exec_trade(self, direction, exectype, size=None, ref=None, price=None, oco=None):
         color = ('red', 'green')[direction=='buy']
         close_price = self.data0.close[0]
-        self.log(f'{direction.capitalize()} supplied price is {price}')
+        # self.log(f'{direction.capitalize()} supplied price is {price}')
         if ENV != PRODUCTION:
             self.log("{} ordered @ ${}".format(direction.capitalize(), close_price))
             amount = size
@@ -76,11 +81,17 @@ class StrategyBase(bt.Strategy):
         try:
             if direction == "buy":
                 self.last_operation = "BUY"
-                self.log(f'---Buy price: {price or close_price}')
+                if price:
+                    self.log(f'---Buy stop price: {price}')
+                else:
+                    self.log(f'---Buy price: {close_price}')
                 return self.buy(size=amount, exectype=exectype, price=price)
             elif direction == "sell":
                 self.last_operation = "SELL"
-                self.log(f'---Sell price: {price or close_price}')
+                if price:
+                    self.log(f'---Sell stop price: {price}')
+                else:
+                    self.log(f'---Sell price: {close_price}')
                 return self.sell(size=amount, exectype=exectype, price=price)
             elif direction == "close":
                 self.last_operation = "CLOSE"
@@ -118,6 +129,14 @@ class StrategyBase(bt.Strategy):
             if order.isbuy():
                 self.buy_price_close = order.executed.price
                 self.log(f'Executed BUY price: {self.buy_price_close}')
+                if self.long_order and not self.long_stop_order and not self.stop_loss_slow_sma:
+                    self.sl_price = self.data0.low[0]*0.95
+                    self.log(f'Placing Long Stop @ {self.sl_price}')
+                    self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
+                # if self.long_order and not self.long_stop_order and self.stop_loss_slow_sma:
+                #     self.log(f'Placing Long Stop for veryslow @ {self.sl_price}')
+                #     self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
+                
                 # self.last_operation = "BUY"
                 if ENV == PRODUCTION:
                     print(order.__dict__)
@@ -132,6 +151,12 @@ class StrategyBase(bt.Strategy):
             elif order.issell():
                 self.sell_price_close = order.executed.price
                 self.log(f'Executed SELL price: {self.sell_price_close}')
+                # self.log(f'self.short_order: {self.short_order}')
+                # self.log(f'self.short_stop_order: {self.short_stop_order}')
+                if self.short_order and not self.short_stop_order:
+                    self.sl_price = self.highest_high_slow[0]
+                    self.log(f'Placing Short Stop @ {self.sl_price}')
+                    self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
                 # self.last_operation = "SELL"
                 # self.reset_sell_indicators()
                 if ENV == PRODUCTION:
