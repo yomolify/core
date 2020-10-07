@@ -83,7 +83,9 @@ class NLS1(StrategyBase):
                     self.slow_sma_stop_win = True
                     self.cancel(self.long_stop_order)
                     self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price_slow_sma, exectype=self.params.exectype)
-
+            if (self.profit_percentage > 45):
+                self.log('IN >45')
+                self.new_sl_price = 1.40*self.buy_price_close
             if (self.profit_percentage > 40):
                 self.log('IN >40')
                 self.new_sl_price = 1.35*self.buy_price_close
@@ -99,11 +101,6 @@ class NLS1(StrategyBase):
             elif (self.profit_percentage > 20):
                 self.log('IN >20')
                 self.new_sl_price = 1.15*self.buy_price_close
-            elif (self.profit_percentage < -8):
-                self.log('LONG IN < -8')
-                self.log(self.profit_percentage)
-                self.log('EMERGENCY CLOSE')
-                self.emergency_stop_order = self.exec_trade(direction="close", exectype=self.params.exectype)
             # self.log(self.sl_price)
             # self.log(self.new_sl_price)
             if self.new_sl_price and self.sl_price and self.new_sl_price > self.sl_price:
@@ -126,6 +123,9 @@ class NLS1(StrategyBase):
             self.new_sl_price = self.highest_high_slow[0]
             self.profit = self.sell_price_close - self.data0.close[0]
             self.profit_percentage = (self.profit/self.sell_price_close)*100
+            if (self.profit_percentage > 40):
+                self.log('IN >40')
+                self.new_sl_price = 0.65*self.sell_price_close    
             if (self.profit_percentage > 35):
                 self.log('IN >35')
                 self.new_sl_price = 0.7*self.sell_price_close    
@@ -141,11 +141,6 @@ class NLS1(StrategyBase):
             elif self.profit_percentage > 10:
                 self.log('IN > 10')
                 self.new_sl_price = self.highest_high_mid[0]
-            elif self.profit_percentage < -4:
-                self.log('SHORT IN < -4')
-                self.log('EMERGENCY CLOSE')
-                self.log(self.profit_percentage)
-                self.emergency_stop_order = self.exec_trade(direction="close", exectype=self.params.exectype)
             # self.log(self.new_sl_price)
             # self.log(self.sl_price)
             if self.new_sl_price and self.sl_price and self.new_sl_price < self.sl_price:
@@ -214,11 +209,6 @@ class NLS1(StrategyBase):
                             self.long_order = self.exec_trade(direction="buy", exectype=self.params.exectype)
                     elif self.sma_slow[0] > self.sma_veryslow[0]:
                         self.log('sma slow > veryslow')
-                        # self.sl_price = self.data0.low[-1]
-                        # if self.sl_price > self.data0.close[0]:
-                            
-                        self.log('self.sl_price')
-                        self.log(self.sl_price)
                         self.long_order = self.exec_trade(direction="buy", exectype=self.params.exectype)
                         # self.stop_loss_slow_sma = True
             

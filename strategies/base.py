@@ -131,6 +131,9 @@ class StrategyBase(bt.Strategy):
                 self.log(f'Executed BUY price: {self.buy_price_close}')
                 if self.long_order and not self.long_stop_order and not self.stop_loss_slow_sma:
                     self.sl_price = self.data0.low[0]*0.95
+                    # 8% emergency stop
+                    if 0.92*self.data0.open[0] > self.sl_price:
+                        self.sl_price = 0.92*self.data0.open[0]
                     self.log(f'Placing Long Stop @ {self.sl_price}')
                     self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
                 # if self.long_order and not self.long_stop_order and self.stop_loss_slow_sma:
@@ -155,6 +158,9 @@ class StrategyBase(bt.Strategy):
                 # self.log(f'self.short_stop_order: {self.short_stop_order}')
                 if self.short_order and not self.short_stop_order:
                     self.sl_price = self.highest_high_slow[0]
+                    # 4% emergency stop
+                    if 1.04*self.data0.open[0] < self.sl_price:
+                        self.sl_price = 1.04*self.data0.open[0]
                     self.log(f'Placing Short Stop @ {self.sl_price}')
                     self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
                 # self.last_operation = "SELL"
