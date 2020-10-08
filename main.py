@@ -22,7 +22,7 @@ from btplotting import BacktraderPlotting, BacktraderPlottingLive
 from btplotting.schemes import Blackly, Tradimo
 from btplotting.analyzers import RecorderAnalyzer
 
-from dicts import ExchangeCSVIndex, ExchangeDTFormat, Strategy, ExecType 
+from dicts import ExchangeCSVIndex, ExchangeDTFormat, Strategy, ExecType
 
 from sizer.percent import FullMoney
 
@@ -30,16 +30,15 @@ args = args.parse()
 
 _logger = logging.getLogger(__name__)
 
-
 if ENV == PRODUCTION:  # Live trading with Binance
     with open('params.json', 'r') as f:
         params = json.load(f)
     cerebro = bt.Cerebro(quicknotify=True)
 
     config = {'apiKey': params["binance"]["apikey"],
-            'secret': params["binance"]["secret"],
-            'enableRateLimit': True,
-            }
+              'secret': params["binance"]["secret"],
+              'enableRateLimit': True,
+              }
 
     store = CCXTStore(exchange='binance', currency='BNB', config=config, retries=5, debug=False)
 
@@ -47,19 +46,20 @@ if ENV == PRODUCTION:  # Live trading with Binance
         'order_types': {
             bt.Order.Market: 'market',
             bt.Order.Limit: 'limit',
-            bt.Order.Stop: 'stop-loss', #stop-loss for kraken, stop for bitmex
+            bt.Order.Stop: 'stop-loss',  # stop-loss for kraken, stop for bitmex
             bt.Order.StopLimit: 'stop limit'
         },
-        'mappings':{
-            'closed_order':{
+        'mappings': {
+            'closed_order': {
                 'key': 'status',
-                'value':'closed'
+                'value': 'closed'
             },
-            'canceled_order':{
+            'canceled_order': {
                 'key': 'result',
-                'value':1}
+                'value': 1}
         }
     }
+
 
 def _run_resampler(data_timeframe,
                    data_compression,
@@ -79,7 +79,7 @@ def _run_resampler(data_timeframe,
         broker = store.getbroker(broker_mapping=broker_mapping)
         cerebro.setbroker(broker)
     else:
-    # cerebro.addstrategy(LiveDemoStrategy)
+        # cerebro.addstrategy(LiveDemoStrategy)
         cerebro.broker.setcash(10000.0)
     cerebro.addsizer(FullMoney)
     cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
@@ -88,14 +88,14 @@ def _run_resampler(data_timeframe,
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
-    
+
     # hist_start_date = datetime.utcnow() - timedelta(hours=1000)
     hist_start_date = datetime.utcnow() - timedelta(minutes=1000)
-    dataname="{}/{}".format(args.base, args.quote)
+    dataname = "{}/{}".format(args.base, args.quote)
     data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
-                     timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-                    #  compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
-                     compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
+                         timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                         #  compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
+                         compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True)  # , historical=True)
 
     cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
             volume=ExchangeCSVIndex[args.exchange]['volume'],
             fromdate=datetime(args.from_year, args.from_month, args.from_date),
             todate=datetime(args.to_year, args.to_month, args.to_date),
-            timeframe=bt.TimeFrame.Minutes, 
+            timeframe=bt.TimeFrame.Minutes,
             compression=1,
             nullvalue=0.0,
             reverse=False)
@@ -152,13 +152,14 @@ if __name__ == '__main__':
 
         # Bitfinex
         cerebro.resampledata(data,
-                            timeframe=bt.TimeFrame.Minutes,
-                            compression=60)
-                            #  compression=720)
+                             timeframe=bt.TimeFrame.Minutes,
+                             compression=60)
+        #  compression=720)
 
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
-        # cerebro.broker.setcommission(commission=0.0006)
+        # Binance Futures Fees
+        # cerebro.broker.setcommission(commission=0.00036)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
         cerebro.addobserver(bt.observers.DrawDown)
@@ -170,14 +171,16 @@ if __name__ == '__main__':
 
     stats = cerebro.run(**eval('dict(' + args.cerebro + ')'))
     stat = stats[0].analyzers
-    
+
     print(args.strategy)
     print('======== PERFORMANCE ========\n')
     print('{}'.format(csvpath))
-    print('{}, {}, {} to {}, {}, {}'.format(args.from_year, args.from_month, args.from_date, args.to_year, args.to_month, args.to_date))
+    print(
+        '{}, {}, {} to {}, {}, {}'.format(args.from_year, args.from_month, args.from_date, args.to_year, args.to_month,
+                                          args.to_date))
     getAnalysis(stat)
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-    if args.plot == True:
+    if args.plot:
         p = BacktraderPlotting(style='candle', scheme=Blackly())
         cerebro.plot(p)

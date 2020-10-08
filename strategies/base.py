@@ -43,7 +43,7 @@ class StrategyBase(bt.Strategy):
         close_price = self.data0.close[0]
         # self.log(f'{direction.capitalize()} supplied price is {price}')
         if ENV != PRODUCTION:
-            self.log("{} ordered @ ${}".format(direction.capitalize(), close_price))
+            # self.log("{} ordered @ ${}".format(direction.capitalize(), close_price))
             amount = size
         
         if ENV == PRODUCTION:
@@ -95,6 +95,10 @@ class StrategyBase(bt.Strategy):
                 return self.sell(size=amount, exectype=exectype, price=price)
             elif direction == "close":
                 self.last_operation = "CLOSE"
+                if exectype == bt.Order.Stop:
+                    self.log(f'Stop Order @ {price}')
+                else:
+                    self.log('Market Order')
                 return self.close(exectype=exectype, price=price, oco=oco)
             elif direction == "cancel":
                 self.last_operation = "CANCEL"
@@ -116,9 +120,9 @@ class StrategyBase(bt.Strategy):
         if order.status in [order.Accepted]:
             # Buy/Sell order accepted to/by broker - Nothing to do
             if order.isbuy():
-                self.log('BUY ORDER ACCEPTED')
+                self.log(f'BUY ORDER ACCEPTED @ {self.data0.open[0]}')
             elif order.issell():
-                self.log('SELL ORDER ACCEPTED')
+                self.log(f'SELL ORDER ACCEPTED @ {self.data0.open[0]}')
             self.order = order
             return
 
@@ -174,15 +178,16 @@ class StrategyBase(bt.Strategy):
                 #           order.executed.value,
                 #           order.executed.comm), True)
 
-            # Sentinel to None: new orders allowed
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
             if order.isbuy():
                 self.log(f'BUY ORDER {order.Status[order.status]}')
+                self.log(order)
             elif order.issell():
                 self.log(f'SELL ORDER {order.Status[order.status]}')
             # self.log('Order Canceled/Margin/Rejected: Status %s - %s' % (order.Status[order.status],
             #                                                              self.last_operation), True)
 
+        # Sentinel to None: new orders allowed
         self.order = None
 
     def notify_trade(self, trade):

@@ -213,8 +213,8 @@ class NLS1(StrategyBase):
                         # self.stop_loss_slow_sma = True
             
             elif self.sell_sig:
-                self.log('Got sell signal')
                 if self.sma_veryfast < self.sma_mid:
+                    self.log('Got sell signal')
                     self.short_order = self.exec_trade(direction="sell", exectype=self.params.exectype)
                 # self.sl_price = self.highest_high_slow[0]
                 # self.short_stop_order = self.exec_trade(direction="buy", price=self.sl_price, exectype=self.params.exectype)
