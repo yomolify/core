@@ -1,3 +1,6 @@
+# shellcheck disable=SC2096
+# shellcheck disable=SC2239
+# shellcheck disable=SC2239
 # CLI
 
 # !!!!!!!! LIVE TRADING !!!!!!!!
