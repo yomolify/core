@@ -1,7 +1,19 @@
 <component name="ProjectDictionaryState">
   <dictionary name="amol">
     <words>
+      <w>backtest</w>
       <w>backtesting</w>
+      <w>binance</w>
+      <w>bitfinex</w>
+      <w>bitmex</w>
+      <w>bollinger</w>
+      <w>cerebro</w>
+      <w>exectype</w>
+      <w>resample</w>
+      <w>setcommission</w>
+      <w>timeframe</w>
+      <w>usdt</w>
+      <w>veryslow</w>
     </words>
   </dictionary>
 </component>

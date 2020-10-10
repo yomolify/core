@@ -2,6 +2,8 @@
 config.py
 /data
 params.json
+.idea/*
+!/.idea/runConfigurations
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

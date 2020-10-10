@@ -3,7 +3,6 @@ import backtrader_addons as bta
 import datetime
 from strategies.base import StrategyBase
 
-
 class NLS1(StrategyBase):
     params = (
         ('exectype', bt.Order.Market),
@@ -53,16 +52,13 @@ class NLS1(StrategyBase):
         cross_down_bb_top = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.top)
         cross_down_bb_bot = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.bot)
         cross_up_bb_bot = bt.ind.CrossUp(self.datas[0].close, self.bollinger_bands.lines.bot)
-        volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period=self.params.period_vol_sma_slow, plot=False)
-        volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period=self.params.period_vol_sma_fast, plot=False)
+        volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot=False)
+        volSMA_fast = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_fast, plot=False)
         vol_condition = volSMA_fast > volSMA_slow
-        self.bollinger_bands_width = (self.bollinger_bands.lines.top - self.bollinger_bands.lines.bot) / self.bollinger_bands.lines.mid
-        vli_fast = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period=self.params.period_bbw_sma_vli_fast,
-                              plot=False)
-        self.vli_slow = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period=self.params.period_bbw_sma_vli_slow,
-                                   plot=False)
-        self.vli_top = self.vli_slow + 2 * bt.ind.StdDev(self.bollinger_bands_width,
-                                                         period=self.params.period_bbw_sma_vli_slow)
+        self.bollinger_bands_width = (self.bollinger_bands.lines.top - self.bollinger_bands.lines.bot)/self.bollinger_bands.lines.mid
+        vli_fast = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_fast, plot=False)
+        self.vli_slow = bt.ind.SMA(self.bollinger_bands_width, subplot=True, period = self.params.period_bbw_sma_vli_slow, plot=False)
+        self.vli_top = self.vli_slow + 2*bt.ind.StdDev(self.bollinger_bands_width, period=self.params.period_bbw_sma_vli_slow)
         self.low_volatility_level = vli_fast < self.vli_slow
         self.buy_sig = bt.And(cross_down_bb_top, vol_condition)
         self.close_sig = bt.And(cross_down_bb_bot, vol_condition)
@@ -79,40 +75,39 @@ class NLS1(StrategyBase):
             # self.log('self.sl_price in Long: {}'.format(self.sl_price))
 
             self.profit = self.data0.close[0] - self.buy_price_close
-            self.profit_percentage = (self.profit / self.buy_price_close) * 100
-            if self.stop_loss_slow_sma == True and not self.slow_sma_stop_win:
-                if self.profit_percentage > 3:
-                    self.log('slow_sma STOPWIN')
-                    self.sl_price_slow_sma = 1.01 * self.buy_price_close
-                    self.slow_sma_stop_win = True
-                    self.cancel(self.long_stop_order)
-                    self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price_slow_sma,
-                                                           exectype=self.params.exectype)
-            if self.profit_percentage > 45:
+            self.profit_percentage = (self.profit/self.buy_price_close)*100
+            # if self.stop_loss_slow_sma == True and not self.slow_sma_stop_win:
+            #     if self.profit_percentage > 3:
+            #         self.log('slow_sma STOPWIN')
+            #         self.sl_price_slow_sma = 1.01*self.buy_price_close
+            #         self.slow_sma_stop_win = True
+            #         self.cancel(self.long_stop_order)
+            #         self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price_slow_sma, exectype=self.params.exectype)
+            if (self.profit_percentage > 45):
                 self.log('IN >45')
-                self.new_sl_price = 1.40 * self.buy_price_close
-            if self.profit_percentage > 40:
+                self.new_sl_price = 1.40*self.buy_price_close
+            if (self.profit_percentage > 40):
                 self.log('IN >40')
-                self.new_sl_price = 1.35 * self.buy_price_close
-            elif self.profit_percentage > 35:
+                self.new_sl_price = 1.35*self.buy_price_close
+            elif (self.profit_percentage > 35):
                 self.log('IN >35')
-                self.new_sl_price = 1.30 * self.buy_price_close
-            elif self.profit_percentage > 30:
+                self.new_sl_price = 1.30*self.buy_price_close  
+            elif (self.profit_percentage > 30):
                 self.log('IN >30')
-                self.new_sl_price = 1.25 * self.buy_price_close
-            elif self.profit_percentage > 25:
+                self.new_sl_price = 1.25*self.buy_price_close
+            elif (self.profit_percentage > 25):
                 self.log('IN >25')
-                self.new_sl_price = 1.20 * self.buy_price_close
-            elif self.profit_percentage > 20:
+                self.new_sl_price = 1.20*self.buy_price_close
+            elif (self.profit_percentage > 20):
                 self.log('IN >20')
-                self.new_sl_price = 1.15 * self.buy_price_close
+                self.new_sl_price = 1.15*self.buy_price_close
             # self.log(self.sl_price)
             # self.log(self.new_sl_price)
-            if self.new_sl_price and self.sl_price and self.new_sl_price > self.sl_price:
-                self.log('better long stop')
-                self.sl_price = self.new_sl_price
-                self.cancel(self.long_stop_order)
-                self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
+            # if self.new_sl_price and self.sl_price and self.new_sl_price > self.sl_price:
+            #     self.log('better long stop')
+            #     self.sl_price = self.new_sl_price
+            #     self.cancel(self.long_stop_order)
+            #     self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
             # Emergency close
 
         # SHORT
@@ -126,38 +121,62 @@ class NLS1(StrategyBase):
             #     self.cancel(self.stop_order)
             #     self.stop_order = self.exec_trade(direction="buy", price=self.sl_price, exectype=bt.Order.Stop)
             self.new_sl_price = self.highest_high_slow[0]
+            # self.new_sl_price = self.highest_high_fast[0]
             self.profit = self.sell_price_close - self.data0.close[0]
-            self.profit_percentage = (self.profit / self.sell_price_close) * 100
-            if self.profit_percentage > 40:
+            self.profit_percentage = (self.profit/self.sell_price_close)*100
+            # self.log(self.profit_percentage)
+            if (self.profit_percentage > 40):
                 self.log('IN >40')
-                self.new_sl_price = 0.65 * self.sell_price_close
-            if self.profit_percentage > 35:
+                self.new_sl_price = 0.65*self.sell_price_close    
+            if (self.profit_percentage > 35):
                 self.log('IN >35')
-                self.new_sl_price = 0.7 * self.sell_price_close
-            elif self.profit_percentage > 30:
+                self.new_sl_price = 0.7*self.sell_price_close    
+            elif (self.profit_percentage > 30):
                 self.log('IN > 30')
-                self.new_sl_price = 0.75 * self.sell_price_close
-            elif self.profit_percentage > 25:
+                self.new_sl_price = 0.75*self.sell_price_close
+            elif (self.profit_percentage > 25):
                 self.log('IN > 25')
-                self.new_sl_price = 0.8 * self.sell_price_close
+                self.new_sl_price = 0.8*self.sell_price_close
             elif self.profit_percentage > 15:
                 self.log('IN > 15')
+                # self.new_sl_price = 0.9*self.sell_price_close
                 self.new_sl_price = self.highest_high_fast[0]
             elif self.profit_percentage > 10:
                 self.log('IN > 10')
+                # self.log(f'self.sell_price_close: {self.sell_price_close}')
+                # self.new_sl_price = 0.95*self.sell_price_close
                 self.new_sl_price = self.highest_high_mid[0]
             # self.log(self.new_sl_price)
             # self.log(self.sl_price)
-            if self.new_sl_price and self.sl_price and self.new_sl_price < self.sl_price:
-                self.log('better short stop')
-                self.sl_price = self.new_sl_price
-                self.cancel(self.short_stop_order)
-                self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
+            # if self.new_sl_price and self.sl_price and self.new_sl_price < self.sl_price:
+            #     self.log('better short stop')
+            #     self.sl_price = self.new_sl_price
+            #     self.cancel(self.short_stop_order)
+            #     self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
 
-    def next_open(self):
-        # If position, look for close signal
+    def next(self):
         if abs(self.broker.getposition(self.datas[0]).size) > 0.01:
+            # close signal
             if self.close_sig:
+                # Cancel Stops
+                # if stop is submitted but not accepted, return so that close and stop are not issued on the same bar
+                # if they are, then one of them would exit the position but the other order will stay and give trouble
+                if self.long_stop_order:
+                    self.log('Cancelling long stop order')
+                    # if self.long_stop_order.status == 1:
+                    #     return
+                    self.cancel(self.long_stop_order)
+                    self.long_stop_order = None
+                if self.short_stop_order:
+                    self.log('Cancelling short stop order')
+                    # self.log(f'self.short_stop_order.status: {self.short_stop_order.status}')
+                    # self.log(f'self.short_stop_order.info: {self.short_stop_order.info}')
+                    # if self.short_stop_order.status == 1:
+                    #     return
+                    # self.log(self.short_stop_order)
+                    self.cancel(self.short_stop_order)
+                    self.short_stop_order = None
+
                 self.long_order = None
                 self.short_order = None
                 self.sl_price_slow_sma = None
@@ -166,20 +185,30 @@ class NLS1(StrategyBase):
                 self.tp_price = self.data0.close[0]
                 self.log('close_sig')
                 self.exec_trade(direction="close", exectype=self.params.exectype)
-                # Cancel Stops
-                if self.long_stop_order:
-                    self.log('Cancelling long stop order')
-                    self.cancel(self.long_stop_order)
-                    self.long_stop_order = None
-                if self.short_stop_order:
-                    self.log('Cancelling short stop order')
-                    self.cancel(self.short_stop_order)
-                    self.short_stop_order = None
-
-        self.update_indicators()
-
-    def next(self):
-        # If no position, then re initialize all variables
+                return
+            # No close signal, check for updated stops
+            else:
+                self.update_indicators()
+                if self.position.size > 0:
+                    if self.new_sl_price and self.sl_price and self.new_sl_price > self.sl_price:
+                        self.log('better long stop')
+                        self.sl_price = self.new_sl_price
+                        # if self.long_stop_order and self.long_stop_order.status == 1:
+                        #     return
+                        self.cancel(self.long_stop_order)
+                        self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
+                elif self.position.size < 0:
+                    if self.new_sl_price and self.sl_price and self.new_sl_price < self.sl_price:
+                        self.log('better short stop')
+                        self.sl_price = self.new_sl_price
+                        # if self.short_stop_order and self.short_stop_order.status == 1:
+                        #     return
+                        self.cancel(self.short_stop_order)
+                        self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
+            return
+            
+        # if self.long_order or self.short_order or self.long_stop_order or self.short_stop_order:
+        #     return
         if abs(self.broker.getposition(self.datas[0]).size) < 0.01:
             if self.long_stop_order:
                 # self.log('Cancelling redundant long stop order')
@@ -196,12 +225,13 @@ class NLS1(StrategyBase):
             self.stop_loss_slow_sma = False
             self.sl_price = None
             self.new_sl_price = None
-
-        # If pending orders, don't look for new entry
+            self.profit = None
+            
+        # We are in position so don't see criteria for new entry
         if self.long_order or self.short_order:
             return
 
-        # Look for new entry
+        # We are flat, so look for new entries
         if abs(self.broker.getposition(self.datas[0]).size) < 0.01:
             if self.buy_sig:
                 if self.data0.close[0] > self.sma_fast[0]:
@@ -218,8 +248,9 @@ class NLS1(StrategyBase):
                         self.log('sma slow > veryslow')
                         self.long_order = self.exec_trade(direction="buy", exectype=self.params.exectype)
                         # self.stop_loss_slow_sma = True
-
+            
             elif self.sell_sig:
+                # if self.bollinger_bands_width < self.vli_fast:
                 if self.sma_veryfast < self.sma_mid:
                     self.log('Got sell signal')
                     self.short_order = self.exec_trade(direction="sell", exectype=self.params.exectype)
@@ -230,3 +261,4 @@ class NLS1(StrategyBase):
         # self.log(f'self.long_stop_order -----------------------------------: {self.long_stop_order}')
         # self.log(f'self.sl_price_slow_sma -----------------------------------: {self.stop_loss_slow_sma}')
         # self.log(f'BOOLEAN -----------------------------------: {not self.long_stop_order and not self.stop_loss_slow_sma}')
+        

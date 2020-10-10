@@ -105,7 +105,7 @@ def _run_resampler(data_timeframe,
 
 
 if __name__ == '__main__':
-    cerebro = bt.Cerebro(quicknotify=True)
+    cerebro = bt.Cerebro(quicknotify=True, cheat_on_open=True, oldbuysell=True)
     warnings.filterwarnings("ignore")
     print("Running in {} and {} trading".format(ENV, TRADING))
 
