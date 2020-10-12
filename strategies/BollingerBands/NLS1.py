@@ -155,6 +155,7 @@ class NLS1(StrategyBase):
                 self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
 
     def next_open(self):
+        self.log_ohlc()
         # If position, look for close signal
         if abs(self.broker.getposition(self.datas[0]).size) > 0.01:
             if self.close_sig:

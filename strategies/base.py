@@ -83,22 +83,16 @@ class StrategyBase(bt.Strategy):
                 self.last_operation = "BUY"
                 if price:
                     self.log(f'---Buy stop price: {price}')
-                else:
-                    self.log(f'---Buy price: {close_price}')
                 return self.buy(size=amount, exectype=exectype, price=price)
             elif direction == "sell":
                 self.last_operation = "SELL"
                 if price:
                     self.log(f'---Sell stop price: {price}')
-                else:
-                    self.log(f'---Sell price: {close_price}')
                 return self.sell(size=amount, exectype=exectype, price=price)
             elif direction == "close":
                 self.last_operation = "CLOSE"
                 if exectype == bt.Order.Stop:
                     self.log(f'Stop Order @ {price}')
-                else:
-                    self.log('Market Order')
                 return self.close(exectype=exectype, price=price, oco=oco)
             elif direction == "cancel":
                 self.last_operation = "CANCEL"
@@ -132,8 +126,8 @@ class StrategyBase(bt.Strategy):
         elif order.status in [order.Completed]:
             if order.isbuy():
                 self.buy_price_close = order.executed.price
-                self.log(f'Executed BUY price: {self.buy_price_close}')
-                self.log_order(self, order, 'buy')
+                # self.log(f'Executed BUY price: {self.buy_price_close}')
+                self.log_order(order, 'buy')
                 if self.long_order and not self.long_stop_order and not self.stop_loss_slow_sma:
                     self.sl_price = self.data0.low[0] * 0.95
                     # 8% emergency stop
@@ -159,8 +153,8 @@ class StrategyBase(bt.Strategy):
 
             elif order.issell():
                 self.sell_price_close = order.executed.price
-                self.log(f'Executed SELL price: {self.sell_price_close}')
-                self.log_order(self, order)
+                # self.log(f'Executed SELL price: {self.sell_price_close}')
+                self.log_order(order, "sell")
             # self.log(f'self.short_order: {self.short_order}')
             # self.log(f'self.short_stop_order: {self.short_stop_order}')
             if self.short_order and not self.short_stop_order:
@@ -182,7 +176,6 @@ class StrategyBase(bt.Strategy):
                 #           order.executed.value,
                 #           order.executed.comm), True)
 
-
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
             if order.isbuy():
                 self.log(f'BUY ORDER {order.Status[order.status]}')
@@ -190,9 +183,16 @@ class StrategyBase(bt.Strategy):
             elif order.issell():
                 self.log(f'SELL ORDER {order.Status[order.status]}')
             if order.status in [order.Margin, order.Rejected]:
-                self.log_order(self, order, 'error')
+                self.log_order(order, 'error')
         # Sentinel to None: new orders allowed
         self.order = None
+
+    def log_ohlc(self):
+        self.log(f'''
+        Open: {self.data0.open[0]}
+        High: {self.data0.high[0]}
+        Low: {self.data0.low[0]}
+        Close: {self.data0.close[0]}''')
 
     def log_order(self, order, direction):
         color = ('red', 'green')[direction == 'buy']
