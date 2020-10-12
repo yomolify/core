@@ -131,28 +131,9 @@ class StrategyBase(bt.Strategy):
 
         elif order.status in [order.Completed]:
             if order.isbuy():
-                color = 'green'
                 self.buy_price_close = order.executed.price
                 self.log(f'Executed BUY price: {self.buy_price_close}')
-                self.log(f'''
-                BOUGHT!
-                Open: {self.data0.open[0]}
-                High: {self.data0.high[0]}
-                Low: {self.data0.low[0]}
-                Close: {self.data0.close[0]}
-                Bought Price: {order.executed.price}
-                Bought Size: {order.executed.size}
-                Current open position price: {order.executed.pprice}
-                Current open position size: {order.executed.psize}
-                Remaining size: {order.executed.remsize}
-                Current Value: {order.executed.value}
-                Broker Value: {self.broker.get_value()}
-                Broker Cash: {self.broker.get_cash()} 
-                PnL: {order.executed.pnl}
-                Margin: {order.executed.margin}
-                Commission: {order.executed.comm}
-                Pclose: {order.executed.pclose}
-                ''', True, color)
+                self.log_order(self, order, 'buy')
                 if self.long_order and not self.long_stop_order and not self.stop_loss_slow_sma:
                     self.sl_price = self.data0.low[0] * 0.95
                     # 8% emergency stop
@@ -177,28 +158,9 @@ class StrategyBase(bt.Strategy):
                 #      order.executed.comm), True)
 
             elif order.issell():
-                color = 'red'
                 self.sell_price_close = order.executed.price
                 self.log(f'Executed SELL price: {self.sell_price_close}')
-                self.log(f'''
-                SOLD!
-                Open: {self.data0.open[0]}
-                High: {self.data0.high[0]}
-                Low: {self.data0.low[0]}
-                Close: {self.data0.close[0]}
-                Sold Price: {order.executed.price}
-                Sold Size: {order.executed.size}
-                Current open position price: {order.executed.pprice}
-                Current open position size: {order.executed.psize}
-                Remaining size: {order.executed.remsize}
-                Current Value: {order.executed.value}
-                Broker Value: {self.broker.get_value()}
-                Broker Cash: {self.broker.get_cash()} 
-                PnL: {order.executed.pnl}
-                Margin: {order.executed.margin}
-                Commission: {order.executed.comm}
-                Pclose: {order.executed.pclose}
-                ''', True, color)
+                self.log_order(self, order)
             # self.log(f'self.short_order: {self.short_order}')
             # self.log(f'self.short_stop_order: {self.short_stop_order}')
             if self.short_order and not self.short_stop_order:
@@ -228,29 +190,35 @@ class StrategyBase(bt.Strategy):
             elif order.issell():
                 self.log(f'SELL ORDER {order.Status[order.status]}')
             if order.status in [order.Margin, order.Rejected]:
-                color = 'cyan'
-                self.log(f'''
-                !!!ERROR!!!
-                Open: {self.data0.open[0]}
-                High: {self.data0.high[0]}
-                Low: {self.data0.low[0]}
-                Close: {self.data0.close[0]}
-                Sold Price: {order.executed.price}
-                Sold Size: {order.executed.size}
-                Current open position price: {order.executed.pprice}
-                Current open position size: {order.executed.psize}
-                Remaining size: {order.executed.remsize}
-                Current Value: {order.executed.value}
-                Broker Value: {self.broker.get_value()}
-                Broker Cash: {self.broker.get_cash()} 
-                PnL: {order.executed.pnl}
-                Margin: {order.executed.margin}
-                Commission: {order.executed.comm}
-                Pclose: {order.executed.pclose}
-                ''', True, color)
-
+                self.log_order(self, order, 'error')
         # Sentinel to None: new orders allowed
         self.order = None
+
+    def log_order(self, order, direction):
+        color = ('red', 'green')[direction == 'buy']
+        if direction == 'error':
+            color = 'cyan'
+        action = direction.capitalize()
+        self.log(f'''
+        {action}!
+        Open: {self.data0.open[0]}
+        High: {self.data0.high[0]}
+        Low: {self.data0.low[0]}
+        Close: {self.data0.close[0]}
+        {action} Price: {order.executed.price}
+        {action} Size: {order.executed.size}
+        {action} Price * {action} Size: {order.executed.price * order.executed.size}
+        Current open position price: {order.executed.pprice}
+        Current open position size: {order.executed.psize}
+        Remaining size: {order.executed.remsize}
+        Current Value: {order.executed.value}
+        Broker Value: {self.broker.get_value()}
+        Broker Cash: {self.broker.get_cash()} 
+        PnL: {order.executed.pnl}
+        Margin: {order.executed.margin}
+        Commission: {order.executed.comm}
+        Pclose: {order.executed.pclose}
+        ''', True, color)
 
     def notify_trade(self, trade):
         if not trade.isclosed:
