@@ -155,7 +155,7 @@ class NLS1(StrategyBase):
                 self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
 
     def next_open(self):
-        self.log_ohlc()
+        # self.log_ohlc()
         # If position, look for close signal
         if abs(self.broker.getposition(self.datas[0]).size) > 0.01:
             if self.close_sig:
@@ -166,7 +166,7 @@ class NLS1(StrategyBase):
                 self.slow_sma_stop_win = False
                 self.tp_price = self.data0.close[0]
                 self.log('close_sig')
-                self.exec_trade(direction="close", exectype=self.params.exectype)
+                self.close_order = self.exec_trade(direction="close", exectype=self.params.exectype)
                 # Cancel Stops
                 if self.long_stop_order:
                     self.log('Cancelling long stop order')
@@ -192,6 +192,7 @@ class NLS1(StrategyBase):
                 self.cancel(self.short_stop_order)
             self.long_order = None
             self.short_order = None
+            self.close_order = None
             self.long_stop_order = None
             self.short_stop_order = None
             self.stop_loss_slow_sma = False
