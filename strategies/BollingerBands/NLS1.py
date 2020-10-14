@@ -2,14 +2,14 @@ import backtrader as bt
 import backtrader_addons as bta
 import datetime
 from strategies.base import StrategyBase
-
+# unoptimized first four periods - 20, 2, 10, 50
 class NLS1(StrategyBase):
     params = (
         ('exectype', bt.Order.Market),
-        ('period_bb_sma', 20),
-        ('period_bb_std', 2),
-        ('period_vol_sma_fast', 10),
-        ('period_vol_sma_slow', 50),
+        ('period_bb_sma', 23),
+        ('period_bb_std', 2.5),
+        ('period_vol_sma_fast', 14),
+        ('period_vol_sma_slow', 54),
         ('period_sma_veryfast', 10),
         ('period_sma_fast', 20),
         ('period_sma_mid', 50),
@@ -91,7 +91,7 @@ class NLS1(StrategyBase):
                 self.new_sl_price = 1.35*self.buy_price_close
             elif (self.profit_percentage > 35):
                 self.log('IN >35')
-                self.new_sl_price = 1.30*self.buy_price_close  
+                self.new_sl_price = 1.30*self.buy_price_close
             elif (self.profit_percentage > 30):
                 self.log('IN >30')
                 self.new_sl_price = 1.25*self.buy_price_close
@@ -223,4 +223,3 @@ class NLS1(StrategyBase):
         # self.log(f'self.long_stop_order -----------------------------------: {self.long_stop_order}')
         # self.log(f'self.sl_price_slow_sma -----------------------------------: {self.stop_loss_slow_sma}')
         # self.log(f'BOOLEAN -----------------------------------: {not self.long_stop_order and not self.stop_loss_slow_sma}')
-        
