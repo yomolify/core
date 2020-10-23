@@ -1,7 +1,11 @@
 # CLI
 
 # !!!!!!!! LIVE TRADING !!!!!!!!
-nodemon --exec python main.py --exchange=binance --data_timeframe=1m --strategy=BollingerBands.LS1 --exectype=Market --base=BTC --quote=USDT
+export ENVIRONMENT="PRODUCTION"
+export TRADING="LIVE"
+
+nodemon --exec python main.py --exchange=binance --data_timeframe=1m --strategy=BollingerBands.NLS1 --exectype=Market --base=BTC --quote=USDT
+nodemon --exec python main.py --exchange=binance --data_timeframe=1m --strategy=Misc.SMA --exectype=Market --base=BTC --quote=USDT
 nodemon --exec python main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1m --strategy=Misc.BuyHold.BuyAndHold_Buy --exectype=Market
 
 # Debugging to compare values with backtest runs
