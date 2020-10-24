@@ -4,6 +4,18 @@
 export ENVIRONMENT="PRODUCTION"
 export TRADING="LIVE"
 
+
+# FROM 2020
+pypy3 main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=ETHUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=LTCUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+
+
+# FROM 2017
+pypy3 main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1h --from_year=2017 --from_month=8 --from_date=17 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+
+
+pypy3 main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1m --from_year=2017 --from_month=8 --from_date=17 --to_year=2020 --to_month=8 --to_date=27 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 nodemon --exec python main.py --exchange=binance --data_timeframe=1m --strategy=BollingerBands.NLS1 --exectype=Market --base=BTC --quote=USDT
 nodemon --exec python main.py --exchange=binance --data_timeframe=1m --strategy=Misc.SMA --exectype=Market --base=BTC --quote=USDT
 nodemon --exec python main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1m --strategy=Misc.BuyHold.BuyAndHold_Buy --exectype=Market

@@ -8,7 +8,7 @@ from utils import send_telegram_message
 # TODO implement isPosition
 LONG = "LONG"
 
-PERCENT = 0.1
+PERCENT = 0.99
 
 
 # Implementation of exec_trade, notifications & logging 
@@ -156,23 +156,17 @@ class StrategyBase(bt.Strategy):
 
         elif order.status in [order.Completed]:
             if order.isbuy():
-                self.buy_price_close = float(order.ccxt_order['info']['avgPrice'])
-                # self.log(f'Executed BUY price: {self.buy_price_close}')
+                if ENV == PRODUCTION and TRADING == "LIVE":
+                    self.buy_price_close = float(order.ccxt_order['info']['avgPrice'])
+                else:
+                    self.buy_price_close = order.executed.price
                 self.log_order(order, 'buy')
-                if self.long_order and not self.long_stop_order and not self.stop_loss_slow_sma:
+                if self.long_order and not self.long_stop_order:
                     self.sl_price = self.data0.low[0]*0.95
-                    # 8% emergency stop
                     if 0.92*self.data0.open[0] > self.sl_price:
                         self.sl_price = 0.92*self.data0.open[0]
                     self.log(f'Placing Long Stop @ {self.sl_price}')
                     self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
-                    print('self.long_stop_order in isbuy')
-                    print(self.long_stop_order)
-                # if self.long_order and not self.long_stop_order and self.stop_loss_slow_sma:
-                #     self.log(f'Placing Long Stop for veryslow @ {self.sl_price}')
-                #     self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
-                
-                # self.last_operation = "BUY"
                 if ENV == PRODUCTION:
                     print('order.__dict__')
                     print(order.__dict__)
@@ -190,25 +184,19 @@ class StrategyBase(bt.Strategy):
                 #      order.executed.value/order.executed.price,
                 #      order.executed.value,
                 #      order.executed.comm), True)
-
+        
             elif order.issell():
-                self.sell_price_close = float(order.ccxt_order['info']['avgPrice'])
-                # self.sell_price_close = order.executed.price
-                # self.log(f'Executed SELL price: {self.sell_price_close}')
+                if ENV == PRODUCTION and TRADING == "LIVE":
+                    self.sell_price_close = float(order.ccxt_order['info']['avgPrice'])
+                else:
+                    self.sell_price_close = order.executed.price
                 self.log_order(order, 'sell')
-                # self.log(f'self.short_order: {self.short_order}')
-                # self.log(f'self.short_stop_order: {self.short_stop_order}')
                 if self.short_order and not self.short_stop_order:
                     self.sl_price = self.highest_high_slow[0]
-                    # 4% emergency stop
                     if 1.04*self.data0.open[0] < self.sl_price:
                         self.sl_price = 1.04*self.data0.open[0]
                     self.log(f'Placing Short Stop @ {self.sl_price}')
                     self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
-                    print('self.short_stop_order in issell')
-                    print(self.short_stop_order)
-                # self.last_operation = "SELL"
-                # self.reset_sell_indicators()
                 if ENV == PRODUCTION:
                     print('order.__dict__')
                     print(order.__dict__)
@@ -226,8 +214,8 @@ class StrategyBase(bt.Strategy):
                 #           order.executed.value/order.executed.price,
                 #           order.executed.value,
                 #           order.executed.comm), True)
-
-            # Sentinel to None: new orders allowed
+        
+        #     # Sentinel to None: new orders allowed
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
             if order.isbuy():
                 self.log(f'BUY ORDER {order.Status[order.status]}')
@@ -262,14 +250,26 @@ class StrategyBase(bt.Strategy):
 
     # TODO - change order.executed.price to order.ccxt_order['info']['avgPrice'] for PRODUCTION
     def log_order(self, order, direction):
+        if direction == "buy":
+            price = self.buy_price_close
+        elif direction == "sell":
+            price = self.sell_price_close
+        else:
+            price = 0.0
+
+        if ENV == PRODUCTION and TRADING == "LIVE":
+            executed_size = order.ccxt_order['info']['executedQty']
+        else:
+            executed_size = order.executed.size
+
         color = ('red', 'green')[direction == 'buy']
         if direction == 'error':
             color = 'cyan'
         action = direction.capitalize()
         self.log(f'''
         {action}!
-        {action} Price: {order.ccxt_order['info']['avgPrice']}
-        {action} Size: {order.ccxt_order['info']['executedQty']}
+        {action} Price: {price}
+        {action} Size: {executed_size}
         Open: {self.data0.open[0]}
         High: {self.data0.high[0]}
         Low: {self.data0.low[0]}
@@ -280,8 +280,6 @@ class StrategyBase(bt.Strategy):
         # AttributeError: 'CCXTBroker' object has no attribute 'get_value'
         # Broker Value: {self.broker.get_value()}
         # Broker Cash: {self.broker.get_cash()} 
-        # {action} Price: {order.executed.price}
-        # {action} Size: {order.executed.size}
         # {action} Price * {action} Size: {order.executed.price * order.executed.size}
         # Current open position price: {order.executed.pprice}
         # Current open position size: {order.executed.psize}
@@ -289,7 +287,6 @@ class StrategyBase(bt.Strategy):
         # Pclose: {order.executed.pclose}
         # Margin: {order.executed.margin}
         # Current Value: {order.executed.value}
-
 
     def log(self, txt, send_telegram=False, color=None, highlight=None, attrs=None):
         if not DEBUG:
@@ -319,8 +316,8 @@ class StrategyBase(bt.Strategy):
         else:
             self.val_start = self.broker.get_cash()
 
-    # def stop(self):
-    #     # Calculate ROI
-    #     self.roi = (self.broker.get_value() / self.val_start) - 1.0
-    #     print('\nROI:        {:.2f}%'.format(100.0 * self.roi))  
+    def stop(self):
+        # Calculate ROI
+        self.roi = (self.broker.get_value() / self.val_start) - 1.0
+        print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
 

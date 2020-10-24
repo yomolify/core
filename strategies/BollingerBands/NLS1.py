@@ -38,11 +38,11 @@ class NLS1(StrategyBase):
         self.sma_fast = bt.ind.SMA(
             period=self.params.period_sma_fast, plot=False)
         self.sma_mid = bt.ind.SMA(
-            period=self.params.period_sma_mid, plot=True)
+            period=self.params.period_sma_mid, plot=False)
         self.sma_slow = bt.ind.SMA(
-            period=self.params.period_sma_slow, plot=True)
+            period=self.params.period_sma_slow, plot=False)
         self.sma_veryslow = bt.ind.SMA(
-            period=self.params.period_sma_veryslow, plot=True)
+            period=self.params.period_sma_veryslow, plot=False)
         self.highest_high_slow = bt.ind.Highest(
             period=self.params.period_highest_high_slow, plot=False)
         self.highest_high_mid = bt.ind.Highest(
@@ -176,7 +176,7 @@ class NLS1(StrategyBase):
                     self.log('Cancelling short stop order')
                     self.cancel(self.short_stop_order)
                     self.short_stop_order = None
-            
+
         self.update_indicators()
             
         # if self.long_order or self.short_order or self.long_stop_order or self.short_stop_order:

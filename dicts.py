@@ -3,6 +3,7 @@ import datetime
 
 from strategies.Misc import BuyHold, BollingerBands_template, RSI_EMA, SMA
 from strategies.BollingerBands import L1, L2, L3, L4, L5, L6, L7, LS1, LS2, LS3, NL, NLS1, NLS2, NL_alt
+from strategies.UnholyGrails import NewYearlyHighs
 
 ExchangeCSVIndex = {
     'bitmex': {'open': 2, 'high': 3, 'low': 4, 'close': 5, 'volume': 7},
@@ -33,6 +34,7 @@ Strategy = {
     'BollingerBands.NLS1': NLS1.NLS1,
     'BollingerBands.NLS2': NLS2.NLS2,
     'BollingerBands.NL_alt': NL_alt.NL_alt,
+    'UnholyGrails.NewYearlyHighs': NewYearlyHighs.NewYearlyHighs,
     'RSI_EMA': RSI_EMA.RSA_EMA,
     'Misc.BuyHold.BuyAndHold_Buy': BuyHold.BuyAndHold_Buy,
     'Misc.BuyHold.BuyAndHold_Target': BuyHold.BuyAndHold_Target,
