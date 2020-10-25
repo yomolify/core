@@ -133,6 +133,18 @@ class StrategyBase(bt.Strategy):
             self.log("{}".format(e), color='red', send_telegram=True)
 
     def notify_order(self, order):
+        ticker = order.data._name
+        self.log('{} Order {} Status {}'.format(
+            ticker, order.ref, order.getstatusname())
+        )
+
+        if not order.alive():  # not alive - nullify
+            print('-- No longer alive self.orders[order.data]: {} '.format(self.orders[ticker]))
+
+
+
+
+
         if order.status in [order.Submitted]:
             # Buy/Sell order submitted to/by broker - Nothing to do
             if order.isbuy():
@@ -239,7 +251,7 @@ class StrategyBase(bt.Strategy):
         if trade.pnl < 0:
             color = 'red'
         # self.log(trade)
-        self.log(colored('OPERATION PROFIT, GROSS %.2f, NET %.2f\n' % (trade.pnl, trade.pnlcomm), color), True)
+        self.log(colored('%s OPERATION PROFIT, GROSS %.2f, NET %.2f\n' % (trade.data._name, trade.pnl, trade.pnlcomm), color), True)
 
     def log_ohlc(self):
         self.log(f'''
@@ -266,6 +278,7 @@ class StrategyBase(bt.Strategy):
         if direction == 'error':
             color = 'cyan'
         action = direction.capitalize()
+        # {action} {self.data0._name}!
         self.log(f'''
         {action}!
         {action} Price: {price}

@@ -5,13 +5,36 @@ export ENVIRONMENT="PRODUCTION"
 export TRADING="LIVE"
 
 
-# FROM 2020
+# FROM 2020 NLS1
 pypy3 main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 pypy3 main.py --exchange=binance --ticker=ETHUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 pypy3 main.py --exchange=binance --ticker=LTCUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=BNBUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=BCHUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=ADAUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=EOSUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=XRPUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=ETHBTC --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=BNBBTC --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=LTCBTC --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=EOSBTC --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=XRPBTC --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=BNBETH --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=LINKUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=VETUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=ZILUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=NEOUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=ATOMUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+
+# FROM 2019 NewYearlyHighs
+pypy3 main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1h --from_year=2019 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=UnholyGrails.NewYearlyHighs --plot=True
+pypy3 main.py --exchange=binance --ticker=ETHUSDT --data_timeframe=1h --from_year=2019 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=UnholyGrails.NewYearlyHighs --plot=True
+pypy3 main.py --exchange=binance --ticker=LTCUSDT --data_timeframe=1h --from_year=2019 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=UnholyGrails.NewYearlyHighs --plot=True
+pypy3 main.py --exchange=binance --ticker=BNBUSDT --data_timeframe=1h --from_year=2019 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=UnholyGrails.NewYearlyHighs --plot=True
+pypy3 main.py --exchange=binance --ticker=BCHUSDT --data_timeframe=1h --from_year=2019 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=UnholyGrails.NewYearlyHighs --plot=True
 
 
-# FROM 2017
+# FROM 2017 NLS1
 pypy3 main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1h --from_year=2017 --from_month=8 --from_date=17 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 
 

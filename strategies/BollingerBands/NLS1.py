@@ -176,7 +176,7 @@ class NLS1(StrategyBase):
                     self.log('Cancelling short stop order')
                     self.cancel(self.short_stop_order)
                     self.short_stop_order = None
-
+            # else:
         self.update_indicators()
             
         # if self.long_order or self.short_order or self.long_stop_order or self.short_stop_order:
