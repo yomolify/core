@@ -15,6 +15,7 @@ class NewYearlyHighs(StrategyBase):
         ('period_highest_high_mid', 10),
         ('period_highest_high_fast', 5),
         ('order_target_percent', 0.2)
+        # ('order_target_percent', 0.05)
     )
 
     def __init__(self):
