@@ -29,7 +29,7 @@ tickers = ['IOST', 'WNXM', 'XLM', 'BTS', 'RUNE', 'VTHO', 'BEAM', 'SAND', 'LRC', 
            'VITE', 'WRX', 'WAN', 'BZRX', 'ETC', 'LTO', 'DENT', 'AUD', 'CTXC', 'SUN', 'ALPHA', 'CHR']
 
 # FUTURES
-# Good returns with NewYearlyHighs
+# Best returns with NewYearlyHighs
 tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT',
            'ETCUSDT', 'LINKUSDT', 'XLMUSDT', 'ADAUSDT', 'XMRUSDT', 'DASHUSDT', 'ZECUSDT',
            'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT', 'VETUSDT',
@@ -48,7 +48,13 @@ tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT',
            'KSMUSDT', 'RSRUSDT', 'LRCUSDT', 'BCHUSDT', 'SXPUSDT']
 
 # Futures with atleast one year of historical data
-tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'LINKUSDT', 'XLMUSDT', 'ADAUSDT',
-       'XMRUSDT', 'DASHUSDT', 'ZECUSDT', 'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT', 'VETUSDT',
-       'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'ZRXUSDT', 'OMGUSDT', 'DOGEUSDT',
-       'BANDUSDT', 'WAVESUSDT', 'ICXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT']
+tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'LINKUSDT', 'XLMUSDT',
+           'ADAUSDT',
+           'XMRUSDT', 'DASHUSDT', 'ZECUSDT', 'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT',
+           'VETUSDT',
+           'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'ZRXUSDT', 'OMGUSDT', 'DOGEUSDT',
+           'BANDUSDT', 'WAVESUSDT', 'ICXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT']
+
+# Futures with atleast two years of historical data
+tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'XLMUSDT', 'ADAUSDT', 'BNBUSDT',
+           'ONTUSDT', 'IOTAUSDT', 'VETUSDT', 'NEOUSDT', 'QTUMUSDT', 'ICXUSDT']

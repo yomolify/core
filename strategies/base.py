@@ -278,18 +278,22 @@ class StrategyBase(bt.Strategy):
         if direction == 'error':
             color = 'cyan'
         action = direction.capitalize()
-        # {action} {self.data0._name}!
+        ticker = order.data._name
         self.log(f'''
-        {action}!
+        {action} {ticker}!
         {action} Price: {price}
         {action} Size: {executed_size}
-        Open: {self.data0.open[0]}
-        High: {self.data0.high[0]}
-        Low: {self.data0.low[0]}
-        Close: {self.data0.close[0]}
+        Open: {order.data.tick_open}
+        High: {order.data.tick_high}
+        Low: {order.data.tick_low}
+        Close: {order.data.tick_close}
         Remaining size: {order.executed.remsize}
         PnL: {order.executed.pnl}
         ''', True, color)
+        # Open: {self.data0.open[0]}
+        # High: {self.data0.high[0]}
+        # Low: {self.data0.low[0]}
+        # Close: {self.data0.close[0]}
         # AttributeError: 'CCXTBroker' object has no attribute 'get_value'
         # Broker Value: {self.broker.get_value()}
         # Broker Cash: {self.broker.get_cash()} 

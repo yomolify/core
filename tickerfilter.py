@@ -37,7 +37,7 @@ def filter_tickers(tickers):
     new_tickers = []
     for ticker in tickers:
         ticker_ohlcv = pd.read_csv(f'../fetch-historical-data/binance-{ticker}-1h.csv')
-        if len(ticker_ohlcv) > MIN_HISTORY_AVAILABLE:
+        if len(ticker_ohlcv) > MIN_HISTORY_AVAILABLE*2:
             new_tickers.append(ticker)
     return new_tickers
 

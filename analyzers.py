@@ -16,7 +16,7 @@ def addAnalyzers(cerebro):
 
 
 def getAnalysis(stat):
-    # printTradeAnalysis(stat.trade_analyzer.get_analysis())
+    printTradeAnalysis(stat.trade_analyzer.get_analysis())
     printSQN(stat.sqn.get_analysis())
     printSummary(stat)
 
@@ -26,7 +26,7 @@ def printTradeAnalysis(analyzer):
     '''
     #Get the results we are interested in
     total_open = analyzer.total.open
-    # total_closed = analyzer.total.closed
+    total_closed = analyzer.total.closed
     total_won = analyzer.won.total
     total_lost = analyzer.lost.total
     win_streak = analyzer.streak.won.longest
