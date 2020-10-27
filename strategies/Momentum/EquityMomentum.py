@@ -32,6 +32,7 @@ class EquityMomentum(StrategyBase):
         self.inds = {}
         self.spy = self.datas[0]
         self.stocks = self.datas[1:]
+        self.orders = dict()
 
         self.spy_sma200 = bt.indicators.SimpleMovingAverage(self.spy.close,
                                                             period=200)
@@ -68,7 +69,6 @@ class EquityMomentum(StrategyBase):
                     self.close(d)
 
         if self.spy < self.spy_sma200:
-            print('less than btc 200 ma so no trading')
             return
 
         # buy stocks with remaining cash

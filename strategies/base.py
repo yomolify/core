@@ -138,8 +138,8 @@ class StrategyBase(bt.Strategy):
             ticker, order.ref, order.getstatusname())
         )
 
-        if not order.alive():  # not alive - nullify
-            print('-- No longer alive self.orders[order.data]: {} '.format(self.orders[ticker]))
+        # if not order.alive():  # not alive - nullify
+        #     print('-- No longer alive self.orders[order.data]: {} '.format(self.orders[ticker]))
 
 
 
