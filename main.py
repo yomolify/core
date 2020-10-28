@@ -33,6 +33,9 @@ from sizer.percent import FullMoney
 
 args = args.parse()
 
+strategy_class = args.strategy.split(".", 1)[1]
+strategy = getattr(importlib.import_module(f'strategies.{args.strategy}'), strategy_class)
+
 _logger = logging.getLogger(__name__)
 
 
@@ -54,8 +57,8 @@ if ENV == PRODUCTION:  # Live trading with Binance
         params = json.load(f)
     cerebro = bt.Cerebro(quicknotify=True)
 
-    config = {'apiKey': '',
-              'secret': '',
+    config = {'apiKey': params["binance"]["apikey"],
+              'secret': params["binance"]["secret"],
               'enableRateLimit': True,
               'options': {
                   'defaultType': 'future',
@@ -106,25 +109,38 @@ def _run_resampler(data_timeframe,
     cerebro.addsizer(FullMoney)
     cerebro.addobserver(bta.observers.SLTPTracking)
     cerebro.addobserver(bt.observers.DrawDown)
-    cerebro.addstrategy(Strategy[args.strategy], exectype=ExecType[args.exectype])
+    cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
 
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
 
-    hist_start_date = datetime.utcnow() - timedelta(hours=1000)
     # hist_start_date = datetime.utcnow() - timedelta(minutes=1000)
     # hist_start_date = datetime.utcnow() - timedelta(minutes=1)
-    dataname = "{}/{}".format(args.base, args.quote)
-    data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
-                         timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-                         compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)  # , historical=True)
-    #  compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
+    if strategy_class == 'NLS1':
+        hist_start_date = datetime.utcnow() - timedelta(hours=1000)
+        dataname = "{}/{}".format(args.base, args.quote)
+        data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
+                             timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                             compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)  # , historical=True)
+        #  compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
 
-    cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
+        cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
+    else:
+        hist_start_date = datetime.utcnow() - timedelta(hours=500)
+        tickers = ['BTC/USDT', 'ETH/USDT', 'XRP/USDT', 'EOS/USDT', 'LTC/USDT', 'TRX/USDT',
+                   'ETC/USDT', 'LINK/USDT', 'XLM/USDT', 'ADA/USDT', 'XMR/USDT', 'DASH/USDT', 'ZEC/USDT',
+                   'XTZ/USDT', 'BNB/USDT', 'ATOM/USDT', 'ONT/USDT', 'IOTA/USDT', 'BAT/USDT', 'VET/USDT',
+                   'NEO/USDT', 'QTUM/USDT', 'IOST/USDT', 'THETA/USDT', 'ALGO/USDT', 'ZIL/USDT']
+        for ticker in tickers:
+            data = store.getdata(dataname=ticker, name=ticker.replace('/', ''),
+                                 timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                                 compression=60, ohlcv_limit=50, drop_newest=True,
+                                 backfill_start=True)
 
-    # return the recorded bars attribute from the first strategy
+            cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
+
     res = cerebro.run()
     return cerebro, res[0]
 
@@ -150,9 +166,6 @@ if __name__ == '__main__':
                                         )
 
     else:  # Backtesting with CSV file
-        strategy_class = (args.strategy).split(".", 1)[1]
-        strategy = getattr(importlib.import_module(f'strategies.{args.strategy}'), strategy_class)
-
         modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
         csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
         # datapath = os.path.join(modpath, 'data/{}'.format(csvpath))

@@ -40,18 +40,21 @@ def parse():
                         help='To plot or not to plot')
 
     # Backtest from & to datetime
-    parser.add_argument('--from_date', required='--backtest' in sys.argv,
+    parser.add_argument('--from_date', required=False,
                         type=int, help='From date')
-    parser.add_argument('--from_month', required='--backtest' in sys.argv,
+    parser.add_argument('--from_month', required=False,
                         type=int, help='From month')
-    parser.add_argument('--from_year', required='--backtest' in sys.argv,
+    parser.add_argument('--from_year', required=False,
                         type=int, help='From year')
-    parser.add_argument('--to_date', required='--backtest' in sys.argv,
+    parser.add_argument('--to_date', required=False,
                         type=int, help='To Date')
-    parser.add_argument('--to_month', required='--backtest' in sys.argv,
+    parser.add_argument('--to_month', required=False,
                         type=int, help='To month')
-    parser.add_argument('--to_year', required='--backtest' in sys.argv,
+    parser.add_argument('--to_year', required=False,
                         type=int, help='To year')
+    
+    # parser.add_argument('--to_year', required='--backtest' in sys.argv,
+    #                 type=int, help='To year')
 
     parser.add_argument('--cerebro', required=False, default='',
                         metavar='kwargs', help='kwargs in key=value format')

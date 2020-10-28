@@ -2,8 +2,7 @@ backtrader
 matplotlib
 pandas
 bokeh==2.0.0
-git+ssh://github.com/yomolify/bt-ccxt-store.git
-git+https://github.com/happydasch/btplotting
+git+ssh://git@github.com/yomolify/bt-ccxt-store.git
 git+ssh://git@github.com/yomolify/btplotting.git
 git+https://github.com/ab-trader/backtrader_addons.git
 backtrader_plotting
