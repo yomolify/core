@@ -3,7 +3,9 @@
 # !!!!!!!! LIVE TRADING !!!!!!!!
 export ENVIRONMENT="PRODUCTION"
 export TRADING="LIVE"
+export TRADING="PAPER"
 
+python main.py --exchange=binance --data_timeframe=1m --strategy=UnholyGrails.NewYearlyHighs --exectype=Market --quote=USDT
 
 # FROM 2020 NLS1
 pypy3 main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
@@ -21,7 +23,7 @@ pypy3 main.py --exchange=binance --ticker=EOSBTC --data_timeframe=1h --from_year
 pypy3 main.py --exchange=binance --ticker=XRPBTC --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 pypy3 main.py --exchange=binance --ticker=BNBETH --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 pypy3 main.py --exchange=binance --ticker=LINKUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
-pypy3 main.py --exchange=binance --ticker=VETUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
+pypy3 main.py --exchange=binance --ticker=VETUSDT --data_timeframe=1h --from_year=2019 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 pypy3 main.py --exchange=binance --ticker=ZILUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 pypy3 main.py --exchange=binance --ticker=NEOUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True
 pypy3 main.py --exchange=binance --ticker=ATOMUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True

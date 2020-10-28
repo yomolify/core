@@ -20,10 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/core.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes.py" beforeDir="false" afterPath="$PROJECT_DIR$/notes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +47,12 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="add_unversioned_files" value="$PROJECT_DIR$/main.py" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="web.server" />
@@ -468,7 +472,7 @@
       <workItem from="1602715726213" duration="7568000" />
       <workItem from="1603247640515" duration="10256000" />
       <workItem from="1603482618626" duration="72760000" />
-      <workItem from="1603873323415" duration="5827000" />
+      <workItem from="1603873323415" duration="6478000" />
     </task>
     <servers />
   </component>
@@ -495,10 +499,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="496" y="225" key="#Deployment/0.0.1792.1120@0.0.1792.1120" timestamp="1603912566592" />
-    <state x="518" y="230" key="#Options" timestamp="1603912629565">
+    <state x="518" y="230" key="#Options" timestamp="1603912795968">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="518" y="230" key="#Options/0.0.1792.1120@0.0.1792.1120" timestamp="1603912629565" />
+    <state x="518" y="230" key="#Options/0.0.1792.1120@0.0.1792.1120" timestamp="1603912795968" />
     <state x="178" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603866534828">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -521,29 +525,33 @@
     </state>
     <state x="98" y="99" width="1592" height="920" key="DiffContextDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603851978744" />
     <state x="128" y="109" width="2080" height="1014" key="DiffContextDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1602720424011" />
+    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog" timestamp="1603912859438">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603912859438" />
     <state x="951" y="372" key="FileChooserDialogImpl" timestamp="1603469573877">
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
     <state x="951" y="372" key="FileChooserDialogImpl/0.0.2341.1234@0.0.2341.1234" timestamp="1603469573877" />
-    <state width="706" height="985" key="GridCell.Tab.0.bottom" timestamp="1603905835497">
+    <state width="706" height="651" key="GridCell.Tab.0.bottom" timestamp="1603912649698">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="706" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603905835497" />
+    <state width="706" height="651" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603912649698" />
     <state width="2297" height="431" key="GridCell.Tab.0.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="706" height="985" key="GridCell.Tab.0.center" timestamp="1603905835496">
+    <state width="706" height="651" key="GridCell.Tab.0.center" timestamp="1603912649696">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="706" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603905835496" />
+    <state width="706" height="651" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603912649696" />
     <state width="2297" height="431" key="GridCell.Tab.0.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="706" height="985" key="GridCell.Tab.0.left" timestamp="1603905835496">
+    <state width="706" height="651" key="GridCell.Tab.0.left" timestamp="1603912649695">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="706" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603905835496" />
+    <state width="706" height="651" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603912649695" />
     <state width="2297" height="431" key="GridCell.Tab.0.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="706" height="985" key="GridCell.Tab.0.right" timestamp="1603905835497">
+    <state width="706" height="651" key="GridCell.Tab.0.right" timestamp="1603912649697">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="706" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603905835497" />
+    <state width="706" height="651" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603912649697" />
     <state width="2297" height="431" key="GridCell.Tab.0.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="616" height="985" key="GridCell.Tab.1.bottom" timestamp="1603870816825">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -565,10 +573,10 @@
     </state>
     <state width="616" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603870816825" />
     <state width="2297" height="431" key="GridCell.Tab.1.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state x="397" y="199" width="1259" height="722" key="SettingsEditor" timestamp="1603912554509">
+    <state x="397" y="199" width="1259" height="722" key="SettingsEditor" timestamp="1603912859029">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1603912554509" />
+    <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1603912859029" />
     <state x="519" y="219" key="SettingsEditor/0.0.2341.1234@0.0.2341.1234" timestamp="1603247718767" />
     <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1603851979816">
       <screen x="0" y="0" width="1792" height="1120" />

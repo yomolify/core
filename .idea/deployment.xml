@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="ec2-user@ec2-54-95-32-114.ap-northeast-1.compute.amazonaws.com:22" filePermissions="511" folderPermissions="511" notifyRemoteChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="ec2-user@ec2-54-95-32-114.ap-northeast-1.compute.amazonaws.com:22" filePermissions="511" folderPermissions="511">
     <serverData>
       <paths name="ec2-user@ec2-54-95-32-114.ap-northeast-1.compute.amazonaws.com:22">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/ec2-user/code/core" local="$PROJECT_DIR$" />
+            <mapping deploy="/code/core" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
