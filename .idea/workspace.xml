@@ -20,10 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,10 +47,11 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="add_unversioned_files" value="$PROJECT_DIR$/main.py" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
+    <property name="settings.editor.selected.configurable" value="web.server" />
   </component>
   <component name="RunManager" selected="Python.NewYearlyHighs 2020">
     <configuration name="BTCUSD All Time NLS1" type="PythonConfigurationType" factoryName="Python">
@@ -467,7 +468,7 @@
       <workItem from="1602715726213" duration="7568000" />
       <workItem from="1603247640515" duration="10256000" />
       <workItem from="1603482618626" duration="72760000" />
-      <workItem from="1603873323415" duration="2893000" />
+      <workItem from="1603873323415" duration="5827000" />
     </task>
     <servers />
   </component>
@@ -490,6 +491,14 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="496" y="225" key="#Deployment" timestamp="1603912566592">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="496" y="225" key="#Deployment/0.0.1792.1120@0.0.1792.1120" timestamp="1603912566592" />
+    <state x="518" y="230" key="#Options" timestamp="1603912629565">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="518" y="230" key="#Options/0.0.1792.1120@0.0.1792.1120" timestamp="1603912629565" />
     <state x="178" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603866534828">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -556,10 +565,10 @@
     </state>
     <state width="616" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603870816825" />
     <state width="2297" height="431" key="GridCell.Tab.1.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state x="397" y="199" key="SettingsEditor" timestamp="1603809842236">
+    <state x="397" y="199" width="1259" height="722" key="SettingsEditor" timestamp="1603912554509">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="397" y="199" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1603809842236" />
+    <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1603912554509" />
     <state x="519" y="219" key="SettingsEditor/0.0.2341.1234@0.0.2341.1234" timestamp="1603247718767" />
     <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1603851979816">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -570,6 +579,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state width="896" height="560" key="XDebugger.FullValuePopup/0.0.1792.1120@0.0.1792.1120" timestamp="1603836883473" />
+    <state x="627" y="178" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1603912547760">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="627" y="178" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1792.1120@0.0.1792.1120" timestamp="1603912547760" />
     <state x="-38" y="2" width="1792" height="1118" maximized="true" key="dock-window-1" timestamp="1603825701961">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -578,11 +591,19 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="594" y="301" width="835" height="518" key="find.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1603497878356" />
+    <state x="801" y="217" width="395" height="685" key="ftp.server.browser" timestamp="1603912409576">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="801" y="217" width="395" height="685" key="ftp.server.browser/0.0.1792.1120@0.0.1792.1120" timestamp="1603912409576" />
     <state x="561" y="251" width="670" height="676" key="search.everywhere.popup" timestamp="1603819964576">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="561" y="251" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1603819964576" />
     <state x="733" y="277" width="876" height="745" key="search.everywhere.popup/0.0.2341.1234@0.0.2341.1234" timestamp="1603294612727" />
+    <state x="719" y="436" key="webDeployment.PermissionsDialog" timestamp="1603912618386">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="719" y="436" key="webDeployment.PermissionsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603912618386" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
