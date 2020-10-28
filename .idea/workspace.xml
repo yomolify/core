@@ -20,13 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/strategies/UnholyGrails/HundredDayBreakout.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tickerfilter.py" beforeDir="false" afterPath="$PROJECT_DIR$/tickerfilter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tickers.py" beforeDir="false" afterPath="$PROJECT_DIR$/tickers.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +52,7 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
   </component>
-  <component name="RunManager" selected="Python.NewYearlyHighs">
+  <component name="RunManager" selected="Python.NewYearlyHighs 2020">
     <configuration name="BTCUSD All Time NLS1" type="PythonConfigurationType" factoryName="Python">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -138,6 +135,28 @@
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="--exchange=bitfinex --ticker=BTCUSD --data_timeframe=1m --from_year=2013 --from_month=10 --from_date=24 --to_year=2013 --to_month=12 --to_date=18 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True" />
       <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="BTCUSDT 2020 NLS1" type="PythonConfigurationType" factoryName="Python">
+      <module name="core" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/pypy3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="--exchange=binance --ticker=BTCUSDT --data_timeframe=1m --from_year=2019 --from_month=11 --from_date=18 --to_year=2020 --to_month=10 --to_date=23 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -320,6 +339,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="NewYearlyHighs 2020" type="PythonConfigurationType" factoryName="Python">
+      <module name="core" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/pypy3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="--exchange=binance --ticker=BTCUSDT --data_timeframe=1m --from_year=2019 --from_month=12 --from_date=11 --to_year=2020 --to_month=10 --to_date=23 --exectype=Market --strategy=UnholyGrails.NewYearlyHighs --plot=True" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="NewYearlyHighs" type="PythonConfigurationType" factoryName="Python">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -391,6 +432,7 @@
       <item itemvalue="Python.BTCUSD All Time NLS1" />
       <item itemvalue="Python.BTCUSD All Time '19 Dec NLS1" />
       <item itemvalue="Python.BTCUSDT All Time NLS1" />
+      <item itemvalue="Python.BTCUSDT 2020 NLS1" />
       <item itemvalue="Python.BTCUSDT All Time NewYearlyHighs" />
       <item itemvalue="Python.BTCUSDT All Time NewYearlyHighs Hourly" />
       <item itemvalue="Python.BTCUSDT All Time NewYearlyHighs Small TF" />
@@ -399,6 +441,7 @@
       <item itemvalue="Python.Equity Momentum from file" />
       <item itemvalue="Python.TurtleTrader" />
       <item itemvalue="Python.NewYearlyHighs" />
+      <item itemvalue="Python.NewYearlyHighs 2020" />
       <item itemvalue="Python.HundredDayBreakout" />
       <item itemvalue="Python.tickerfilter" />
       <item itemvalue="Python.Equity Momentum" />
@@ -423,7 +466,8 @@
       <workItem from="1602692296871" duration="1745000" />
       <workItem from="1602715726213" duration="7568000" />
       <workItem from="1603247640515" duration="10256000" />
-      <workItem from="1603482618626" duration="67510000" />
+      <workItem from="1603482618626" duration="72760000" />
+      <workItem from="1603873323415" duration="2893000" />
     </task>
     <servers />
   </component>
@@ -446,10 +490,10 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="178" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603865924083">
+    <state x="178" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603866534828">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="178" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603865924083" />
+    <state x="178" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603866534828" />
     <state x="470" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1603294552852" />
     <state x="607" y="360" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1603807769961">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -472,45 +516,45 @@
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
     <state x="951" y="372" key="FileChooserDialogImpl/0.0.2341.1234@0.0.2341.1234" timestamp="1603469573877" />
-    <state width="789" height="985" key="GridCell.Tab.0.bottom" timestamp="1603865928397">
+    <state width="706" height="985" key="GridCell.Tab.0.bottom" timestamp="1603905835497">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="789" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603865928397" />
+    <state width="706" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603905835497" />
     <state width="2297" height="431" key="GridCell.Tab.0.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="789" height="985" key="GridCell.Tab.0.center" timestamp="1603865928397">
+    <state width="706" height="985" key="GridCell.Tab.0.center" timestamp="1603905835496">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="789" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603865928397" />
+    <state width="706" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603905835496" />
     <state width="2297" height="431" key="GridCell.Tab.0.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="789" height="985" key="GridCell.Tab.0.left" timestamp="1603865928396">
+    <state width="706" height="985" key="GridCell.Tab.0.left" timestamp="1603905835496">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="789" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603865928396" />
+    <state width="706" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603905835496" />
     <state width="2297" height="431" key="GridCell.Tab.0.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="789" height="985" key="GridCell.Tab.0.right" timestamp="1603865928397">
+    <state width="706" height="985" key="GridCell.Tab.0.right" timestamp="1603905835497">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="789" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603865928397" />
+    <state width="706" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603905835497" />
     <state width="2297" height="431" key="GridCell.Tab.0.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="616" height="985" key="GridCell.Tab.1.bottom" timestamp="1603850224383">
+    <state width="616" height="985" key="GridCell.Tab.1.bottom" timestamp="1603870816825">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="616" height="985" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603850224383" />
+    <state width="616" height="985" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1603870816825" />
     <state width="2297" height="431" key="GridCell.Tab.1.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710111" />
-    <state width="616" height="985" key="GridCell.Tab.1.center" timestamp="1603850224382">
+    <state width="616" height="985" key="GridCell.Tab.1.center" timestamp="1603870816825">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="616" height="985" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603850224382" />
+    <state width="616" height="985" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1603870816825" />
     <state width="2297" height="431" key="GridCell.Tab.1.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="616" height="985" key="GridCell.Tab.1.left" timestamp="1603850224382">
+    <state width="616" height="985" key="GridCell.Tab.1.left" timestamp="1603870816825">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="616" height="985" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603850224382" />
+    <state width="616" height="985" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1603870816825" />
     <state width="2297" height="431" key="GridCell.Tab.1.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="616" height="985" key="GridCell.Tab.1.right" timestamp="1603850224383">
+    <state width="616" height="985" key="GridCell.Tab.1.right" timestamp="1603870816825">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="616" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603850224383" />
+    <state width="616" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1603870816825" />
     <state width="2297" height="431" key="GridCell.Tab.1.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state x="397" y="199" key="SettingsEditor" timestamp="1603809842236">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -568,8 +612,10 @@
     <SUITE FILE_PATH="coverage/core$BTCUSD_All_Time_NLS1.coverage" NAME="BTCUSD All Time NLS1 Coverage Results" MODIFIED="1602693461206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSD_In_Sample_NLS1.coverage" NAME="BTCUSD In Sample NLS1 Coverage Results" MODIFIED="1602692964765" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$tickerfilter.coverage" NAME="tickerfilter Coverage Results" MODIFIED="1603836463324" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$BTCUSDT_2020_NLS1.coverage" NAME="BTCUSDT 2020 NLS1 Coverage Results" MODIFIED="1603866606707" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Small_TF.coverage" NAME="BTCUSDT All Time NewYearlyHighs Small TF Coverage Results" MODIFIED="1603572700838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Hourly.coverage" NAME="BTCUSDT All Time NewYearlyHighs Hourly Coverage Results" MODIFIED="1603569443635" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_2020.coverage" NAME="NewYearlyHighs 2020 Coverage Results" MODIFIED="1603905835475" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_Live.coverage" NAME="BTCUSDT Live Coverage Results" MODIFIED="1603294654131" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Equity_Momentum_from_file.coverage" NAME="Equity Momentum from file Coverage Results" MODIFIED="1603686605054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/strategies/Momentum" />
     <SUITE FILE_PATH="coverage/core$TurtleTrader.coverage" NAME="TurtleTrader Coverage Results" MODIFIED="1603835442773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

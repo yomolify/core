@@ -14,7 +14,7 @@ class NewYearlyHighs(StrategyBase):
         ('period_highest_high_slow', 20),
         ('period_highest_high_mid', 10),
         ('period_highest_high_fast', 5),
-        ('order_target_percent', 0.2)
+        ('order_target_percent', 20)
     )
 
     def __init__(self):
@@ -23,15 +23,16 @@ class NewYearlyHighs(StrategyBase):
         self.altcoins = self.datas[1:]
         self.inds = {}
         self.orders = dict()
-
-        self.bitcoin_sma = bt.indicators.SimpleMovingAverage(self.bitcoin.close,
+        self.bitcoin_atr = bt.indicators.AverageTrueRange(self.bitcoin)
+        self.bitcoin_sma = bt.indicators.SimpleMovingAverage(self.bitcoin.close-self.bitcoin_atr,
                                                             period=self.params.period_sma_bitcoin)
 
         for d in self.datas:
             ticker = d._name
             self.inds[ticker] = {}
-            self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=True, subplot=False)
-            self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=True, subplot=False)
+            self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=False, subplot=False)
+            self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=False, subplot=False)
+            self.inds[ticker]["average_true_range"] = bt.indicators.AverageTrueRange(d)
         # self.rolling_high = bt.ind.Highest(
         #     period=self.params.period_rolling_high, plot=True)
         # self.rolling_low = bt.ind.Lowest(
@@ -108,19 +109,19 @@ class NewYearlyHighs(StrategyBase):
     #             self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
 
     def next(self):
-        available = list(filter(lambda d: len(d), self.altcoins))
-        for i, d in enumerate(available):
+        # available = list(filter(lambda d: len(d), self.altcoins))
+        for i, d in enumerate(self.altcoins):
             ticker = d._name
             current_position = self.getposition(d).size
             self.log('{} Position {}'.format(ticker, current_position))
             if current_position > 0:
-                if (self.bitcoin.close[0] < self.bitcoin_sma[0]) or (d.low[0] < self.inds[ticker]['rolling_low'][-1]):
+                if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.low[0] < self.inds[ticker]['rolling_low'][-10]):
                     order = self.order_target_percent(data=d, target=0)
                     self.orders[ticker].append(order)
             if current_position == 0:
                 if self.bitcoin.close[0] > self.bitcoin_sma[0]:
-                    if d.high[0] > self.inds[ticker]['rolling_high'][-1]:
-                        self.orders[ticker] = [self.order_target_percent(data=d, target=self.p.order_target_percent)]
+                    if d.high[0] > self.inds[ticker]['rolling_high'][-10]:
+                        self.orders[ticker] = [self.order_target_percent(data=d, target=self.p.order_target_percent/100)]
                         self.log('{} Buy initiated {}'.format(ticker, self.orders[ticker][0]))
         #
         # if abs(self.broker.getposition(self.datas[0]).size) > 0.0005:

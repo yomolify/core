@@ -231,14 +231,14 @@ if __name__ == '__main__':
         cerebro.broker.set_coc(True)
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
-        # cerebro.broker.setcommission(commission=0.0006)
+        cerebro.broker.setcommission(commission=0.0, leverage=1)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
         cerebro.addobserver(bt.observers.DrawDown)
         cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
         # strats = cerebro.optstrategy(
-        #     Strategy[args.strategy],
-        #     period_sma_bitcoin=range(50, 52))
+        #     strategy,
+        #     order_target_percent=range(2, 20))
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
