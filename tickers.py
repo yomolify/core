@@ -1,5 +1,20 @@
 datapath = '../fetch-historical-data'
 tickers = []
+
+tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'LINKUSDT', 'XLMUSDT',
+           'ADAUSDT', 'XMRUSDT', 'DASHUSDT', 'ZECUSDT', 'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT',
+           'BATUSDT', 'VETUSDT', 'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'KNCUSDT',
+           'ZRXUSDT', 'COMPUSDT', 'OMGUSDT', 'DOGEUSDT', 'KAVAUSDT', 'BANDUSDT', 'RLCUSDT', 'WAVESUSDT', 'MKRUSDT',
+           'SNXUSDT', 'DOTUSDT', 'YFIUSDT', 'BALUSDT', 'CRVUSDT', 'TRBUSDT', 'YFIIUSDT', 'RUNEUSDT', 'SUSHIUSDT',
+           'SRMUSDT', 'BZRXUSDT', 'EGLDUSDT', 'SOLUSDT', 'ICXUSDT', 'STORJUSDT', 'BLZUSDT', 'UNIUSDT', 'AVAXUSDT',
+           'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT', 'KSMUSDT', 'RSRUSDT', 'LRCUSDT', 'IOST', 'XLM', 'BEAM', 'ZEC',
+           'XMR', 'BAND', 'DUSK', 'CVC', 'BAT', 'TRX', 'TFUEL', 'ONG', 'THETA', 'ADA', 'KEY', 'WAVES', 'MTL', 'IOTA',
+           'TOMO', 'ICX', 'ETH', 'ONT', 'LTC', 'WIN', 'ENJ', 'HC', 'XRP', 'BCC', 'USDS', 'OMG', 'FET', 'BNB', 'ONE',
+           'MFT', 'XTZ', 'ZIL', 'BTT', 'ATOM', 'NANO', 'EOS', 'HOT', 'REN', 'NPXS', 'ALGO', 'FUN', 'BUSD', 'ZRX',
+           'MITH', 'PERL', 'USDC', 'GTO', 'LINK', 'RVN', 'COS', 'ANKR', 'COCOS', 'DASH', 'QTUM', 'DOCK', 'TUSD', 'NULS',
+           'NKN', 'PAX', 'ERD', 'FTM', 'DOGE', 'MATIC', 'CELR', 'VET', 'HBAR', 'CHZ', 'WAN', 'ETC', 'BTC', 'DENT',
+           'BCHABC', 'NEO']
+
 # All tickers with 7 day vollume > $500000 and minimum one year historical data
 tickers = ['BTC', 'ETH', 'IOST', 'XLM', 'BEAM', 'BAND', 'DUSK', 'CVC', 'BAT', 'TRX', 'TFUEL', 'ONG', 'THETA', 'ADA',
            'KEY', 'WAVES',
@@ -35,7 +50,25 @@ tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT',
            'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT', 'VETUSDT',
            'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT']
 
-# All FUTURES
+# All spot altcoins with > one year historical data, stablecoins and badcoins removed
+tickers = ['BTCUSDT', 'IOSTUSDT', 'XLMUSDT', 'BEAMUSDT', 'ZECUSDT', 'XMRUSDT', 'BANDUSDT', 'DUSKUSDT', 'CVCUSDT',
+           'BATUSDT',
+           'TRXUSDT', 'TFUELUSDT', 'ONGUSDT', 'THETAUSDT', 'ADAUSDT', 'KEYUSDT', 'WAVESUSDT', 'MTLUSDT', 'IOTAUSDT',
+           'TOMOUSDT', 'ICXUSDT', 'ONTUSDT', 'LTCUSDT', 'WINUSDT', 'ENJUSDT', 'HCUSDT', 'XRPUSDT',
+           'OMGUSDT', 'FETUSDT', 'BNBUSDT', 'ONEUSDT', 'MFTUSDT', 'XTZUSDT', 'ZILUSDT', 'BTTUSDT', 'ATOMUSDT',
+           'ETHUSDT',
+           'NANOUSDT', 'EOSUSDT', 'HOTUSDT', 'RENUSDT', 'NPXSUSDT', 'ALGOUSDT', 'FUNUSDT', 'ZRXUSDT',
+           'MITHUSDT', 'PERLUSDT', 'GTOUSDT', 'LINKUSDT',
+           'RVNUSDT', 'COSUSDT', 'ANKRUSDT', 'COCOSUSDT',
+           'DASHUSDT', 'QTUMUSDT', 'DOCKUSDT', 'NULSUSDT',
+           'NKNUSDT', 'PAXUSDT', 'ERDUSDT', 'FTMUSDT',
+           'DOGEUSDT', 'MATICUSDT', 'CELRUSDT', 'VETUSDT',
+           'HBARUSDT', 'CHZUSDT', 'WANUSDT', 'ETCUSDT',
+           'DENTUSDT', 'NEOUSDT']
+
+# 'BCHABCUSDT', 'BCCUSDT','BUSDUSDT', 'USDCUSDT', 'USDSUSDT', 'TUSDUSDT',
+
+# All Futures
 tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT',
            'ETCUSDT', 'LINKUSDT', 'XLMUSDT', 'ADAUSDT', 'XMRUSDT', 'DASHUSDT', 'ZECUSDT',
            'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT', 'VETUSDT',
