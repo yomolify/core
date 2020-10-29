@@ -22,10 +22,9 @@
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/args.py" beforeDir="false" afterPath="$PROJECT_DIR$/args.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notes.py" beforeDir="false" afterPath="$PROJECT_DIR$/notes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/runs/bitfinex-BTCUSD-1m/r60m-BuyHold-April_1st_2015-to-April_1st_2018.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/runs/bitfinex-BTCUSD-1m/r60m-BuyHold-June_1st_2013-to-April_1st_2015.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,15 +49,21 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="add_unversioned_files" value="$PROJECT_DIR$/main.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="web.server" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.NewYearlyHighs 2020">
     <configuration name="BTCUSD All Time NLS1" type="PythonConfigurationType" factoryName="Python">
@@ -475,7 +480,7 @@
       <workItem from="1602715726213" duration="7568000" />
       <workItem from="1603247640515" duration="10256000" />
       <workItem from="1603482618626" duration="72760000" />
-      <workItem from="1603873323415" duration="7899000" />
+      <workItem from="1603873323415" duration="13823000" />
     </task>
     <servers />
   </component>
@@ -511,10 +516,10 @@
     </state>
     <state x="178" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603866534828" />
     <state x="470" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1603294552852" />
-    <state x="607" y="360" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1603807769961">
+    <state x="607" y="360" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1603934553004">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="607" y="360" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1792.1120@0.0.1792.1120" timestamp="1603807769961" />
+    <state x="607" y="360" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1792.1120@0.0.1792.1120" timestamp="1603934553004" />
     <state x="976" y="333" key="#com.intellij.ide.util.MemberChooser" timestamp="1603294604140">
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
@@ -528,10 +533,10 @@
     </state>
     <state x="98" y="99" width="1592" height="920" key="DiffContextDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603851978744" />
     <state x="128" y="109" width="2080" height="1014" key="DiffContextDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1602720424011" />
-    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog" timestamp="1603912859438">
+    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog" timestamp="1603941141555">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603912859438" />
+    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603941141555" />
     <state x="951" y="372" key="FileChooserDialogImpl" timestamp="1603469573877">
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
@@ -606,10 +611,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="801" y="217" width="395" height="685" key="ftp.server.browser/0.0.1792.1120@0.0.1792.1120" timestamp="1603912409576" />
-    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup" timestamp="1603819964576">
+    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup" timestamp="1603934817226">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1603819964576" />
+    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1603934817226" />
     <state x="733" y="277" width="876" height="745" key="search.everywhere.popup/0.0.2341.1234@0.0.2341.1234" timestamp="1603294612727" />
     <state x="719" y="436" key="webDeployment.PermissionsDialog" timestamp="1603912618386">
       <screen x="0" y="0" width="1792" height="1120" />
