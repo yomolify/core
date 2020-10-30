@@ -5,7 +5,7 @@ export ENVIRONMENT="PRODUCTION"
 export TRADING="LIVE"
 export TRADING="PAPER"
 
-python main.py --exchange=binance --strategy=UnholyGrails.NewYearlyHighs --exectype=Market --quote=USDT
+python3.8 main.py --exchange=binance --strategy=UnholyGrails.NewYearlyHighs --exectype=Market --quote=USDT
 
 # FROM 2020 NLS1
 pypy3 main.py --exchange=binance --ticker=BTCUSDT --data_timeframe=1h --from_year=2020 --from_month=1 --from_date=1 --to_year=2020 --to_month=10 --to_date=22 --exectype=Market --strategy=BollingerBands.NLS1 --plot=True

@@ -129,10 +129,16 @@ def _run_resampler(data_timeframe,
         cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
     else:
         hist_start_date = datetime.utcnow() - timedelta(hours=500)
-        tickers = ['BTC/USDT', 'ETH/USDT', 'XRP/USDT', 'EOS/USDT', 'LTC/USDT', 'TRX/USDT',
-                   'ETC/USDT', 'LINK/USDT', 'XLM/USDT', 'ADA/USDT', 'XMR/USDT', 'DASH/USDT', 'ZEC/USDT',
-                   'XTZ/USDT', 'BNB/USDT', 'ATOM/USDT', 'ONT/USDT', 'IOTA/USDT', 'BAT/USDT', 'VET/USDT',
-                   'NEO/USDT', 'QTUM/USDT', 'IOST/USDT', 'THETA/USDT', 'ALGO/USDT', 'ZIL/USDT']
+        tickers = ['BTC/USDT', 'ETH/USDT', 'XRP/USDT', 'EOS/USDT', 'LTC/USDT', 'TRX/USDT', 'ETC/USDT', 'LINK/USDT',
+                   'XLM/USDT',
+                   'ADA/USDT',
+                   'XMR/USDT', 'DASH/USDT', 'ZEC/USDT', 'XTZ/USDT', 'BNB/USDT', 'ATOM/USDT', 'ONT/USDT', 'IOTA/USDT',
+                   'BAT/USDT',
+                   'VET/USDT',
+                   'NEO/USDT', 'QTUM/USDT', 'IOST/USDT', 'THETA/USDT', 'ALGO/USDT', 'ZIL/USDT', 'ZRX/USDT', 'OMG/USDT',
+                   'DOGE/USDT',
+                   'BAND/USDT', 'WAVES/USDT', 'ICX/USDT', 'FTM/USDT', 'ENJ/USDT', 'TOMO/USDT', 'REN/USDT']
+
         for ticker in tickers:
             data = store.getdata(dataname=ticker, name=ticker.replace('/', ''),
                                  timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
