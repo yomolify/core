@@ -15,7 +15,9 @@ class NewYearlyHighs(StrategyBase):
         ('period_sma_fast', 20),
         ('period_sma_mid', 50),
         ('period_sma_slow', 100),
-        ('period_sma_veryslow', 200),
+        ('period_sma_veryslow', 500),
+        ('period_vol_sma_fast', 14),
+        ('period_vol_sma_slow', 54),
         # ('period_highest_high_slow', 20),
         # ('period_highest_high_mid', 10),
         # ('period_highest_high_fast', 5),
@@ -50,6 +52,14 @@ class NewYearlyHighs(StrategyBase):
                 period=self.params.period_sma_slow, plot=False)
             self.inds[ticker]["sma_veryslow"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_veryslow, plot=False)
+
+            # cross_up_bb_bot = bt.ind.CrossUp(self.datas[0].close, self.bollinger_bands.lines.bot)
+            # volSMA_slow = bt.ind.SMA(d.volume, subplot=False, period=self.params.period_vol_sma_slow, plot=False)
+            # volSMA_fast = bt.ind.SMA(d.volume, subplot=False, period=self.params.period_vol_sma_fast, plot=False)
+            # vol_condition = volSMA_fast > volSMA_slow
+            #
+            #
+            # self.buy_sig[ticker] = bt.And(cross_down_bb_top, vol_condition)
         # self.rolling_high = bt.ind.Highest(
         #     period=self.params.period_rolling_high, plot=True)
         # self.rolling_low = bt.ind.Lowest(
@@ -141,7 +151,11 @@ class NewYearlyHighs(StrategyBase):
             if current_position == 0:
                 volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
                 volatility_factor = 1/(volatility*100)
-                if self.bitcoin.close[0] > self.bitcoin_sma[0]:
+                closes_above_sma = 0
+                for lookback in [0, -1, -2, -3, -4]:
+                    if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
+                        closes_above_sma += 1
+                if self.bitcoin.close[0] > self.bitcoin_sma[0] and closes_above_sma == 5:
                     if d.close[0] > self.inds[ticker]['sma_fast'][0]:
                         if d.high[0] > self.inds[ticker]['rolling_high'][0]:
                             self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100) * volatility_factor)]

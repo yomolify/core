@@ -14,7 +14,7 @@ class TrendPilot(StrategyBase):
         ('period_sma_veryfast', 10),
         ('period_sma_fast', 20),
         ('period_sma_mid', 50),
-        ('period_sma_slow', 100),
+        ('period_sma_slow', 75),
         ('period_sma_veryslow', 200),
         # ('period_highest_high_slow', 20),
         # ('period_highest_high_mid', 10),
@@ -134,24 +134,37 @@ class TrendPilot(StrategyBase):
             if current_position > 0:
                 closes_below_sma = 0
                 for lookback in [0, -1, -2, -3, -4]:
-                    if d.close[lookback] < self.inds[ticker]['sma_veryslow'][lookback]:
+                    if d.close[lookback] < self.inds[ticker]['sma_slow'][lookback]:
                         closes_below_sma += 1
-                print(f'closes_above_sma: {closes_below_sma}')
-                if closes_below_sma == 5:
+                if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or closes_below_sma == 5:
+                    order = self.order_target_percent(data=d, target=0)
+                    self.orders[ticker].append(order)
+            elif current_position < 0:
+                closes_above_sma = 0
+                for lookback in [0, -1, -2, -3, -4]:
+                    if d.close[lookback] > self.inds[ticker]['sma_slow'][lookback]:
+                        closes_above_sma += 1
+                if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or closes_above_sma == 5:
                     order = self.order_target_percent(data=d, target=0)
                     self.orders[ticker].append(order)
 
             if current_position == 0:
-                # volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
-                # volatility_factor = 1/(volatility*100)
+                volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
+                volatility_factor = 1/(volatility*100)
                 closes_above_sma = 0
+                closes_below_sma = 0
                 for lookback in [0, -1, -2, -3, -4]:
-                    print(d.close[lookback])
-                    print(self.inds[ticker]['sma_veryslow'][lookback])
-                    if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
+                    if d.close[lookback] > self.inds[ticker]['sma_slow'][lookback]:
                         closes_above_sma += 1
-                print(f'closes_above_sma: {closes_above_sma}')
+                    if d.close[lookback] < self.inds[ticker]['sma_slow'][lookback]:
+                        closes_below_sma += 1
                 if closes_above_sma == 5:
-                    # self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100) * volatility_factor)]
-                    self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent))]
+                    self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100) * volatility_factor)]
+                    # self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100))]
                     self.log('{} Buy initiated {}'.format(ticker, self.orders[ticker][0]))
+                # elif closes_below_sma == 5:
+                #     self.orders[ticker] = [self.order_target_percent(data=d, target=-(self.p.order_target_percent/100) * volatility_factor)]
+                #     # self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100))]
+                #     self.log('{} Sell initiated {}'.format(ticker, self.orders[ticker][0]))
+
+

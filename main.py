@@ -91,11 +91,7 @@ def _run_resampler(data_timeframe,
                    resample_timeframe,
                    resample_compression,
                    runtime_seconds=27,
-                   starting_value=200,
                    tick_interval=timedelta(seconds=1),
-                   num_gen_bars=None,
-                   start_delays=None,
-                   num_data=1,
                    ) -> bt.Strategy:
     _logger.info("Constructing Cerebro")
 
@@ -166,9 +162,6 @@ if __name__ == '__main__':
                                         # resample_compression=1,
                                         runtime_seconds=60000,
                                         tick_interval=timedelta(seconds=60),
-                                        start_delays=[None, None],
-                                        num_gen_bars=[0, 10],
-                                        num_data=2,
                                         )
 
     else:  # Backtesting with CSV file
@@ -261,8 +254,8 @@ if __name__ == '__main__':
         cerebro.broker.set_coc(True)
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
-        # cerebro.broker.setcommission(commission=0.00036, leverage=1)
-        cerebro.broker.setcommission(commission=0.0, leverage=1)
+        cerebro.broker.setcommission(commission=0.00036, leverage=1)
+        # cerebro.broker.setcommission(commission=0.0, leverage=1)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
         cerebro.addobserver(bt.observers.DrawDown)
