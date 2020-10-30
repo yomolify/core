@@ -4,7 +4,7 @@ import datetime
 from strategies.base import StrategyBase
 
 
-class NewYearlyHighs(StrategyBase):
+class TrendPilot(StrategyBase):
 
     params = (
         ('exectype', bt.Order.Market),
@@ -125,74 +125,33 @@ class NewYearlyHighs(StrategyBase):
     #                 self.cancel(self.short_stop_order)
     #             self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
 
+    # TODO - current position > 0 is never entered 
     def next(self):
         for i, d in enumerate(self.altcoins):
             ticker = d._name
             current_position = self.getposition(d).size
             self.log('{} Position {}'.format(ticker, current_position))
             if current_position > 0:
-                if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.low[0] < self.inds[ticker]['rolling_low'][0]):
+                closes_below_sma = 0
+                for lookback in [0, -1, -2, -3, -4]:
+                    if d.close[lookback] < self.inds[ticker]['sma_veryslow'][lookback]:
+                        closes_below_sma += 1
+                print(f'closes_above_sma: {closes_below_sma}')
+                if closes_below_sma == 5:
                     order = self.order_target_percent(data=d, target=0)
                     self.orders[ticker].append(order)
-            elif current_position < 0:
-                if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or (d.high[0] > self.inds[ticker]['rolling_high'][0]):
-                    order = self.order_target_percent(data=d, target=0)
-                    self.orders[ticker].append(order)
+
             if current_position == 0:
-                volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
-                volatility_factor = 1/(volatility*100)
-                if self.bitcoin.close[0] > self.bitcoin_sma[0]:
-                    if d.close[0] > self.inds[ticker]['sma_fast'][0]:
-                        if d.high[0] > self.inds[ticker]['rolling_high'][0]:
-                            self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100) * volatility_factor)]
-                            self.log('{} Buy initiated {}'.format(ticker, self.orders[ticker][0]))
-
-                elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
-                    if d.low[0] < self.inds[ticker]['rolling_low'][0]:
-                        if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0]:
-                            self.orders[ticker] = [self.order_target_percent(data=d, target=-(self.p.order_target_percent/100) * volatility_factor)]
-                            self.log('{} Sell initiated {}'.format(ticker, self.orders[ticker][0]))
-
-            #  Original
-            # if current_position == 0:
-            #     if self.bitcoin.close[0] > self.bitcoin_sma[0]:
-            #         if d.high[0] > self.inds[ticker]['rolling_high'][-10]:
-            #             self.orders[ticker] = [self.order_target_percent(data=d, target=0.2)]
-            #             self.log('{} Buy initiated {}'.format(ticker, self.orders[ticker][0]))
-
-        #
-        # if abs(self.broker.getposition(self.datas[0]).size) > 0.0005:
-        #     if self.datas[0].close[0] < self.rolling_low[-1]:
-        #         self.long_order = None
-        #         self.tp_price = self.data0.close[0]
-        #         self.log('close_sig')
-        #         self.exec_trade(direction="close", exectype=self.params.exectype)
-        #         # Cancel Stops
-        #         if self.long_stop_order:
-        #             self.log('Cancelling long stop order')
-        #             self.cancel(self.long_stop_order)
-        #             self.long_stop_order = None
-        #         if self.short_stop_order:
-        #             self.log('Cancelling short stop order')
-        #             self.cancel(self.short_stop_order)
-        #             self.short_stop_order = None
-            # else:
-            #     self.update_indicators()
-        # if abs(self.broker.getposition(self.datas[0]).size) < 0.0005:
-        #     if self.long_stop_order:
-        #         self.log('Cancelling redundant long stop order')
-        #         self.cancel(self.long_stop_order)
-        #     self.long_order = None
-        #     self.short_order = None
-        #     self.long_stop_order = None
-        #     self.short_stop_order = None
-        #     self.sl_price = None
-        #     self.new_sl_price = None
-        #     self.tp_price = None
-
-        # if self.long_order or self.short_order:
-        #     return
-        #
-        # if abs(self.broker.getposition(self.datas[0]).size) < 0.0005:
-        #     if self.datas[0].close[0] > self.rolling_high[-1]:
-        #         self.long_order = self.exec_trade(direction="buy", exectype=self.params.exectype)
+                # volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
+                # volatility_factor = 1/(volatility*100)
+                closes_above_sma = 0
+                for lookback in [0, -1, -2, -3, -4]:
+                    print(d.close[lookback])
+                    print(self.inds[ticker]['sma_veryslow'][lookback])
+                    if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
+                        closes_above_sma += 1
+                print(f'closes_above_sma: {closes_above_sma}')
+                if closes_above_sma == 5:
+                    # self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100) * volatility_factor)]
+                    self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent))]
+                    self.log('{} Buy initiated {}'.format(ticker, self.orders[ticker][0]))

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Remote PyPy 7.3.2 [Python 3.6.9] (sftp://ec2-user@ec2-54-95-32-114.ap-northeast-1.compute.amazonaws.com:22/home/linuxbrew/.linuxbrew/bin/pypy3)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="PyPy 3.8" project-jdk-type="Python SDK" />
 </project>
