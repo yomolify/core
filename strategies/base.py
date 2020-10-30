@@ -53,9 +53,9 @@ class StrategyBase(bt.Strategy):
             self.log('{}'.format(self.position), color='magenta', send_telegram=True)
             # self.log('Data time: {}, Computer Time: {}'.format(self.data0.datetime.datetime(), datetime.now() - timedelta(minutes=63)))
             # Works for minute timeframe
-            if self.data0.datetime.datetime() < datetime.now() - timedelta(minutes=63):
+            # if self.data0.datetime.datetime() < datetime.now() - timedelta(minutes=63):
             # Works for hourly timeframe
-            # if self.data0.datetime.datetime() < datetime.now() - timedelta(minutes=123):
+            if self.data0.datetime.datetime() < datetime.now() - timedelta(minutes=123):
                 self.log('Historical data, so not placing real order')
                 return
             # BUY/SELL BASE coin for QUOTE
