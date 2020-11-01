@@ -36,7 +36,7 @@ class StrategyBase(bt.Strategy):
 
     def notify_data(self, data, status, *args, **kwargs):
         self.status = data._getstatusname(status)
-        print(self.status)
+        # print(self.status)
         if status == data.LIVE:
             self.log("LIVE DATA - Ready to trade")
 
@@ -134,9 +134,9 @@ class StrategyBase(bt.Strategy):
 
     def notify_order(self, order):
         ticker = order.data._name
-        self.log('{} Order {} Status {}'.format(
-            ticker, order.ref, order.getstatusname())
-        )
+        # self.log('{} Order {} Status {}'.format(
+        #     ticker, order.ref, order.getstatusname())
+        # )
 
         # if not order.alive():  # not alive - nullify
         #     print('-- No longer alive self.orders[order.data]: {} '.format(self.orders[ticker]))
@@ -172,7 +172,7 @@ class StrategyBase(bt.Strategy):
                     self.buy_price_close = float(order.ccxt_order['info']['avgPrice'])
                 else:
                     self.buy_price_close = order.executed.price
-                self.log_order(order, 'buy')
+                # self.log_order(order, 'buy')
                 if self.long_order and not self.long_stop_order:
                     self.sl_price = self.data0.low[0]*0.95
                     if 0.92*self.data0.open[0] > self.sl_price:
@@ -202,7 +202,7 @@ class StrategyBase(bt.Strategy):
                     self.sell_price_close = float(order.ccxt_order['info']['avgPrice'])
                 else:
                     self.sell_price_close = order.executed.price
-                self.log_order(order, 'sell')
+                # self.log_order(order, 'sell')
                 if self.short_order and not self.short_stop_order:
                     self.sl_price = self.highest_high_slow[0]
                     if 1.04*self.data0.open[0] < self.sl_price:
@@ -305,6 +305,12 @@ class StrategyBase(bt.Strategy):
         # Margin: {order.executed.margin}
         # Current Value: {order.executed.value}
 
+    def log_order_v2(self, action, side, order, ticker):
+        qty = order['executedQty']
+        price = order['avgPrice']
+        quote = order['cumQuote']
+        self.log(f'{action} {side} {qty} {ticker} @ {price} for {quote} USDT')
+
     def log(self, txt, send_telegram=False, color=None, highlight=None, attrs=None):
         if not DEBUG:
             return
@@ -328,6 +334,8 @@ class StrategyBase(bt.Strategy):
                 # self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
                 self.quote_available = (self.broker.get_wallet_balance(QUOTE))[0]
                 self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
+                # cash, value = self.broker.get_balance()
+                # self.log('Cash, value available: {} {}'.format(cash, value), color='yellow')
             else:
                 self.val_start = self.broker.get_cash()
         else:

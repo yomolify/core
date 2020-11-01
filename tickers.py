@@ -80,6 +80,17 @@ tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT',
            'AVAXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT',
            'KSMUSDT', 'RSRUSDT', 'LRCUSDT', 'BCHUSDT', 'SXPUSDT']
 
+# All futures with listing before 1st October 2020
+tickers = ['ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT', 'BCH/USDT',
+                   'BLZ/USDT', 'BNB/USDT', 'BTC/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
+                   'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
+                   'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'IOTA/USDT', 'KAVA/USDT', 'KNC/USDT', 'LINK/USDT', 'LTC/USDT',
+                   'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT', 'SNX/USDT',
+                   'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT', 'TRX/USDT',
+                   'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT', 'YFII/USDT',
+                   'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT']
+
+
 # Futures with atleast one year of historical data
 tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'LINKUSDT', 'XLMUSDT',
            'ADAUSDT',

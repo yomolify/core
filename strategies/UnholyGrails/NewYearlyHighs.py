@@ -2,6 +2,7 @@ import backtrader as bt
 import backtrader_addons as bta
 import datetime
 from strategies.base import StrategyBase
+from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG, TRADING
 
 
 class NewYearlyHighs(StrategyBase):
@@ -16,8 +17,6 @@ class NewYearlyHighs(StrategyBase):
         ('period_sma_mid', 50),
         ('period_sma_slow', 100),
         ('period_sma_veryslow', 500),
-        ('period_vol_sma_fast', 14),
-        ('period_vol_sma_slow', 54),
         # ('period_highest_high_slow', 20),
         # ('period_highest_high_mid', 10),
         # ('period_highest_high_fast', 5),
@@ -28,6 +27,7 @@ class NewYearlyHighs(StrategyBase):
 
     def __init__(self):
         StrategyBase.__init__(self)
+        self.i = 0
         self.bitcoin = self.datas[0]
         self.altcoins = self.datas[1:]
         self.inds = {}
@@ -53,13 +53,9 @@ class NewYearlyHighs(StrategyBase):
             self.inds[ticker]["sma_veryslow"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_veryslow, plot=False)
 
-            # cross_up_bb_bot = bt.ind.CrossUp(self.datas[0].close, self.bollinger_bands.lines.bot)
-            # volSMA_slow = bt.ind.SMA(d.volume, subplot=False, period=self.params.period_vol_sma_slow, plot=False)
-            # volSMA_fast = bt.ind.SMA(d.volume, subplot=False, period=self.params.period_vol_sma_fast, plot=False)
-            # vol_condition = volSMA_fast > volSMA_slow
-            #
-            #
-            # self.buy_sig[ticker] = bt.And(cross_down_bb_top, vol_condition)
+            self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
+            self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
+            self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
         # self.rolling_high = bt.ind.Highest(
         #     period=self.params.period_rolling_high, plot=True)
         # self.rolling_low = bt.ind.Lowest(
@@ -136,7 +132,13 @@ class NewYearlyHighs(StrategyBase):
     #             self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
 
     def next(self):
+        if self.i % 5 == 0:
+            self.rebalance_portfolio()
+        self.i += 1
         for i, d in enumerate(self.altcoins):
+            self.log(f'Available data for {(d._name)[:-4]}: {len(d)}')
+        available = list(filter(lambda altcoin_hourly_data: len(altcoin_hourly_data) > 500, self.altcoins))
+        for i, d in enumerate(available):
             ticker = d._name
             current_position = self.getposition(d).size
             self.log('{} Position {}'.format(ticker, current_position))
@@ -144,10 +146,22 @@ class NewYearlyHighs(StrategyBase):
                 if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.low[0] < self.inds[ticker]['rolling_low'][0]):
                     order = self.order_target_percent(data=d, target=0)
                     self.orders[ticker].append(order)
+                    if ENV == PRODUCTION and TRADING == "LIVE":
+                        order_info = self.orders[ticker][1].ccxt_order['info']
+                        qty = order_info['executedQty']
+                        price = order_info['avgPrice']
+                        quote = order_info['cumQuote']
+                        self.log(f'Exit Long {qty} {ticker[:-4]} @ {price} for {quote} USDT')
             elif current_position < 0:
                 if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or (d.high[0] > self.inds[ticker]['rolling_high'][0]):
                     order = self.order_target_percent(data=d, target=0)
                     self.orders[ticker].append(order)
+                    if ENV == PRODUCTION and TRADING == "LIVE":
+                        order_info = self.orders[ticker][1].ccxt_order['info']
+                        qty = order_info['executedQty']
+                        price = order_info['avgPrice']
+                        quote = order_info['cumQuote']
+                        self.log(f'Exit Short {qty} {ticker[:-4]} @ {price} for {quote} USDT')
             if current_position == 0:
                 volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
                 volatility_factor = 1/(volatility*100)
@@ -159,14 +173,23 @@ class NewYearlyHighs(StrategyBase):
                     if d.close[0] > self.inds[ticker]['sma_fast'][0]:
                         if d.high[0] > self.inds[ticker]['rolling_high'][0]:
                             self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100) * volatility_factor)]
-                            self.log('{} Buy initiated {}'.format(ticker, self.orders[ticker][0]))
+                            if ENV == PRODUCTION and TRADING == "LIVE":
+                                order_info = self.orders[ticker][0].ccxt_order['info']
+                                qty = order_info['executedQty']
+                                price = order_info['avgPrice']
+                                quote = order_info['cumQuote']
+                                self.log(f'Enter Long {qty} {ticker[:-4]} @ {price} for {quote} USDT')
 
                 elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
                     if d.low[0] < self.inds[ticker]['rolling_low'][0]:
                         if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0]:
                             self.orders[ticker] = [self.order_target_percent(data=d, target=-(self.p.order_target_percent/100) * volatility_factor)]
-                            self.log('{} Sell initiated {}'.format(ticker, self.orders[ticker][0]))
-
+                            if ENV == PRODUCTION and TRADING == "LIVE":
+                                order_info = self.orders[ticker][0].ccxt_order['info']
+                                qty = order_info['executedQty']
+                                price = order_info['avgPrice']
+                                quote = order_info['cumQuote']
+                                self.log(f'Enter Short {qty} {ticker[:-4]} @ {price} for {quote} USDT')
             #  Original
             # if current_position == 0:
             #     if self.bitcoin.close[0] > self.bitcoin_sma[0]:
@@ -210,3 +233,34 @@ class NewYearlyHighs(StrategyBase):
         # if abs(self.broker.getposition(self.datas[0]).size) < 0.0005:
         #     if self.datas[0].close[0] > self.rolling_high[-1]:
         #         self.long_order = self.exec_trade(direction="buy", exectype=self.params.exectype)
+
+    def rebalance_portfolio(self):
+        self.log('Rebalancing Portfolio...')
+        # only look at data that we can have indicators for
+        self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
+        self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
+
+        # sell any coins in lowest momentum that are in positions
+        for i, d in enumerate(self.rankings[:5]):
+            if self.getposition(d).size:
+                order = self.order_target_percent(data=d, target=0)
+                ticker = d._name
+                self.orders[ticker].append(order)
+                if ENV == PRODUCTION and TRADING == "LIVE":
+                    order_info = self.orders[ticker][1].ccxt_order['info']
+                    qty = order_info['executedQty']
+                    price = order_info['avgPrice']
+                    quote = order_info['cumQuote']
+                    self.log(f'Rebalance exit {qty} {ticker[:-4]} @ {price} for {quote} USDT')
+        # if self.spy < self.spy_sma200:
+        #     return
+
+        # buy altcoins with remaining cash
+        # for i, d in enumerate(self.rankings[:int(num_altcoins * 0.2)]):
+        #     cash = self.broker.get_cash()
+        #     value = self.broker.get_value()
+        #     if cash <= 0:
+        #         break
+        #     if not self.getposition(self.data).size:
+        #         size = value * 0.001 / self.inds[d]["atr20"]
+        #         self.buy(d, size=size)

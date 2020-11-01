@@ -26,6 +26,7 @@ class TrendPilot(StrategyBase):
 
     def __init__(self):
         StrategyBase.__init__(self)
+        self.i = 0
         self.bitcoin = self.datas[0]
         self.altcoins = self.datas[1:]
         self.inds = {}
@@ -50,6 +51,8 @@ class TrendPilot(StrategyBase):
                 period=self.params.period_sma_slow, plot=False)
             self.inds[ticker]["sma_veryslow"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_veryslow, plot=False)
+            self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
+            self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
         # self.rolling_high = bt.ind.Highest(
         #     period=self.params.period_rolling_high, plot=True)
         # self.rolling_low = bt.ind.Lowest(
@@ -127,6 +130,10 @@ class TrendPilot(StrategyBase):
 
     # TODO - current position > 0 is never entered 
     def next(self):
+        if self.i % 5 == 0:
+            self.rebalance_portfolio()
+        self.i += 1
+
         for i, d in enumerate(self.altcoins):
             ticker = d._name
             current_position = self.getposition(d).size
@@ -168,3 +175,13 @@ class TrendPilot(StrategyBase):
                 #     self.log('{} Sell initiated {}'.format(ticker, self.orders[ticker][0]))
 
 
+    def rebalance_portfolio(self):
+        # only look at data that we can have indicators for
+        self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
+        self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
+
+        # sell any coins in lowest momentum that are in positions
+        for i, d in enumerate(self.rankings[:5]):
+            if self.getposition(d).size:
+                print(f'position of ranked coin: {d._name}')
+                order = self.order_target_percent(data=d, target=0)
