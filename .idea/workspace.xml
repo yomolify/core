@@ -20,17 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighsRanked.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighsTEST.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/ErnieChan/KalmanPair.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/ErnieChan/KalmanPair.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/Momentum/EquityMomentum.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/Momentum/EquityMomentum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCross.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCross.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighsBTC.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighsBTC.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tickerfilter.py" beforeDir="false" afterPath="$PROJECT_DIR$/tickerfilter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tickers.py" beforeDir="false" afterPath="$PROJECT_DIR$/tickers.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -701,7 +692,7 @@
       <workItem from="1602715726213" duration="7568000" />
       <workItem from="1603247640515" duration="10256000" />
       <workItem from="1603482618626" duration="72760000" />
-      <workItem from="1603873323415" duration="91490000" />
+      <workItem from="1603873323415" duration="99844000" />
     </task>
     <servers />
   </component>
@@ -762,10 +753,10 @@
     </state>
     <state x="98" y="99" width="1592" height="920" key="DiffContextDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1604211134564" />
     <state x="128" y="109" width="2080" height="1014" key="DiffContextDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1602720424011" />
-    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog" timestamp="1604219875929">
+    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog" timestamp="1604509741893">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1604219875929" />
+    <state x="100" y="100" width="1592" height="920" key="DirDiffDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1604509741893" />
     <state x="1249" y="280" key="EnvironmentVariablesDialog" timestamp="1604126457195">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -774,25 +765,25 @@
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
     <state x="951" y="372" key="FileChooserDialogImpl/0.0.2341.1234@0.0.2341.1234" timestamp="1603469573877" />
-    <state width="675" height="985" key="GridCell.Tab.0.bottom" timestamp="1604458163616">
+    <state width="675" height="985" key="GridCell.Tab.0.bottom" timestamp="1604532685016">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="675" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1604458163616" />
+    <state width="675" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1604532685016" />
     <state width="2297" height="431" key="GridCell.Tab.0.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="675" height="985" key="GridCell.Tab.0.center" timestamp="1604458163615">
+    <state width="675" height="985" key="GridCell.Tab.0.center" timestamp="1604532685015">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="675" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1604458163615" />
+    <state width="675" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1604532685015" />
     <state width="2297" height="431" key="GridCell.Tab.0.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="675" height="985" key="GridCell.Tab.0.left" timestamp="1604458163615">
+    <state width="675" height="985" key="GridCell.Tab.0.left" timestamp="1604532685014">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="675" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1604458163615" />
+    <state width="675" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1604532685014" />
     <state width="2297" height="431" key="GridCell.Tab.0.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="675" height="985" key="GridCell.Tab.0.right" timestamp="1604458163616">
+    <state width="675" height="985" key="GridCell.Tab.0.right" timestamp="1604532685015">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="675" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1604458163616" />
+    <state width="675" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1604532685015" />
     <state width="2297" height="431" key="GridCell.Tab.0.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="778" height="651" key="GridCell.Tab.1.bottom" timestamp="1604272200132">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -819,10 +810,10 @@
     </state>
     <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1604272763471" />
     <state x="519" y="219" key="SettingsEditor/0.0.2341.1234@0.0.2341.1234" timestamp="1603247718767" />
-    <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1603851979816">
+    <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1604461936947">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="737" y="219" key="VcsDiffUtil.ChangesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1603851979816" />
+    <state x="737" y="219" key="VcsDiffUtil.ChangesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1604461936947" />
     <state x="963" y="241" key="VcsDiffUtil.ChangesDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1602740655410" />
     <state width="896" height="560" key="XDebugger.FullValuePopup" timestamp="1603836883473">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -901,7 +892,7 @@
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs.coverage" NAME="BTCUSDT All Time NewYearlyHighs Coverage Results" MODIFIED="1603683738252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSD_In_Sample_NLS1.coverage" NAME="BTCUSD In Sample NLS1 Coverage Results" MODIFIED="1602692964765" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$tickerfilter.coverage" NAME="tickerfilter Coverage Results" MODIFIED="1604272170515" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_2020.coverage" NAME="NewYearlyHighs 2020 Coverage Results" MODIFIED="1604458236764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_2020.coverage" NAME="NewYearlyHighs 2020 Coverage Results" MODIFIED="1604532752680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$NewYearlyHighs_Oct_2020.coverage" NAME="NewYearlyHighs Oct 2020 Coverage Results" MODIFIED="1604270944862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Equity_Momentum_from_file.coverage" NAME="Equity Momentum from file Coverage Results" MODIFIED="1603686605054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/strategies/Momentum" />
     <SUITE FILE_PATH="coverage/core$TurtleTrader.coverage" NAME="TurtleTrader Coverage Results" MODIFIED="1603835442773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

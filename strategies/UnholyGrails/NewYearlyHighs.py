@@ -27,7 +27,7 @@ class NewYearlyHighs(StrategyBase):
         StrategyBase.__init__(self)
         self.i = 0
         self.bitcoin = self.datas[0]
-        self.altcoins = self.datas[1:]
+        self.altcoins = self.datas
         self.inds = {}
         self.orders = dict()
         self.bitcoin_atr = bt.indicators.AverageTrueRange(self.bitcoin)
@@ -139,7 +139,7 @@ class NewYearlyHighs(StrategyBase):
         available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
         for i, d in enumerate(available):
             ticker = d._name
-            self.log(abs(self.inds[ticker]["roc"][0]))
+            # self.log(abs(self.inds[ticker]["roc"][0]))
             current_position = self.getposition(d).size
             # self.log('{} Position {}'.format(ticker, current_position))
             if current_position > 0:
