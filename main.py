@@ -127,21 +127,22 @@ def _run_resampler(data_timeframe,
     else:
         # Keep hist_start_date exactly the same as max period in strategy
         hist_start_date = datetime.utcnow() - timedelta(hours=500)
+        # hist_start_date = datetime.utcnow() - timedelta(minutes=20)
         # hist_start_date = datetime.utcnow() - timedelta(minutes=500)
         # hist_start_date = datetime.utcnow() - timedelta(minutes=2)
 
         # Prod
-        # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT', 'BCH/USDT',
-        #            'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
-        #            'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
-        #            'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'IOTA/USDT', 'KAVA/USDT', 'KNC/USDT', 'LINK/USDT', 'LTC/USDT',
-        #            'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT', 'SNX/USDT',
-        #            'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT', 'TRX/USDT',
-        #            'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT', 'YFII/USDT',
-        #            'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT']
+        tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT', 'BCH/USDT',
+                   'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
+                   'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
+                   'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'IOTA/USDT', 'KAVA/USDT', 'KNC/USDT', 'LINK/USDT', 'LTC/USDT',
+                   'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT', 'SNX/USDT',
+                   'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT', 'TRX/USDT',
+                   'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT', 'YFII/USDT',
+                   'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT']
 
         # Test
-        tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT']
+        # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT']
         # tickers = ['ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT']
 
         # tickers = ['BTC/USDT', 'ETH/USDT', 'XRP/USDT', 'EOS/USDT']
@@ -228,14 +229,6 @@ if __name__ == '__main__':
                        'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'ZRXUSDT', 'OMGUSDT',
                        'DOGEUSDT',
                        'BANDUSDT', 'WAVESUSDT', 'ICXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT']
-            tickers = ['ADAUSDT', 'ALGOUSDT', 'ATOMUSDT', 'AVAXUSDT', 'BALUSDT', 'BANDUSDT', 'BATUSDT', 'BCHUSDT',
-             'BLZUSDT', 'BNBUSDT', 'BTCUSDT', 'BZRXUSDT', 'COMPUSDT', 'CRVUSDT', 'DASHUSDT', 'DOGEUSDT',
-             'DOTUSDT', 'EGLDUSDT', 'ENJUSDT', 'EOSUSDT', 'ETCUSDT', 'ETHUSDT', 'FLMUSDT', 'FTMUSDT',
-             'HNTUSDT', 'ICXUSDT', 'IOSTUSDT', 'IOTAUSDT', 'KAVAUSDT', 'KNCUSDT', 'LINKUSDT', 'LTCUSDT',
-             'MKRUSDT', 'NEOUSDT', 'OMGUSDT', 'ONTUSDT', 'QTUMUSDT', 'RENUSDT', 'RLCUSDT', 'RUNEUSDT', 'SNXUSDT',
-             'SOLUSDT', 'SRMUSDT', 'STORJUSDT', 'SUSHIUSDT', 'SXPUSDT', 'THETAUSDT', 'TRBUSDT', 'TRXUSDT',
-             'UNIUSDT', 'VETUSDT', 'WAVESUSDT', 'XLMUSDT', 'XMRUSDT', 'XRPUSDT', 'XTZUSDT', 'YFIIUSDT',
-             'YFIUSDT', 'ZECUSDT', 'ZILUSDT', 'ZRXUSDT']
             # All spot altcoins with one year historical data, stablecoins and badcoins removed
             # tickers = ['BTCUSDT', 'IOSTUSDT', 'XLMUSDT', 'BEAMUSDT', 'ZECUSDT', 'XMRUSDT', 'BANDUSDT', 'DUSKUSDT', 'CVCUSDT', 'BATUSDT',
             #          'TRXUSDT', 'TFUELUSDT', 'ONGUSDT', 'THETAUSDT', 'ADAUSDT', 'KEYUSDT', 'WAVESUSDT', 'MTLUSDT', 'IOTAUSDT',

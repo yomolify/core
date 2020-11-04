@@ -21,8 +21,6 @@ class NewYearlyHighs(StrategyBase):
         # ('period_highest_high_mid', 10),
         # ('period_highest_high_fast', 5),
         ('order_target_percent', 5)
-        # ('order_target_percent', 2)
-        # ('order_target_percent', 20)
     )
 
     def __init__(self):
@@ -135,13 +133,15 @@ class NewYearlyHighs(StrategyBase):
         if self.i % 5 == 0:
             self.rebalance_portfolio()
         self.i += 1
-        for i, d in enumerate(self.altcoins):
-            self.log(f'Available data for {(d._name)[:-4]}: {len(d)}')
-        available = list(filter(lambda altcoin_hourly_data: len(altcoin_hourly_data) > 500, self.altcoins))
+        # for i, d in enumerate(self.altcoins):
+        #     self.log(f'Available data for {(d._name)[:-4]}: {len(d)}')
+        available = list(filter(lambda d: len(d) > 500, self.altcoins))
+        available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
         for i, d in enumerate(available):
             ticker = d._name
+            self.log(abs(self.inds[ticker]["roc"][0]))
             current_position = self.getposition(d).size
-            self.log('{} Position {}'.format(ticker, current_position))
+            # self.log('{} Position {}'.format(ticker, current_position))
             if current_position > 0:
                 if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.low[0] < self.inds[ticker]['rolling_low'][0]):
                     order = self.order_target_percent(data=d, target=0)
@@ -235,15 +235,15 @@ class NewYearlyHighs(StrategyBase):
         #         self.long_order = self.exec_trade(direction="buy", exectype=self.params.exectype)
 
     def rebalance_portfolio(self):
-        self.log('Rebalancing Portfolio...')
+        # self.log('Rebalancing Portfolio...')
         # only look at data that we can have indicators for
         self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
         self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
 
-        # sell any coins in lowest momentum that are in positions
+        # Rebalance any coins in lowest momentum that are in positions
         for i, d in enumerate(self.rankings[:5]):
             if self.getposition(d).size:
-                order = self.order_target_percent(data=d, target=0)
+                order = self.order_target_percent(data=d, target=abs(self.inds[d._name]["roc"][0]))
                 ticker = d._name
                 self.orders[ticker].append(order)
                 if ENV == PRODUCTION and TRADING == "LIVE":
