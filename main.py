@@ -106,7 +106,7 @@ def _run_resampler(data_timeframe,
     cerebro.addobserver(bta.observers.SLTPTracking)
     cerebro.addobserver(bt.observers.DrawDown)
     cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-    cerebro.broker.setcommission(leverage=2)
+    cerebro.broker.setcommission(leverage=5)
 
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, http_port=8080, scheme=Blackly(
@@ -229,6 +229,7 @@ if __name__ == '__main__':
                        'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'ZRXUSDT', 'OMGUSDT',
                        'DOGEUSDT',
                        'BANDUSDT', 'WAVESUSDT', 'ICXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT']
+            # tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT']
             # All spot altcoins with one year historical data, stablecoins and badcoins removed
             # tickers = ['BTCUSDT', 'IOSTUSDT', 'XLMUSDT', 'BEAMUSDT', 'ZECUSDT', 'XMRUSDT', 'BANDUSDT', 'DUSKUSDT', 'CVCUSDT', 'BATUSDT',
             #          'TRXUSDT', 'TFUELUSDT', 'ONGUSDT', 'THETAUSDT', 'ADAUSDT', 'KEYUSDT', 'WAVESUSDT', 'MTLUSDT', 'IOTAUSDT',

@@ -172,7 +172,9 @@ class NewYearlyHighs(StrategyBase):
                 if self.bitcoin.close[0] > self.bitcoin_sma[0] and closes_above_sma == 5:
                     if d.close[0] > self.inds[ticker]['sma_fast'][0]:
                         if d.high[0] > self.inds[ticker]['rolling_high'][0]:
-                            self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent/100) * volatility_factor)]
+                            self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=0.8*d.close)]
+                            self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=0.7*d.close)]
+
                             if ENV == PRODUCTION and TRADING == "LIVE":
                                 order_info = self.orders[ticker][0].ccxt_order['info']
                                 qty = order_info['executedQty']
@@ -183,7 +185,7 @@ class NewYearlyHighs(StrategyBase):
                 elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
                     if d.low[0] < self.inds[ticker]['rolling_low'][0]:
                         if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
-                            self.orders[ticker] = [self.order_target_percent(data=d, target=-(self.p.order_target_percent/100) * volatility_factor)]
+                            self.orders[ticker] = [self.order_target_percent(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, execType=bt.Order.Limit)]
                             if ENV == PRODUCTION and TRADING == "LIVE":
                                 order_info = self.orders[ticker][0].ccxt_order['info']
                                 qty = order_info['executedQty']
