@@ -261,15 +261,11 @@ class NewYearlyHighs(StrategyBase):
         for i, d in enumerate(self.rankings[:5]):
             if self.getposition(d).size:
                 try:
-                    order = self.order_target_percent(data=d, target=abs(self.inds[d._name]["roc"][0]))
+                    order = self.order_target_percent(data=d, target=abs(self.inds[d._name]["roc"][0]), execType=bt.Order.Limit)
                     ticker = d._name
                     self.orders[ticker].append(order)
                     if ENV == PRODUCTION and TRADING == "LIVE":
-                        order_info = self.orders[ticker][1].ccxt_order['info']
-                        qty = order_info['executedQty']
-                        price = order_info['avgPrice']
-                        quote = order_info['cumQuote']
-                        self.log(f'Rebalance {qty} {ticker[:-4]} @ {price} for {quote} USDT')
+                        self.log(f'Rebalancing {ticker[:-4]} @ {d.close[0]}')
                 except Exception as e:
                     self.log("ERROR: {}".format(sys.exc_info()[0]))
                     self.log("{}".format(e))

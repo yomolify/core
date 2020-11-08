@@ -100,7 +100,6 @@ def _run_resampler(data_timeframe,
         broker = store.getbroker(broker_mapping=broker_mapping)
         cerebro.setbroker(broker)
     else:
-        # cerebro.addstrategy(LiveDemoStrategy)
         cerebro.broker.setcash(10000.0)
     cerebro.addsizer(FullMoney)
     cerebro.addobserver(bta.observers.SLTPTracking)
