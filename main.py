@@ -70,7 +70,7 @@ if ENV == PRODUCTION:  # Live trading with Binance
     broker_mapping = {
         'order_types': {
             bt.Order.Market: 'market',
-            bt.Order.Limit: 'limit',
+            bt.Order.Limit: 'LIMIT',
             bt.Order.Stop: 'STOP_MARKET',  # stop-loss for kraken, stop for bitmex
             bt.Order.StopLimit: 'stop limit'
         },
@@ -107,7 +107,6 @@ def _run_resampler(data_timeframe,
     cerebro.addobserver(bt.observers.DrawDown)
     cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
     cerebro.broker.setcommission(leverage=3)
-    cerebro.broker.set_coc(True)
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, http_port=8080, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
@@ -127,8 +126,6 @@ def _run_resampler(data_timeframe,
     else:
         # Keep hist_start_date exactly the same as max period in strategy
         hist_start_date = datetime.utcnow() - timedelta(hours=500)
-        # hist_start_date = datetime.utcnow() - timedelta(minutes=20)
-        # hist_start_date = datetime.utcnow() - timedelta(minutes=500)
         # hist_start_date = datetime.utcnow() - timedelta(minutes=2)
 
         # Prod
@@ -139,10 +136,12 @@ def _run_resampler(data_timeframe,
                    'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT', 'SNX/USDT',
                    'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT', 'TRX/USDT',
                    'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT', 'YFII/USDT',
-                   'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT']
-
+                   'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT',
+                   'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
+                   'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT']
+        # Last two lines aale coins were added to Binance Futures in Oct 2020
         # Test
-        # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT']
+        # tickers = ['OCEAN/USDT']
         # tickers = ['ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT']
 
         # tickers = ['BTC/USDT', 'ETH/USDT', 'XRP/USDT', 'EOS/USDT']

@@ -1,7 +1,8 @@
 import backtrader as bt
 import datetime
 from strategies.base import StrategyBase
-
+from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG, TRADING
+import sys
 
 class SMA(StrategyBase):
     params = (
@@ -41,7 +42,7 @@ class SMA(StrategyBase):
         # self.close_sig = bt.ind.CrossDown(self.datas[0].close, self.sma)
 
         self.bitcoin = self.datas[0]
-        self.altcoins = self.datas[1:4]
+        self.altcoins = self.datas
         self.inds = {}
         self.orders = dict()
         # self.bitcoin_atr = bt.indicators.AverageTrueRange(self.bitcoin)
@@ -119,12 +120,33 @@ class SMA(StrategyBase):
             # volatility_factor = 1 / (volatility * 100)
             # if mod % self.params.modbuy == 0:
             if mod == 2:
-                self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent / 100) * volatility_factor)]
-                order_info = self.orders[ticker][0].ccxt_order['info']
-                qty = order_info['executedQty']
-                price = order_info['avgPrice']
-                quote = order_info['cumQuote']
-                self.log(f'Buy {qty} {ticker} @ {price} for {quote} USDT')
+                # self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent / 100) * volatility_factor)]
+                # order_info = self.orders[ticker][0].ccxt_order['info']
+                # qty = order_info['executedQty']
+                # price = order_info['avgPrice']
+                # quote = order_info['cumQuote']
+                # self.log(f'Buy {qty} {ticker} @ {price} for {quote} USDT')
+                try:
+                    self.orders[ticker] = [self.order_target_percent(data=d, target=((
+                                                                                                 self.p.order_target_percent / 100) * volatility_factor) / 2,
+                                                                     execType=bt.Order.Limit, price=0.5 * d.open)]
+                    # self.orders[ticker].append(self.order_target_percent(data=d, target=((
+                    #                                                                                  self.p.order_target_percent / 100) * volatility_factor) / 2,
+                    #                                                      execType=bt.Order.Limit, price=0.3 * d.open))
+                    self.orders[ticker].append(self.order_target_percent(data=d, target=((
+                                                                                                     self.p.order_target_percent / 100) * volatility_factor) / 2,
+                                                                         execType=bt.Order.Market))
+
+
+                    if ENV == PRODUCTION and TRADING == "LIVE":
+                        order_info = self.orders[ticker][0].ccxt_order['info']
+                        qty = order_info['origQty']
+                        price = order_info['price']
+                        self.log(f'Enter Long {qty} {ticker[:-4]} @ {price}')
+                except Exception as e:
+                    self.log("ERROR: {}".format(sys.exc_info()[0]))
+                    self.log("{}".format(e))
+
             # elif mod % self.params.modbuy != 0:
             elif mod == 4:
                 self.orders[ticker] = [
