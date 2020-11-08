@@ -72,64 +72,6 @@ class NewYearlyHighs(StrategyBase):
         # self.buy_sig = cross_up_rolling_high
         # self.close_sig = cross_down_rolling_low
 
-    # def update_indicators(self):
-    #     self.profit = 0
-    #     if self.position.size > 0:
-    #         self.profit = self.data0.close[0] - self.buy_price_close
-    #         self.profit_percentage = (self.profit / self.buy_price_close) * 100
-    #         if (self.profit_percentage > 45):
-    #             self.log('IN >45')
-    #             self.new_sl_price = 1.40 * self.buy_price_close
-    #         if (self.profit_percentage > 40):
-    #             self.log('IN >40')
-    #             self.new_sl_price = 1.35 * self.buy_price_close
-    #         elif (self.profit_percentage > 35):
-    #             self.log('IN >35')
-    #             self.new_sl_price = 1.30 * self.buy_price_close
-    #         elif (self.profit_percentage > 30):
-    #             self.log('IN >30')
-    #             self.new_sl_price = 1.25 * self.buy_price_close
-    #         elif (self.profit_percentage > 25):
-    #             self.log('IN >25')
-    #             self.new_sl_price = 1.20 * self.buy_price_close
-    #         elif (self.profit_percentage > 20):
-    #             self.log('IN >20')
-    #             self.new_sl_price = 1.15 * self.buy_price_close
-    #         if self.new_sl_price and self.sl_price and self.new_sl_price > self.sl_price:
-    #             self.log('better long stop')
-    #             self.sl_price = self.new_sl_price
-    #             if (self.long_stop_order):
-    #                 self.cancel(self.long_stop_order)
-    #             self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
-    #     elif self.position.size < 0:
-    #         self.new_sl_price = self.highest_high_slow[0]
-    #         self.profit = self.sell_price_close - self.data0.close[0]
-    #         self.profit_percentage = (self.profit / self.sell_price_close) * 100
-    #         if (self.profit_percentage > 40):
-    #             self.log('IN >40')
-    #             self.new_sl_price = 0.65 * self.sell_price_close
-    #         if (self.profit_percentage > 35):
-    #             self.log('IN >35')
-    #             self.new_sl_price = 0.7 * self.sell_price_close
-    #         elif (self.profit_percentage > 30):
-    #             self.log('IN > 30')
-    #             self.new_sl_price = 0.75 * self.sell_price_close
-    #         elif (self.profit_percentage > 25):
-    #             self.log('IN > 25')
-    #             self.new_sl_price = 0.8 * self.sell_price_close
-    #         elif self.profit_percentage > 15:
-    #             self.log('IN > 15')
-    #             self.new_sl_price = self.highest_high_fast[0]
-    #         elif self.profit_percentage > 10:
-    #             self.log('IN > 10')
-    #             self.new_sl_price = self.highest_high_mid[0]
-    #         if self.new_sl_price and self.sl_price and self.new_sl_price < self.sl_price:
-    #             self.log('better short stop')
-    #             self.sl_price = self.new_sl_price
-    #             if (self.short_stop_order):
-    #                 self.cancel(self.short_stop_order)
-    #             self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
-
     def next(self):
         if self.i % 5 == 0:
             self.rebalance_portfolio()
@@ -154,6 +96,8 @@ class NewYearlyHighs(StrategyBase):
                             price = order_info['avgPrice']
                             quote = order_info['cumQuote']
                             self.log(f'Exit Long {qty} {ticker[:-4]} @ {price} for {quote} USDT')
+                        else:
+                            self.log(f'Exit Long {ticker[:-4]} @ {d.close[0]}')
                     except Exception as e:
                         self.log("ERROR: {}".format(sys.exc_info()[0]))
                         self.log("{}".format(e))
@@ -182,10 +126,6 @@ class NewYearlyHighs(StrategyBase):
                     if d.close[0] > self.inds[ticker]['sma_fast'][0]:
                         if d.high[0] > self.inds[ticker]['rolling_high'][0]:
                             try:
-                                # 80% and 70% below open price
-                                # self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=0.8*d.open)]
-                                # self.orders[ticker].append(self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=0.7*d.open))
-
                                 # Market entry at close price
                                 # self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor))]
 
@@ -222,6 +162,8 @@ class NewYearlyHighs(StrategyBase):
                                     price = order_info['avgPrice']
                                     quote = order_info['cumQuote']
                                     self.log(f'Enter Short {qty} {ticker[:-4]} @ {price} for {quote} USDT')
+                                else:
+                                    self.log(f'Enter Short {ticker[:-4]} @ {d.close[0]}')
                             except Exception as e:
                                 self.log("ERROR: {}".format(sys.exc_info()[0]))
                                 self.log("{}".format(e))
@@ -282,8 +224,7 @@ class NewYearlyHighs(StrategyBase):
                     order = self.order_target_percent(data=d, target=abs(self.inds[d._name]["roc"][0]), execType=bt.Order.Limit)
                     ticker = d._name
                     self.orders[ticker].append(order)
-                    if ENV == PRODUCTION and TRADING == "LIVE":
-                        self.log(f'Rebalancing {ticker[:-4]} @ {d.close[0]}')
+                    self.log(f'Rebalancing {ticker[:-4]} @ {d.close[0]}')
                 except Exception as e:
                     self.log("ERROR: {}".format(sys.exc_info()[0]))
                     self.log("{}".format(e))
