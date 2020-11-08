@@ -182,8 +182,26 @@ class NewYearlyHighs(StrategyBase):
                     if d.close[0] > self.inds[ticker]['sma_fast'][0]:
                         if d.high[0] > self.inds[ticker]['rolling_high'][0]:
                             try:
-                                self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=0.8*d.open)]
-                                self.orders[ticker].append(self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=0.7*d.open))
+                                # 80% and 70% below open price
+                                # self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=0.8*d.open)]
+                                # self.orders[ticker].append(self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=0.7*d.open))
+
+                                # Market entry at close price
+                                # self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor))]
+
+                                # Staggerred limit entry adjusted by ROC
+                                self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=d.close[0] * (1 - abs(self.inds[ticker]['roc'][0])))]
+                                self.orders[ticker].append(self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=d.close[0] * (1 - 2*abs(self.inds[ticker]['roc'][0]))))
+
+                                # SMA
+                                # self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=self.inds[ticker]['sma_fast'][0])]
+                                # self.orders[ticker].append(self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=self.inds[ticker]['sma_mid'][0]))
+
+                                # ATR
+                                # self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=d.close[0] - (self.inds[ticker]['average_true_range'][0])/4)]
+                                # self.orders[ticker].append(self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=d.close[0] - (self.inds[ticker]['average_true_range'][0])/2))
+
+
                                 if ENV == PRODUCTION and TRADING == "LIVE":
                                     order_info = self.orders[ticker][0].ccxt_order['info']
                                     qty = order_info['origQty']

@@ -265,7 +265,7 @@ if __name__ == '__main__':
         cerebro.broker.set_coc(True)
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
-        cerebro.broker.setcommission(commission=0.00036, leverage=3)
+        cerebro.broker.setcommission(commission=0.00036, leverage=4)
         # cerebro.broker.setcommission(commission=0.0, leverage=1)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
