@@ -253,7 +253,7 @@ class NewYearlyHighs(StrategyBase):
                     qty = order_info['executedQty']
                     price = order_info['avgPrice']
                     quote = order_info['cumQuote']
-                    self.log(f'Rebalance exit {qty} {ticker[:-4]} @ {price} for {quote} USDT')
+                    self.log(f'Rebalance {qty} {ticker[:-4]} @ {price} for {quote} USDT')
         # if self.spy < self.spy_sma200:
         #     return
 
