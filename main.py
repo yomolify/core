@@ -106,8 +106,8 @@ def _run_resampler(data_timeframe,
     cerebro.addobserver(bta.observers.SLTPTracking)
     cerebro.addobserver(bt.observers.DrawDown)
     cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-    cerebro.broker.setcommission(leverage=5)
-
+    cerebro.broker.setcommission(leverage=3)
+    cerebro.broker.set_coc(True)
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, http_port=8080, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
@@ -267,7 +267,7 @@ if __name__ == '__main__':
         cerebro.broker.set_coc(True)
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
-        cerebro.broker.setcommission(commission=0.00036, leverage=1)
+        cerebro.broker.setcommission(commission=0.00036, leverage=3)
         # cerebro.broker.setcommission(commission=0.0, leverage=1)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
