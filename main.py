@@ -137,7 +137,7 @@ def _run_resampler(data_timeframe,
                    'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT', 'YFII/USDT',
                    'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT',
                    'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
-                   'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT']
+                   'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT']
         # Last two lines aale coins were added to Binance Futures in Oct 2020
         # Test
         # tickers = ['OCEAN/USDT']
