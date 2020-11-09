@@ -16,6 +16,9 @@ class NewYearlyHighs(StrategyBase):
         ('period_sma_mid', 50),
         ('period_sma_slow', 200),
         ('period_sma_veryslow', 500),
+        ('period_sma_veryslow', 500),
+        ('period_sma_highs', 20),
+        ('period_sma_lows', 8),
         ('order_target_percent', 5)
     )
 
@@ -46,6 +49,10 @@ class NewYearlyHighs(StrategyBase):
                 period=self.params.period_sma_slow, plot=False)
             self.inds[ticker]["sma_veryslow"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_veryslow, plot=False)
+            self.inds[ticker]["sma_highs"] = bt.ind.SimpleMovingAverage(d.high,
+                period=self.params.period_sma_highs, plot=False)
+            self.inds[ticker]["sma_lows"] = bt.ind.SimpleMovingAverage(d.low,
+                period=self.params.period_sma_lows, plot=False)
             self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
             self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
@@ -98,7 +105,7 @@ class NewYearlyHighs(StrategyBase):
                         closes_above_sma += 1
                 if self.bitcoin.close[0] > self.bitcoin_sma[0] and closes_above_sma == 5:
                     if d.close[0] > self.inds[ticker]['sma_fast'][0]:
-                        if d.high[0] > self.inds[ticker]['rolling_high'][0]:
+                        if d.high[0] > self.inds[ticker]['rolling_high'][0] and d.close[0] > self.inds[ticker]['sma_highs'][0]:
                             try:
                                 self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=d.close[0] * (1 - abs(self.inds[ticker]['roc'][0])))]
                                 self.orders[ticker].append(self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=d.close[0] * (1 - 2*abs(self.inds[ticker]['roc'][0]))))
