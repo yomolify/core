@@ -6,7 +6,7 @@ import fnmatch
 import os
 
 tickers = []
-historical_data = '../../code/fetch-historical-data'
+historical_data = '../../../../code/fetch-historical-data'
 # Fetch all USDT tickers and append to tickers list
 # for file in os.listdir(historical_data):
 #     if fnmatch.fnmatch(file, '*USDT-1h*.csv'):
@@ -30,6 +30,16 @@ tickers = ['BTCUSDT', 'ETHUSDT', 'BCHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TR
            'BZRXUSDT', 'EGLDUSDT', 'SOLUSDT', 'ICXUSDT', 'STORJUSDT', 'BLZUSDT', 'UNIUSDT',
            'AVAXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT',
            'KSMUSDT', 'RSRUSDT', 'LRCUSDT']
+#
+# tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'LINKUSDT',
+#                        'XLMUSDT',
+#                        'ADAUSDT',
+#                        'XMRUSDT', 'DASHUSDT', 'ZECUSDT', 'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT',
+#                        'BATUSDT',
+#                        'VETUSDT',
+#                        'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'ZRXUSDT', 'OMGUSDT',
+#                        'DOGEUSDT',
+#                        'BANDUSDT', 'WAVESUSDT', 'ICXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT']
 
 # Very new
 not_considered = ['HNTUSDT', 'FLMUSDT', 'NEARUSDT', 'AAVEUSDT', 'FILUSDT']
@@ -40,7 +50,7 @@ cerebro.broker.set_coc(True)
 
 end = datetime.now()
 start = datetime(end.year - 1, end.month, end.day)
-end = datetime(end.year, end.month, end.day - 1)
+end = datetime(end.year, end.month-1, end.day - 1)
 
 
 def format_dt_daily(dt):
