@@ -61,7 +61,6 @@ class CrossSectional(StrategyBase):
         #         self.order_target_percent(d, 0)
 
 
-
         available = list(filter(lambda d: len(d), self.datas))  # only look at data that existed yesterday
         rets = np.zeros(len(available))
         for i, d in enumerate(available):

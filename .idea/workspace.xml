@@ -21,8 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/MeanReversion/CrossSectional.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/MeanReversion/CrossSectional.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/Misc/SMA.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/Misc/SMA.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" afterDir="false" />
     </list>
@@ -789,7 +787,7 @@
       <workItem from="1602715726213" duration="7568000" />
       <workItem from="1603247640515" duration="10256000" />
       <workItem from="1603482618626" duration="72760000" />
-      <workItem from="1603873323415" duration="157132000" />
+      <workItem from="1603873323415" duration="158422000" />
     </task>
     <servers />
   </component>
@@ -862,45 +860,45 @@
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
     <state x="951" y="372" key="FileChooserDialogImpl/0.0.2341.1234@0.0.2341.1234" timestamp="1603469573877" />
-    <state width="673" height="985" key="GridCell.Tab.0.bottom" timestamp="1605060574966">
+    <state width="807" height="985" key="GridCell.Tab.0.bottom" timestamp="1605061530501">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="673" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1605060574966" />
+    <state width="807" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1605061530501" />
     <state width="2297" height="431" key="GridCell.Tab.0.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="673" height="985" key="GridCell.Tab.0.center" timestamp="1605060574965">
+    <state width="807" height="985" key="GridCell.Tab.0.center" timestamp="1605061530500">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="673" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1605060574965" />
+    <state width="807" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1605061530500" />
     <state width="2297" height="431" key="GridCell.Tab.0.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="673" height="985" key="GridCell.Tab.0.left" timestamp="1605060574965">
+    <state width="807" height="985" key="GridCell.Tab.0.left" timestamp="1605061530499">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="673" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1605060574965" />
+    <state width="807" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1605061530499" />
     <state width="2297" height="431" key="GridCell.Tab.0.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="673" height="985" key="GridCell.Tab.0.right" timestamp="1605060574966">
+    <state width="807" height="985" key="GridCell.Tab.0.right" timestamp="1605061530501">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="673" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1605060574966" />
+    <state width="807" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1605061530501" />
     <state width="2297" height="431" key="GridCell.Tab.0.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="807" height="985" key="GridCell.Tab.1.bottom" timestamp="1605058871788">
+    <state width="807" height="985" key="GridCell.Tab.1.bottom" timestamp="1605061530501">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="807" height="985" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1605058871788" />
+    <state width="807" height="985" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1605061530501" />
     <state width="2297" height="431" key="GridCell.Tab.1.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710111" />
-    <state width="807" height="985" key="GridCell.Tab.1.center" timestamp="1605058871788">
+    <state width="807" height="985" key="GridCell.Tab.1.center" timestamp="1605061530501">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="807" height="985" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1605058871788" />
+    <state width="807" height="985" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1605061530501" />
     <state width="2297" height="431" key="GridCell.Tab.1.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="807" height="985" key="GridCell.Tab.1.left" timestamp="1605058871787">
+    <state width="807" height="985" key="GridCell.Tab.1.left" timestamp="1605061530501">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="807" height="985" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1605058871787" />
+    <state width="807" height="985" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1605061530501" />
     <state width="2297" height="431" key="GridCell.Tab.1.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="807" height="985" key="GridCell.Tab.1.right" timestamp="1605058871788">
+    <state width="807" height="985" key="GridCell.Tab.1.right" timestamp="1605061530501">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="807" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1605058871788" />
+    <state width="807" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1605061530501" />
     <state width="2297" height="431" key="GridCell.Tab.1.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state x="397" y="199" width="1259" height="722" key="SettingsEditor" timestamp="1604272763471">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -985,7 +983,7 @@
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Hourly.coverage" NAME="BTCUSDT All Time NewYearlyHighs Hourly Coverage Results" MODIFIED="1603569443635" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_Live.coverage" NAME="BTCUSDT Live Coverage Results" MODIFIED="1603294654131" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Live_Trading_NewYearlyHighs.coverage" NAME="Live Trading NewYearlyHighs Coverage Results" MODIFIED="1605057897378" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$CrossSectional_2020.coverage" NAME="CrossSectional 2020 Coverage Results" MODIFIED="1605060574952" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$CrossSectional_2020.coverage" NAME="CrossSectional 2020 Coverage Results" MODIFIED="1605061434568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$CrossSectionalImproved.coverage" NAME="CrossSectionalImproved Coverage Results" MODIFIED="1604976955152" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/strategies/MeanReversion" />
     <SUITE FILE_PATH="coverage/core$BTCUSD_No_SW.coverage" NAME="BTCUSD No SW Coverage Results" MODIFIED="1602691426532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$TrendPilot_2020.coverage" NAME="TrendPilot 2020 Coverage Results" MODIFIED="1604217855044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
