@@ -147,7 +147,7 @@ class NewYearlyHighs(StrategyBase):
                     order = self.order_target_percent(data=d, target=abs(self.inds[d._name]["roc"][0]), execType=bt.Order.Limit)
                     ticker = d._name
                     self.orders[ticker].append(order)
-                    self.log(f'Rebalancing {ticker[:-4]} @ {d.close[0]}')
+                    self.log(f'Rebalancing {ticker[:-4]} to {round(abs(self.inds[d._name]["roc"][0])*100, 2)}% @ {d.close[0]}')
                 except Exception as e:
                     self.log("ERROR: {}".format(sys.exc_info()[0]))
                     self.log("{}".format(e))

@@ -13,38 +13,88 @@ def max_n(array, n):
 class CrossSectional(StrategyBase):
     params = (
         ('exectype', bt.Order.Market),
-        ('n', 10),
+        ('num_positions', 8),  # only for pct change, not for volatility
+        ('n', 8), # volatility
     )
 
     def __init__(self):
         StrategyBase.__init__(self)
+        self.i = 0
         self.inds = {}
         for d in self.datas:
             self.inds[d] = {}
-            self.inds[d]["pct"] = bt.indicators.PercentChange(d.close, period=5)
+            self.inds[d]["pct"] = bt.indicators.PercentChange(d.close, period=1)
             self.inds[d]["std"] = bt.indicators.StandardDeviation(d.close, period=5)
 
     def prenext(self):
         self.next()
 
     def next(self):
-        # only look at data that existed yesterday
-        available = list(filter(lambda d: len(d), self.datas))
+        if self.i % 1 == 0:
+            self.rebalance_portfolio()
+        self.i += 1
 
+    def rebalance_portfolio(self):
+        # available = list(filter(lambda d: len(d) > 5, self.datas))  # only look at data that existed last week
+        # rets = np.zeros(len(available))
+        # stds = np.zeros(len(available))
+        # for i, d in enumerate(available):
+        #     rets[i] = self.inds[d]['pct'][0]
+        #     stds[i] = self.inds[d]['std'][0]
+        #
+        # market_ret = np.mean(rets)
+        # weights = -(rets - market_ret)
+        # max_weights_index = max_n(np.abs(weights), self.params.num_positions)
+        # low_volality_index = min_n(stds, self.params.n)
+        # selected_weights_index = np.intersect1d(max_weights_index,
+        #                                         low_volality_index)
+        # if not len(selected_weights_index):
+        #     # no good trades today
+        #     return
+        #
+        # selected_weights = weights[selected_weights_index]
+        # weights = weights / np.sum(np.abs(selected_weights))
+        # for i, d in enumerate(available):
+        #     if i in selected_weights_index:
+        #         self.order_target_percent(d, target=weights[i])
+        #     else:
+        #         self.order_target_percent(d, 0)
+
+
+
+        available = list(filter(lambda d: len(d), self.datas))  # only look at data that existed yesterday
         rets = np.zeros(len(available))
         for i, d in enumerate(available):
-            # if d.close[-1] == 0.0:
-            #     continue
-            # calculate individual daily returns
-            rets[i] = (d.close[0] - d.close[-1]) / d.close[-1]
+            rets[i] = self.inds[d]['pct'][0]
 
-        # calculate weights using formula
         market_ret = np.mean(rets)
         weights = -(rets - market_ret)
-        # print(weights)
-        # print(np.abs(weights))
-        # print(np.sum(np.abs(weights)))
-        weights = weights / np.sum(np.abs(weights))
+        max_weights_index = max_n(np.abs(weights), self.params.num_positions)
+        max_weights = weights[max_weights_index]
+        weights = weights / np.sum(np.abs(max_weights))
 
         for i, d in enumerate(available):
-            self.order_target_percent(d, target=weights[i])
+            if i in max_weights_index:
+                self.order_target_percent(d, target=weights[i])
+            else:
+                self.order_target_percent(d, 0)
+
+
+
+        # No Filter
+        # only look at data that existed yesterday
+        # available = list(filter(lambda d: len(d), self.datas))
+        #
+        # rets = np.zeros(len(available))
+        # for i, d in enumerate(available):
+        #     # calculate individual daily returns
+        #     # rets[i] = (d.close[0] - d.close[-1]) / d.close[-1]
+        #     rets[i] = self.inds[d]['pct'][0]
+        #
+        # # calculate weights using formula
+        # market_ret = np.mean(rets)
+        # weights = -(rets - market_ret)
+        # weights = weights / np.sum(np.abs(weights))
+        #
+        # for i, d in enumerate(available):
+        #     self.order_target_percent(d, target=weights[i])

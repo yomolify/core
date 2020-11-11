@@ -105,7 +105,7 @@ def _run_resampler(data_timeframe,
     cerebro.addobserver(bta.observers.SLTPTracking)
     cerebro.addobserver(bt.observers.DrawDown)
     cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-    cerebro.broker.setcommission(leverage=3)
+    cerebro.broker.setcommission(leverage=4)
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, http_port=8080, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
@@ -137,7 +137,7 @@ def _run_resampler(data_timeframe,
                    'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT', 'YFII/USDT',
                    'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT',
                    'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
-                   'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT']
+                   'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT']
         # Last two lines aale coins were added to Binance Futures in Oct 2020
         # Test
         # tickers = ['OCEAN/USDT']
@@ -222,6 +222,7 @@ if __name__ == '__main__':
                        'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'ZRXUSDT', 'OMGUSDT',
                        'DOGEUSDT',
                        'BANDUSDT', 'WAVESUSDT', 'ICXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT']
+            # tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT']
             # tickers = ['BTCUSDT', 'ETHUSDT', 'BCHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT',
             #            'ETCUSDT', 'LINKUSDT', 'XLMUSDT', 'ADAUSDT', 'XMRUSDT', 'DASHUSDT', 'ZECUSDT',
             #            'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT', 'VETUSDT',
@@ -255,6 +256,7 @@ if __name__ == '__main__':
                     low=ExchangeCSVIndex[args.exchange]['low'],
                     close=ExchangeCSVIndex[args.exchange]['close'],
                     volume=ExchangeCSVIndex[args.exchange]['volume'],
+                    # dataname=f"{datapath}/binance-{ticker}-1m.csv",
                     dataname=f"{datapath}/binance-{ticker}-1h.csv",
                     # dataname=f"{datapath}/binance-{ticker}-1d.csv",
                     dtformat=lambda x: format_dt_hourly(x),
@@ -265,13 +267,17 @@ if __name__ == '__main__':
                     compression=60,
                     openinterest=-1,
                     nullvalue=0.0)
+
                 cerebro.adddata(data, name=ticker)
+                # cerebro.resampledata(data,
+                #                      timeframe=bt.TimeFrame.Minutes,
+                #                      compression=240)
 
         cerebro.broker.set_coc(True)
         cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
         # cerebro.broker.setcommission(commission=0.00036, leverage=4)
-        cerebro.broker.setcommission(commission=0.00, leverage=1)
+        cerebro.broker.setcommission(commission=0.00036, leverage=1)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
         cerebro.addobserver(bt.observers.DrawDown)

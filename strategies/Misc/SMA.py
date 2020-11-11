@@ -129,13 +129,13 @@ class SMA(StrategyBase):
                 try:
                     self.orders[ticker] = [self.order_target_percent(data=d, target=((
                                                                                                  self.p.order_target_percent / 100) * volatility_factor) / 2,
-                                                                     execType=bt.Order.Limit)]
+                                                                     execType=bt.Order.Limit, price=0.5*d.close)]
                     # self.orders[ticker].append(self.order_target_percent(data=d, target=((
                     #                                                                                  self.p.order_target_percent / 100) * volatility_factor) / 2,
                     #                                                      execType=bt.Order.Limit, price=0.3 * d.open))
-                    self.orders[ticker].append(self.order_target_percent(data=d, target=((
-                                                                                                     self.p.order_target_percent / 100) * volatility_factor) / 2,
-                                                                         execType=bt.Order.Market))
+                    # self.orders[ticker].append(self.order_target_percent(data=d, target=((
+                    #                                                                                  self.p.order_target_percent / 100) * volatility_factor) / 2,
+                    #                                                      execType=bt.Order.Market))
 
 
                     if ENV == PRODUCTION and TRADING == "LIVE":
