@@ -144,7 +144,7 @@ class NewYearlyHighs(StrategyBase):
         for i, d in enumerate(self.rankings[:5]):
             if self.getposition(d).size:
                 try:
-                    order = self.order_target_percent(data=d, target=abs(self.inds[d._name]["roc"][0]), execType=bt.Order.Limit)
+                    order = self.order_target_percent(data=d, target=abs(self.inds[d._name]["roc"][0]))
                     ticker = d._name
                     self.orders[ticker].append(order)
                     self.log(f'Rebalancing {ticker[:-4]} to {round(abs(self.inds[d._name]["roc"][0])*100, 2)}% @ {d.close[0]}')

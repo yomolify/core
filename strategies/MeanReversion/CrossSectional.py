@@ -1,6 +1,7 @@
 import backtrader as bt
 import numpy as np
 from strategies.base import StrategyBase
+import sys
 
 def min_n(array, n):
     return np.argpartition(array, n)[:n]
@@ -24,7 +25,7 @@ class CrossSectional(StrategyBase):
         for d in self.datas:
             self.inds[d] = {}
             self.inds[d]["pct"] = bt.indicators.PercentChange(d.close, period=1)
-            self.inds[d]["std"] = bt.indicators.StandardDeviation(d.close, period=5)
+            # self.inds[d]["std"] = bt.indicators.StandardDeviation(d.close, period=5)
 
     def prenext(self):
         self.next()
@@ -73,11 +74,14 @@ class CrossSectional(StrategyBase):
         weights = weights / np.sum(np.abs(max_weights))
 
         for i, d in enumerate(available):
-            if i in max_weights_index:
-                self.order_target_percent(d, target=weights[i])
-            else:
-                self.order_target_percent(d, 0)
-
+            try:
+                if i in max_weights_index:
+                    self.order_target_percent(d, target=weights[i])
+                else:
+                    self.order_target_percent(d, 0)
+            except Exception as e:
+                self.log("ERROR: {}".format(sys.exc_info()[0]))
+                self.log("{}".format(e))
 
 
         # No Filter

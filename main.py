@@ -271,7 +271,7 @@ if __name__ == '__main__':
                 cerebro.adddata(data, name=ticker)
                 # cerebro.resampledata(data,
                 #                      timeframe=bt.TimeFrame.Minutes,
-                #                      compression=240)
+                #                      compression=30)
 
         cerebro.broker.set_coc(True)
         cerebro.broker.setcash(10000.0)
