@@ -212,18 +212,44 @@ if __name__ == '__main__':
             #                      compression=60)
         # Altcoin Universe
         else:
-            # All futures
-            # 139.6% 26.5 35 coins and max 8 positions on CSMR
+            todate = datetime.now()
+            fromdate = datetime(todate.year, todate.month-3, todate.day)
+            leverage = 3
             # New Yearly Highs
-            # tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT', 'ETCUSDT', 'LINKUSDT',
-            #            'XLMUSDT',
-            #            'ADAUSDT',
-            #            'XMRUSDT', 'DASHUSDT', 'ZECUSDT', 'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT',
-            #            'BATUSDT',
-            #            'VETUSDT',
-            #            'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT', 'ZRXUSDT', 'OMGUSDT',
-            #            'DOGEUSDT',
-            #            'BANDUSDT', 'WAVESUSDT', 'ICXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT']
+            tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT',
+                       'XLM-USDT',
+                       'ADA-USDT',
+                       'XMR-USDT', 'DASH-USDT', 'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
+                       'BAT-USDT',
+                       'VET-USDT',
+                       'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
+                       'DOGE-USDT',
+                       'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+            # CSMR Jan to Oct 2020
+            # tickers = ['ETH-USDT', 'BCH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT',
+            #            'ETC-USDT', 'LINK-USDT', 'XLM-USDT', 'ADA-USDT', 'XMR-USDT', 'DASH-USDT', 'ZEC-USDT',
+            #            'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT', 'BAT-USDT', 'VET-USDT',
+            #            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT',
+            #            'KNC-USDT', 'ZRX-USDT', 'COMP-USDT', 'OMG-USDT', 'DOGE-USDT', 'SXP-USDT', 'KAVA-USDT',
+            #            'BAND-USDT', 'RLC-USDT', 'WAVES-USDT', 'MKR-USDT', 'SNX-USDT', 'DOT-USDT', 'YFI-USDT',
+            #            'BAL-USDT', 'CRV-USDT', 'TRB-USDT', 'YFII-USDT', 'RUNE-USDT', 'SUSHI-USDT', 'SRM-USDT',
+            #            'BZRX-USDT', 'EGLD-USDT', 'SOL-USDT', 'ICX-USDT', 'STORJ-USDT', 'BLZ-USDT', 'UNI-USDT',
+            #            'AVAX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+            # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
+            #            'BAT-USDT', 'BCH-USDT',
+            #            'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
+            #            'DOT-USDT', 'EGLD-USDT', 'ENJ-USDT', 'EOS-USDT', 'ETC-USDT', 'ETH-USDT', 'FLM-USDT', 'FTM-USDT',
+            #            'HNT-USDT', 'ICX-USDT', 'IOST-USDT', 'IOTA-USDT', 'KAVA-USDT', 'KNC-USDT', 'LINK-USDT',
+            #            'LTC-USDT',
+            #            'MKR-USDT', 'NEO-USDT', 'OMG-USDT', 'ONT-USDT', 'QTUM-USDT', 'REN-USDT', 'RLC-USDT', 'RUNE-USDT',
+            #            'SNX-USDT',
+            #            'SOL-USDT', 'SRM-USDT', 'STORJ-USDT', 'SUSHI-USDT', 'SXP-USDT', 'THETA-USDT', 'TRB-USDT',
+            #            'TRX-USDT',
+            #            'UNI-USDT', 'VET-USDT', 'WAVES-USDT', 'XLM-USDT', 'XMR-USDT', 'XRP-USDT', 'XTZ-USDT',
+            #            'YFII-USDT',
+            #            'YFI-USDT', 'ZEC-USDT', 'ZIL-USDT', 'ZRX-USDT']
+                       # 'TOMO-USDT', 'RSR-USDT', 'NEAR-USDT', 'MATIC-USDT',
+                       # 'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT']
             # tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT']
             # No volatility
             # 178% 53 60 coins max 8 positions
@@ -241,16 +267,7 @@ if __name__ == '__main__':
             # 36% 35 60 coins max 20 positions
             # -41% 64 60 coins max 10 positions
             # -77% 35 60 coins max 8 positions
-            # CSMR Jan to Oct 2020
-            tickers = ['BTCUSDT', 'ETHUSDT', 'BCHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT', 'TRXUSDT',
-                       'ETCUSDT', 'LINKUSDT', 'XLMUSDT', 'ADAUSDT', 'XMRUSDT', 'DASHUSDT', 'ZECUSDT',
-                       'XTZUSDT', 'BNBUSDT', 'ATOMUSDT', 'ONTUSDT', 'IOTAUSDT', 'BATUSDT', 'VETUSDT',
-                       'NEOUSDT', 'QTUMUSDT', 'IOSTUSDT', 'THETAUSDT', 'ALGOUSDT', 'ZILUSDT',
-                       'KNCUSDT', 'ZRXUSDT', 'COMPUSDT', 'OMGUSDT', 'DOGEUSDT', 'SXPUSDT', 'KAVAUSDT',
-                       'BANDUSDT', 'RLCUSDT', 'WAVESUSDT', 'MKRUSDT', 'SNXUSDT', 'DOTUSDT', 'YFIUSDT',
-                       'BALUSDT', 'CRVUSDT', 'TRBUSDT', 'YFIIUSDT', 'RUNEUSDT', 'SUSHIUSDT', 'SRMUSDT',
-                       'BZRXUSDT', 'EGLDUSDT', 'SOLUSDT', 'ICXUSDT', 'STORJUSDT', 'BLZUSDT', 'UNIUSDT',
-                       'AVAXUSDT', 'FTMUSDT', 'ENJUSDT', 'TOMOUSDT', 'RENUSDT']
+
                         # ,'KSMUSDT', 'RSRUSDT', 'LRCUSDT']
             # tickers = ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'EOSUSDT', 'LTCUSDT']
             # All spot altcoins with one year historical data, stablecoins and badcoins removed
@@ -268,35 +285,33 @@ if __name__ == '__main__':
             #          'DENTUSDT', 'NEOUSDT']
 
             # 'BCHABCUSDT', 'BCCUSDT','BUSDUSDT', 'USDCUSDT', 'USDSUSDT', 'TUSDUSDT',
-            for ticker in tickers:
-                data = bt.feeds.GenericCSVData(
-                    open=ExchangeCSVIndex[args.exchange]['open'],
-                    high=ExchangeCSVIndex[args.exchange]['high'],
-                    low=ExchangeCSVIndex[args.exchange]['low'],
-                    close=ExchangeCSVIndex[args.exchange]['close'],
-                    volume=ExchangeCSVIndex[args.exchange]['volume'],
-                    # dataname=f"{datapath}/binance-{ticker}-1m.csv",
-                    dataname=f"{datapath}/binance-{ticker}-1h.csv",
-                    # dataname=f"{datapath}/binance-{ticker}-1d.csv",
-                    dtformat=lambda x: format_dt_hourly(x),
-                    # dtformat=lambda x: format_dt_daily(x),
-                    fromdate=datetime(args.from_year, args.from_month, args.from_date),
-                    todate=datetime(args.to_year, args.to_month, args.to_date),
-                    timeframe=bt.TimeFrame.Minutes,
-                    compression=60,
-                    openinterest=-1,
-                    nullvalue=0.0)
 
-                cerebro.adddata(data, name=ticker)
+            for ticker in tickers:
+                data = bt.feeds.MarketStore(
+                    symbol=f'binance_{ticker}',
+                    name=f'{ticker}',
+                    query_timeframe='1H',
+                    timeframe=bt.TimeFrame.Minutes,
+                    fromdate=fromdate,
+                    todate=todate,
+                    compression=60,
+                )
+                cerebro.adddata(data)
+
                 # cerebro.resampledata(data,
                 #                      timeframe=bt.TimeFrame.Minutes,
                 #                      compression=30)
-
-        cerebro.broker.set_coc(True)
+        cerebro.broker.set_coc(False)
         cerebro.broker.setcash(10000.0)
+        # 627 21 - 1 pct change period
+        # 3121 18 - 2
+        # 2439 18 - 3
+        # 1684 19 - 4
+        # 1214 24 - 5
+        # 1060 21 - 10
+        # 3224 16
         cerebro.addsizer(FullMoney)
-        # cerebro.broker.setcommission(commission=0.00036, leverage=4)
-        cerebro.broker.setcommission(commission=0.00036, leverage=1)
+        cerebro.broker.setcommission(commission=0.00036, leverage=leverage)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
         cerebro.addobserver(bt.observers.DrawDown)
@@ -314,10 +329,9 @@ if __name__ == '__main__':
 
     print(args.strategy)
     print('======== PERFORMANCE ========\n')
-    print('{}'.format(csvpath))
+    print('{}x leverage'.format(leverage))
     print(
-        '{}, {}, {} to {}, {}, {}'.format(args.from_year, args.from_month, args.from_date, args.to_year, args.to_month,
-                                          args.to_date))
+        '{}, {}'.format(fromdate.date(), todate.date()))
     getAnalysis(stat)
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
 

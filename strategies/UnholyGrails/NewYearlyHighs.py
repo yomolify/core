@@ -10,7 +10,7 @@ class NewYearlyHighs(StrategyBase):
         ('exectype', bt.Order.Market),
         ('period_rolling_high', 500),
         ('period_rolling_low', 500),
-        ('period_sma_bitcoin', 100),
+        ('period_sma_bitcoin', 250),
         ('period_sma_veryfast', 10),
         ('period_sma_fast', 20),
         ('period_sma_mid', 50),
@@ -58,7 +58,7 @@ class NewYearlyHighs(StrategyBase):
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
 
     def next(self):
-        if self.i % 5 == 0:
+        if self.i % 20 == 0:
             self.rebalance_portfolio()
         self.i += 1
         available = list(filter(lambda d: len(d) > 500, self.altcoins))
@@ -67,7 +67,9 @@ class NewYearlyHighs(StrategyBase):
             ticker = d._name
             current_position = self.getposition(d).size
             if current_position > 0:
-                if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.low[0] < self.inds[ticker]['rolling_low'][0]):
+                if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.close[0] < self.inds[ticker]['rolling_low'][0]):
+                    print(f"close below rolling low {d.close[0] < self.inds[ticker]['rolling_low'][0]}")
+                    print(f"bitcoin below sma {self.bitcoin.low[0] < self.bitcoin_sma[0]}")
                     try:
                         order = self.order_target_percent(data=d, target=0)
                         self.orders[ticker].append(order)
@@ -76,7 +78,7 @@ class NewYearlyHighs(StrategyBase):
                             qty = order_info['executedQty']
                             price = order_info['avgPrice']
                             quote = order_info['cumQuote']
-                            self.log(f'Exit Long {qty} {ticker[:-4]} @ {price} for {quote} USDT')
+                            self.log(f'Exit Long {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
                         else:
                             self.log(f'Exit Long {ticker[:-4]} @ {d.close[0]}')
                     except Exception as e:
@@ -92,7 +94,9 @@ class NewYearlyHighs(StrategyBase):
                             qty = order_info['executedQty']
                             price = order_info['avgPrice']
                             quote = order_info['cumQuote']
-                            self.log(f'Exit Short {qty} {ticker[:-4]} @ {price} for {quote} USDT')
+                            self.log(f'Exit Short {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
+                        else:
+                            self.log(f'Exit Short {ticker[:-4]} @ {d.close[0]}')
                     except Exception as e:
                         self.log("ERROR: {}".format(sys.exc_info()[0]))
                         self.log("{}".format(e))
@@ -107,14 +111,16 @@ class NewYearlyHighs(StrategyBase):
                     if d.close[0] > self.inds[ticker]['sma_fast'][0]:
                         if d.high[0] > self.inds[ticker]['rolling_high'][0] and d.close[0] > self.inds[ticker]['sma_highs'][0]:
                             try:
-                                self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=d.close[0] * (1 - abs(self.inds[ticker]['roc'][0])))]
-                                self.orders[ticker].append(self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor)/2, execType=bt.Order.Limit, price=d.close[0] * (1 - 2*abs(self.inds[ticker]['roc'][0]))))
+                                self.orders[ticker] = [self.order_target_percent(data=d, target=((self.p.order_target_percent/100) * volatility_factor))]
 
                                 if ENV == PRODUCTION and TRADING == "LIVE":
                                     order_info = self.orders[ticker][0].ccxt_order['info']
-                                    qty = order_info['origQty']
-                                    price = order_info['price']
-                                    self.log(f'Enter Long {qty} {ticker[:-4]} @ {price}')
+                                    qty = order_info['executedQty']
+                                    price = order_info['avgPrice']
+                                    quote = order_info['cumQuote']
+                                    self.log(f'Enter Long {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
+                                else:
+                                    self.log(f'Enter Long {ticker[:-4]} @ {d.close[0]}')
                             except Exception as e:
                                 self.log("ERROR: {}".format(sys.exc_info()[0]))
                                 self.log("{}".format(e))
@@ -129,7 +135,7 @@ class NewYearlyHighs(StrategyBase):
                                     qty = order_info['executedQty']
                                     price = order_info['avgPrice']
                                     quote = order_info['cumQuote']
-                                    self.log(f'Enter Short {qty} {ticker[:-4]} @ {price} for {quote} USDT')
+                                    self.log(f'Enter Short {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
                                 else:
                                     self.log(f'Enter Short {ticker[:-4]} @ {d.close[0]}')
                             except Exception as e:
@@ -147,7 +153,15 @@ class NewYearlyHighs(StrategyBase):
                     order = self.order_target_percent(data=d, target=abs(self.inds[d._name]["roc"][0]))
                     ticker = d._name
                     self.orders[ticker].append(order)
-                    self.log(f'Rebalancing {ticker[:-4]} to {round(abs(self.inds[d._name]["roc"][0])*100, 2)}% @ {d.close[0]}')
+                    if ENV == PRODUCTION and TRADING == "LIVE":
+                        order_info = self.orders[ticker][1].ccxt_order['info']
+                        qty = order_info['executedQty']
+                        price = order_info['avgPrice']
+                        quote = order_info['cumQuote']
+                        side = order_info['side']
+                        self.log(f'Rebalanced {ticker[:-4]} to {round(abs(self.inds[d._name]["roc"][0])*100, 2)}% by {side.lower()}ing {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
+                    else:
+                        self.log(f'Rebalanced {ticker[:-4]} @ {d.close[0]}')
                 except Exception as e:
                     self.log("ERROR: {}".format(sys.exc_info()[0]))
                     self.log("{}".format(e))

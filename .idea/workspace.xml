@@ -24,6 +24,7 @@
       <change beforePath="$PROJECT_DIR$/experiments/pymkt-test.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/pymkt-test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/MeanReversion/CrossSectional.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/MeanReversion/CrossSectional.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +58,7 @@
     <property name="add_unversioned_files" value="$PROJECT_DIR$/main.py" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/strategies/UnholyGrails" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="MTCustomThemeConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -65,8 +66,8 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.CrossSectional Jan - Oct 2020">
-    <configuration name="BTCUSD All Time NLS1" type="PythonConfigurationType" factoryName="Python">
+  <component name="RunManager" selected="Python.NewYearlyHighs 2020">
+    <configuration name="BTCUSD All Time NLS1" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -88,7 +89,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSD All Time '19 Dec NLS1" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSD All Time '19 Dec NLS1" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -110,7 +111,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSD In Sample NLS1" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSD In Sample NLS1" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -132,7 +133,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSD No SW" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSD No SW" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -154,7 +155,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSDT 2020 NLS1" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSDT 2020 NLS1" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -176,7 +177,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSDT All Time NLS1" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSDT All Time NLS1" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -198,7 +199,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSDT All Time NewYearlyHighs Hourly" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSDT All Time NewYearlyHighs Hourly" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -220,7 +221,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSDT All Time NewYearlyHighs Small TF" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSDT All Time NewYearlyHighs Small TF" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -242,7 +243,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSDT All Time NewYearlyHighs" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSDT All Time NewYearlyHighs" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -264,7 +265,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="BTCUSDT Live" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="BTCUSDT Live" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -286,7 +287,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="CrossSectional 2020" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="CrossSectional 2020" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -308,7 +309,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="CrossSectional Jan - Oct 2020" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="CrossSectional Jan - Oct 2020" type="PythonConfigurationType" factoryName="Python" folderName="Backtest">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -330,7 +331,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="CrossSectional Jun - Oct 2020" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="CrossSectional Jun - Oct 2020" type="PythonConfigurationType" factoryName="Python" folderName="Backtest">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -352,7 +353,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="CrossSectional" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="CrossSectional" type="PythonConfigurationType" factoryName="Python" folderName="Archive" temporary="true" nameIsGenerated="true">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -374,7 +375,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="CrossSectionalImproved" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="CrossSectionalImproved" type="PythonConfigurationType" factoryName="Python" folderName="Archive" temporary="true" nameIsGenerated="true">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -396,7 +397,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Equity Momentum from file" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="Equity Momentum from file" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -418,7 +419,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Equity Momentum" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Equity Momentum" type="PythonConfigurationType" factoryName="Python" folderName="Archive" temporary="true">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -440,7 +441,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="GoldenCross 2020" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="GoldenCross 2020" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -462,7 +463,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="HundredDayBreakout" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="HundredDayBreakout" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -484,7 +485,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="KalmanPair" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="KalmanPair" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -506,7 +507,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Live Trading CrossSectional" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="Live Trading CrossSectional" type="PythonConfigurationType" factoryName="Python" folderName="Live">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -530,7 +531,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Live Trading Misc.SMA" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="Live Trading Misc.SMA" type="PythonConfigurationType" factoryName="Python" folderName="Live">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -554,7 +555,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Live Trading NewYearlyHighs" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="Live Trading NewYearlyHighs" type="PythonConfigurationType" factoryName="Python" folderName="Live">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -578,7 +579,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Live Trading NewYearlyHighsTEST" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="Live Trading NewYearlyHighsTEST" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -602,7 +603,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Misc.SMA" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="Misc.SMA" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -625,7 +626,29 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="NewYearlyHighs 2020" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="NewYearlyHighs 2020 Till Nov 13" type="PythonConfigurationType" factoryName="Python" folderName="Backtest">
+      <module name="core" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/pypy3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="--exchange=binance --ticker=BTCUSDT --data_timeframe=1m --from_year=2019 --from_month=12 --from_date=11 --to_year=2020 --to_month=11 --to_date=13 --exectype=Market --strategy=UnholyGrails.NewYearlyHighs --plot=True" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="NewYearlyHighs 2020" type="PythonConfigurationType" factoryName="Python" folderName="Backtest">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -647,7 +670,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="NewYearlyHighs Oct 2020" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="NewYearlyHighs Oct 2020" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -669,7 +692,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="NewYearlyHighs" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="NewYearlyHighs" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -691,7 +714,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="NewYearlyHighsBTC 2020" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="NewYearlyHighsBTC 2020" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -713,7 +736,29 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="TrendPilot 2020" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="TickerFilter" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
+      <module name="core" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/pypy3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tickerfilter.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TrendPilot 2020" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -735,7 +780,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="TurtleTrader" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="TurtleTrader" type="PythonConfigurationType" factoryName="Python" folderName="Archive">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -779,31 +824,15 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="tickerfilter" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <module name="core" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tickerfilter.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Python.BTCUSD In Sample NLS1" />
-      <item itemvalue="Python.BTCUSD All Time NLS1" />
+      <item itemvalue="Python.TurtleTrader" />
+      <item itemvalue="Python.Equity Momentum from file" />
+      <item itemvalue="Python.GoldenCross 2020" />
+      <item itemvalue="Python.TrendPilot 2020" />
+      <item itemvalue="Python.KalmanPair" />
+      <item itemvalue="Python.HundredDayBreakout" />
+      <item itemvalue="Python.Misc.SMA" />
+      <item itemvalue="Python.Live Trading NewYearlyHighsTEST" />
       <item itemvalue="Python.BTCUSD All Time '19 Dec NLS1" />
       <item itemvalue="Python.BTCUSDT All Time NLS1" />
       <item itemvalue="Python.BTCUSDT 2020 NLS1" />
@@ -812,28 +841,23 @@
       <item itemvalue="Python.BTCUSDT All Time NewYearlyHighs Small TF" />
       <item itemvalue="Python.BTCUSD No SW" />
       <item itemvalue="Python.BTCUSDT Live" />
-      <item itemvalue="Python.Equity Momentum from file" />
-      <item itemvalue="Python.TurtleTrader" />
       <item itemvalue="Python.NewYearlyHighs" />
-      <item itemvalue="Python.NewYearlyHighs 2020" />
-      <item itemvalue="Python.CrossSectional 2020" />
-      <item itemvalue="Python.CrossSectional Jan - Oct 2020" />
-      <item itemvalue="Python.CrossSectional Jun - Oct 2020" />
-      <item itemvalue="Python.Live Trading NewYearlyHighs" />
-      <item itemvalue="Python.Live Trading CrossSectional" />
-      <item itemvalue="Python.Live Trading NewYearlyHighsTEST" />
       <item itemvalue="Python.NewYearlyHighsBTC 2020" />
-      <item itemvalue="Python.GoldenCross 2020" />
       <item itemvalue="Python.NewYearlyHighs Oct 2020" />
-      <item itemvalue="Python.Live Trading Misc.SMA" />
-      <item itemvalue="Python.Misc.SMA" />
-      <item itemvalue="Python.TrendPilot 2020" />
-      <item itemvalue="Python.KalmanPair" />
-      <item itemvalue="Python.HundredDayBreakout" />
-      <item itemvalue="Python.tickerfilter" />
+      <item itemvalue="Python.BTCUSD In Sample NLS1" />
+      <item itemvalue="Python.BTCUSD All Time NLS1" />
+      <item itemvalue="Python.CrossSectional 2020" />
+      <item itemvalue="Python.TickerFilter" />
       <item itemvalue="Python.Equity Momentum" />
       <item itemvalue="Python.CrossSectional" />
       <item itemvalue="Python.CrossSectionalImproved" />
+      <item itemvalue="Python.CrossSectional Jan - Oct 2020" />
+      <item itemvalue="Python.CrossSectional Jun - Oct 2020" />
+      <item itemvalue="Python.NewYearlyHighs 2020" />
+      <item itemvalue="Python.NewYearlyHighs 2020 Till Nov 13" />
+      <item itemvalue="Python.Live Trading NewYearlyHighs" />
+      <item itemvalue="Python.Live Trading CrossSectional" />
+      <item itemvalue="Python.Live Trading Misc.SMA" />
       <item itemvalue="Python.pymkt-test" />
     </list>
     <recent_temporary>
@@ -860,7 +884,10 @@
       <workItem from="1602715726213" duration="7568000" />
       <workItem from="1603247640515" duration="10256000" />
       <workItem from="1603482618626" duration="72760000" />
-      <workItem from="1603873323415" duration="194689000" />
+      <workItem from="1603873323415" duration="197855000" />
+      <workItem from="1605253716259" duration="139000" />
+      <workItem from="1605253895432" duration="1037000" />
+      <workItem from="1605300790013" duration="21215000" />
     </task>
     <servers />
   </component>
@@ -895,10 +922,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="518" y="230" key="#Options/0.0.1792.1120@0.0.1792.1120" timestamp="1603912795968" />
-    <state x="412" y="280" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605235978744">
+    <state x="0" y="0" width="1792" height="1120" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605334149273">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="412" y="280" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1605235978744" />
+    <state x="0" y="0" width="1792" height="1120" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1605334149273" />
     <state x="470" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1603294552852" />
     <state x="607" y="360" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1603934553004">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -920,10 +947,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state width="937" height="646" key="DebuggerActiveHint/0.0.1792.1120@0.0.1792.1120" timestamp="1604126616568" />
-    <state x="98" y="99" width="1592" height="920" key="DiffContextDialog" timestamp="1605145890912">
+    <state x="98" y="99" width="1592" height="920" key="DiffContextDialog" timestamp="1605345369929">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="98" y="99" width="1592" height="920" key="DiffContextDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1605145890912" />
+    <state x="98" y="99" width="1592" height="920" key="DiffContextDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1605345369929" />
     <state x="128" y="109" width="2080" height="1014" key="DiffContextDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1602720424011" />
     <state x="100" y="100" width="1592" height="920" key="DirDiffDialog" timestamp="1604509741893">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -937,28 +964,28 @@
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
     <state x="951" y="372" key="FileChooserDialogImpl/0.0.2341.1234@0.0.2341.1234" timestamp="1603469573877" />
-    <state width="882" height="985" key="GridCell.Tab.0.bottom" timestamp="1605239657950">
+    <state width="703" height="985" key="GridCell.Tab.0.bottom" timestamp="1605377778365">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="882" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1605239657950" />
+    <state width="703" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1605377778365" />
     <state width="2297" height="431" key="GridCell.Tab.0.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.bottom/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="882" height="985" key="GridCell.Tab.0.center" timestamp="1605239657950">
+    <state width="703" height="985" key="GridCell.Tab.0.center" timestamp="1605377778364">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="882" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1605239657950" />
+    <state width="703" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1605377778364" />
     <state width="2297" height="431" key="GridCell.Tab.0.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.center/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="882" height="985" key="GridCell.Tab.0.left" timestamp="1605239657948">
+    <state width="703" height="985" key="GridCell.Tab.0.left" timestamp="1605377778363">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="882" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1605239657948" />
+    <state width="703" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1605377778363" />
     <state width="2297" height="431" key="GridCell.Tab.0.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.left/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783835" />
-    <state width="882" height="985" key="GridCell.Tab.0.right" timestamp="1605239657950">
+    <state width="703" height="985" key="GridCell.Tab.0.right" timestamp="1605377778364">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="882" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1605239657950" />
+    <state width="703" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1605377778364" />
     <state width="2297" height="431" key="GridCell.Tab.0.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.right/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
     <state width="807" height="962" key="GridCell.Tab.1.bottom" timestamp="1605195878216">
@@ -981,15 +1008,15 @@
     </state>
     <state width="807" height="962" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1605195878215" />
     <state width="2297" height="431" key="GridCell.Tab.1.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state x="397" y="199" width="1259" height="722" key="SettingsEditor" timestamp="1605115482196">
+    <state x="397" y="199" width="1259" height="722" key="SettingsEditor" timestamp="1605253880381">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1605115482195" />
+    <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1605253880381" />
     <state x="519" y="219" key="SettingsEditor/0.0.2341.1234@0.0.2341.1234" timestamp="1603247718767" />
-    <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1605145853287">
+    <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1605345127587">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="737" y="219" key="VcsDiffUtil.ChangesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1605145853287" />
+    <state x="737" y="219" key="VcsDiffUtil.ChangesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1605345127587" />
     <state x="963" y="241" key="VcsDiffUtil.ChangesDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1602740655410" />
     <state width="896" height="560" key="XDebugger.FullValuePopup" timestamp="1605057942491">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -1011,10 +1038,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="801" y="217" width="395" height="685" key="ftp.server.browser/0.0.1792.1120@0.0.1792.1120" timestamp="1603912409576" />
-    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup" timestamp="1605239771990">
+    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup" timestamp="1605304790070">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1605239771990" />
+    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1605304790070" />
     <state x="733" y="277" width="876" height="745" key="search.everywhere.popup/0.0.2341.1234@0.0.2341.1234" timestamp="1603294612727" />
     <state x="561" y="269" width="670" height="663" key="search.everywhere.popup/0.23.1792.1097@0.23.1792.1097" timestamp="1605194747946" />
     <state x="719" y="436" key="webDeployment.PermissionsDialog" timestamp="1603912618386">
@@ -1076,22 +1103,25 @@
     <SUITE FILE_PATH="coverage/core$pymarketstore.coverage" NAME="pymkt-test Coverage Results" MODIFIED="1605225278730" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/core$BTCUSD_No_SW.coverage" NAME="BTCUSD No SW Coverage Results" MODIFIED="1602691426532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$TrendPilot_2020.coverage" NAME="TrendPilot 2020 Coverage Results" MODIFIED="1604217855044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$CrossSectional_Jan___Oct_2020.coverage" NAME="CrossSectional Jan - Oct 2020 Coverage Results" MODIFIED="1605374351325" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs.coverage" NAME="BTCUSDT All Time NewYearlyHighs Coverage Results" MODIFIED="1603683738252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSD_In_Sample_NLS1.coverage" NAME="BTCUSD In Sample NLS1 Coverage Results" MODIFIED="1602692964765" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$tickerfilter.coverage" NAME="tickerfilter Coverage Results" MODIFIED="1604272170515" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_2020.coverage" NAME="NewYearlyHighs 2020 Coverage Results" MODIFIED="1605195197702" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_Oct_2020.coverage" NAME="NewYearlyHighs Oct 2020 Coverage Results" MODIFIED="1604270944862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_2020_Till_Nov_13.coverage" NAME="NewYearlyHighs 2020 Till Nov 13 Coverage Results" MODIFIED="1605343691830" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_2020.coverage" NAME="NewYearlyHighs 2020 Coverage Results" MODIFIED="1605377778355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_Oct_2020.coverage" NAME="NewYearlyHighs Oct 2020 Coverage Results" MODIFIED="1605305745418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Equity_Momentum_from_file.coverage" NAME="Equity Momentum from file Coverage Results" MODIFIED="1603686605054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/strategies/Momentum" />
-    <SUITE FILE_PATH="coverage/core$TurtleTrader.coverage" NAME="TurtleTrader Coverage Results" MODIFIED="1603835442773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$TurtleTrader.coverage" NAME="TurtleTrader Coverage Results" MODIFIED="1605305808641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$pymkt_test.coverage" NAME="pymkt-test Coverage Results" MODIFIED="1605304846899" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/core$GoldenCross_2020.coverage" NAME="GoldenCross 2020 Coverage Results" MODIFIED="1604371083507" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$100DayBreakout.coverage" NAME="HundredDayBreakout Coverage Results" MODIFIED="1603853225019" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$Misc_SMA.coverage" NAME="Misc.SMA Coverage Results" MODIFIED="1605058004456" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$NewYearlyHighs.coverage" NAME="NewYearlyHighs Coverage Results" MODIFIED="1605194908924" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$Misc_SMA.coverage" NAME="Misc.SMA Coverage Results" MODIFIED="1605305396355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSD_All_Time__19_Dec_NLS1.coverage" NAME="BTCUSD All Time '19 Dec NLS1 Coverage Results" MODIFIED="1602693840447" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$EquityMomentum.coverage" NAME="Equity Momentum Coverage Results" MODIFIED="1603688803099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$CrossSectional.coverage" NAME="CrossSectional Coverage Results" MODIFIED="1604976433802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/strategies/MeanReversion" />
     <SUITE FILE_PATH="coverage/core$KalmanPair.coverage" NAME="KalmanPair Coverage Results" MODIFIED="1604444056201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$CrossSectional_Jun___Oct_2020.coverage" NAME="CrossSectional Jan - Oct 2020 Coverage Results" MODIFIED="1605239657893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$CrossSectional_Jun___Oct_2020.coverage" NAME="CrossSectional Jun - Oct 2020 Coverage Results" MODIFIED="1605305852608" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NLS1.coverage" NAME="BTCUSDT All Time NLS1 Coverage Results" MODIFIED="1604597050776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -24,8 +24,8 @@ class CrossSectional(StrategyBase):
         self.inds = {}
         for d in self.datas:
             self.inds[d] = {}
-            self.inds[d]["pct"] = bt.indicators.PercentChange(d.close, period=1)
-            self.inds[d]["std"] = bt.indicators.StandardDeviation(d.close, period=100)
+            self.inds[d]["pct"] = bt.indicators.PercentChange(d.close, period=2)
+            self.inds[d]["std"] = bt.indicators.StandardDeviation(d.close, period=200)
 
     def prenext(self):
         self.next()
@@ -36,7 +36,7 @@ class CrossSectional(StrategyBase):
         self.i += 1
 
     def rebalance_portfolio(self):
-        available = list(filter(lambda d: len(d) > 100, self.datas))  # only look at data that existed last week
+        available = list(filter(lambda d: len(d) > 200, self.datas))  # only look at data that existed last week
         rets = np.zeros(len(available))
         stds = np.zeros(len(available))
         for i, d in enumerate(available):
@@ -56,10 +56,14 @@ class CrossSectional(StrategyBase):
         selected_weights = weights[selected_weights_index]
         weights = weights / np.sum(np.abs(selected_weights))
         for i, d in enumerate(available):
-            if i in selected_weights_index:
-                self.order_target_percent(d, target=weights[i])
-            else:
-                self.order_target_percent(d, 0)
+            try:
+                if i in selected_weights_index:
+                    self.order_target_percent(d, target=weights[i])
+                else:
+                    self.order_target_percent(d, 0)
+            except Exception as e:
+                self.log("CSMR ERROR: {}".format(sys.exc_info()[0]))
+                self.log("{}".format(e))
 
         #
         # available = list(filter(lambda d: len(d), self.datas))  # only look at data that existed yesterday
