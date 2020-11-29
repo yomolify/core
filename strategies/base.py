@@ -46,7 +46,7 @@ class StrategyBase(bt.Strategy):
         close_price = self.data0.close[0]
         # self.log(f'{direction.capitalize()} supplied price is {price}')
         if ENV != PRODUCTION:
-            self.log("{} ordered @ ${}".format(direction.capitalize(), close_price))
+            # self.log("{} ordered @ ${}".format(direction.capitalize(), close_price))
             amount = size
         # Remove all instances of cash for futures flow because it's all only USDT, so when BASE/QUOTE are inverted there is no BASE cash (since all is USDT)
         if ENV == PRODUCTION:
@@ -55,6 +55,8 @@ class StrategyBase(bt.Strategy):
             # Works for minute timeframe
             # if self.data0.datetime.datetime() < datetime.now() - timedelta(minutes=63):
             # Works for hourly timeframe
+            self.log(f'self.data0.datetime.datetime() {self.data0.datetime.datetime()}')
+            self.log(f'datetime.now() {datetime.now()}')
             if self.data0.datetime.datetime() < datetime.now() - timedelta(minutes=123):
                 self.log('Historical data, so not placing real order')
                 return
@@ -111,16 +113,16 @@ class StrategyBase(bt.Strategy):
             if direction == "buy":
                 self.last_operation = "BUY"
                 if price:
-                    self.log(f'---Buy stop price: {price}')
+                    self.log(f'Buy stop price: {price}')
                 else:
-                    self.log(f'---Buy price: {close_price}')
+                    self.log(f'Buy price: {close_price}')
                 return self.buy(size=amount, exectype=exectype, price=price)
             elif direction == "sell":
                 self.last_operation = "SELL"
                 if price:
-                    self.log(f'---Sell stop price: {price}')
+                    self.log(f'Sell stop price: {price}')
                 else:
-                    self.log(f'---Sell price: {close_price}')
+                    self.log(f'Sell price: {close_price}')
                 return self.sell(size=amount, exectype=exectype, price=price)
             elif direction == "close":
                 self.last_operation = "CLOSE"
@@ -145,51 +147,51 @@ class StrategyBase(bt.Strategy):
 
 
 
-        if order.status in [order.Submitted]:
-            # Buy/Sell order submitted to/by broker - Nothing to do
-            if order.isbuy():
-                self.log('BUY ORDER SUBMITTED')
-            elif order.issell():
-                self.log('SELL ORDER SUBMITTED')
-            self.order = order
-            return
+        # if order.status in [order.Submitted]:
+        #     # Buy/Sell order submitted to/by broker - Nothing to do
+        #     if order.isbuy():
+        #         self.log('BUY ORDER SUBMITTED')
+        #     elif order.issell():
+        #         self.log('SELL ORDER SUBMITTED')
+        #     self.order = order
+        #     return
+        #
+        # if order.status in [order.Accepted]:
+        #     # Buy/Sell order accepted to/by broker - Nothing to do
+        #     if order.isbuy():
+        #         self.log('BUY ORDER ACCEPTED')
+        #     elif order.issell():
+        #         self.log('SELL ORDER ACCEPTED')
+        #     self.order = order
+        #     return
+        #
+        # if order.status in [order.Expired]:
+        #     self.log('BUY EXPIRED', True)
 
-        if order.status in [order.Accepted]:
-            # Buy/Sell order accepted to/by broker - Nothing to do
-            if order.isbuy():
-                self.log('BUY ORDER ACCEPTED')
-            elif order.issell():
-                self.log('SELL ORDER ACCEPTED')
-            self.order = order
-            return
-
-        if order.status in [order.Expired]:
-            self.log('BUY EXPIRED', True)
-
-        elif order.status in [order.Completed]:
+        if order.status in [order.Completed]:
             if order.isbuy():
                 if ENV == PRODUCTION and TRADING == "LIVE":
                     self.buy_price_close = float(order.ccxt_order['info']['avgPrice'])
                 else:
                     self.buy_price_close = order.executed.price
-                # self.log_order(order, 'buy')
+                self.log_order(order, 'buy')
                 if self.long_order and not self.long_stop_order:
                     self.sl_price = self.data0.low[0]*0.95
                     if 0.92*self.data0.open[0] > self.sl_price:
                         self.sl_price = 0.92*self.data0.open[0]
-                    self.log(f'Placing Long Stop @ {self.sl_price}')
                     self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
-                if ENV == PRODUCTION:
-                    print('order.__dict__')
-                    print(order.__dict__)
-                    print('order.executed.__dict__')
-                    print(order.executed.__dict__)
-                    print('order.ccxt_order')
-                    print(order.ccxt_order)
-                    print('order.ccxt_order[info]')
-                    print(order.ccxt_order['info'])
-                    print('order.ccxt_order[info].avgPrice')
-                    print(order.ccxt_order['info']['avgPrice'])
+                    self.log(f'Placing Long Stop @ {self.sl_price}')
+                # if ENV == PRODUCTION:
+                #     print('order.__dict__')
+                #     print(order.__dict__)
+                #     print('order.executed.__dict__')
+                #     print(order.executed.__dict__)
+                #     print('order.ccxt_order')
+                #     print(order.ccxt_order)
+                #     print('order.ccxt_order[info]')
+                #     print(order.ccxt_order['info'])
+                #     print('order.ccxt_order[info].avgPrice')
+                #     print(order.ccxt_order['info']['avgPrice'])
                 # self.log(
                 #     'BUY EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
                 #     (order.executed.price,
@@ -202,24 +204,24 @@ class StrategyBase(bt.Strategy):
                     self.sell_price_close = float(order.ccxt_order['info']['avgPrice'])
                 else:
                     self.sell_price_close = order.executed.price
-                # self.log_order(order, 'sell')
+                self.log_order(order, 'sell')
                 if self.short_order and not self.short_stop_order:
                     self.sl_price = self.highest_high_slow[0]
                     if 1.04*self.data0.open[0] < self.sl_price:
                         self.sl_price = 1.04*self.data0.open[0]
-                    self.log(f'Placing Short Stop @ {self.sl_price}')
                     self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
-                if ENV == PRODUCTION:
-                    print('order.__dict__')
-                    print(order.__dict__)
-                    print('order.executed.__dict__')
-                    print(order.executed.__dict__)
-                    print('order.ccxt_order')
-                    print(order.ccxt_order)
-                    print('order.ccxt_order[info]')
-                    print(order.ccxt_order['info'])
-                    print('order.ccxt_order[info].avgPrice')
-                    print(order.ccxt_order['info']['avgPrice'])
+                    self.log(f'Placing Short Stop @ {self.sl_price}')
+                # if ENV == PRODUCTION:
+                #     print('order.__dict__')
+                #     print(order.__dict__)
+                #     print('order.executed.__dict__')
+                #     print(order.executed.__dict__)
+                #     print('order.ccxt_order')
+                #     print(order.ccxt_order)
+                #     print('order.ccxt_order[info]')
+                #     print(order.ccxt_order['info'])
+                #     print('order.ccxt_order[info].avgPrice')
+                #     print(order.ccxt_order['info']['avgPrice'])
                     # print(order.executed.__dict__)
                 # self.log('SELL EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
                 #          (order.executed.price,
@@ -229,10 +231,10 @@ class StrategyBase(bt.Strategy):
         
         #     # Sentinel to None: new orders allowed
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            if order.isbuy():
-                self.log(f'BUY ORDER {order.Status[order.status]}')
-            elif order.issell():
-                self.log(f'SELL ORDER {order.Status[order.status]}')
+            # if order.isbuy():
+            #     self.log(f'BUY ORDER {order.Status[order.status]}')
+            # elif order.issell():
+            #     self.log(f'SELL ORDER {order.Status[order.status]}')
             if order.status in [order.Margin, order.Rejected]:
                 self.log_order(order, 'error')
             # self.log('Order Canceled/Margin/Rejected: Status %s - %s' % (order.Status[order.status],
@@ -282,14 +284,14 @@ class StrategyBase(bt.Strategy):
         self.log(f'''
         {action} {ticker}!
         {action} Price: {price}
-        {action} Size: {executed_size}
+        {action} Size: {round(abs(executed_size), 2)}
         Open: {order.data.tick_open}
         High: {order.data.tick_high}
         Low: {order.data.tick_low}
         Close: {order.data.tick_close}
-        Remaining size: {order.executed.remsize}
-        PnL: {order.executed.pnl}
         ''', True, color)
+        # PnL: {order.executed.pnl}
+        # Remaining size: {order.executed.remsize}
         # Open: {self.data0.open[0]}
         # High: {self.data0.high[0]}
         # Low: {self.data0.low[0]}
@@ -341,8 +343,8 @@ class StrategyBase(bt.Strategy):
         else:
             self.val_start = self.broker.get_cash()
 
-    def stop(self):
+    # def stop(self):
         # Calculate ROI
-        self.roi = (self.broker.get_value() / self.val_start) - 1.0
-        print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
+        # self.roi = (self.broker.get_value() / self.val_start) - 1.0
+        # print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
 

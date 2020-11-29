@@ -55,10 +55,10 @@ def format_dt_hourly(dt):
 if ENV == PRODUCTION:  # Live trading with Binance
     with open('params.json', 'r') as f:
         params = json.load(f)
-    cerebro = bt.Cerebro(quicknotify=True)
+    cerebro = bt.Cerebro(quicknotify=True, exactbars=True)
 
-    config = {'apiKey': params["binance"]["apikey"],
-              'secret': params["binance"]["secret"],
+    config = {'apiKey': params["binance-akanksha"]["apikey"],
+              'secret': params["binance-akanksha"]["secret"],
               'enableRateLimit': True,
               'options': {
                   'defaultType': 'future',
@@ -105,14 +105,23 @@ def _run_resampler(data_timeframe,
     cerebro.addobserver(bta.observers.SLTPTracking)
     cerebro.addobserver(bt.observers.DrawDown)
     cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-    cerebro.broker.setcommission(leverage=4)
+    cerebro.broker.setcommission(leverage=1)
     cerebro.addanalyzer(RecorderAnalyzer)
     cerebro.addanalyzer(BacktraderPlottingLive, volume=True, http_port=8080, scheme=Blackly(
         hovertool_timeformat='%F %R:%S'), lookback=12000)
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
 
     # hist_start_date = datetime.utcnow() - timedelta(minutes=1000)
-    # hist_start_date = datetime.utcnow() - timedelta(minutes=1)
+    # if strategy_class == 'SMA':
+    #     hist_start_date = datetime.utcnow() - timedelta(minutes=1)
+    #     dataname = "{}/{}".format(args.base, args.quote)
+    #     data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
+    #                          timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+    #                          # compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)  # , historical=True)
+    #                          compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
+    #
+    #     cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
+
     if strategy_class == 'NLS1':
         hist_start_date = datetime.utcnow() - timedelta(hours=1000)
         dataname = "{}/{}".format(args.base, args.quote)
@@ -159,7 +168,7 @@ def _run_resampler(data_timeframe,
 
 
 if __name__ == '__main__':
-    cerebro = bt.Cerebro(quicknotify=True)
+    cerebro = bt.Cerebro(quicknotify=True, oldbuysell=True)
     warnings.filterwarnings("ignore")
     print("Running in {} and {} trading".format(ENV, TRADING))
 
@@ -178,33 +187,52 @@ if __name__ == '__main__':
     else:  # Backtesting with CSV file
         modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
         csvpath = '{}-{}-{}.csv'.format(args.exchange, args.ticker, args.data_timeframe)
-        # datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
-        datapath = '../fetch-historical-data'
-
+        datapath = os.path.join(modpath, 'data/{}'.format(csvpath))
+        # datapath = '../fetch-historical-data'
+        todate = datetime.now()
+        # BTCUSDT listed on Binance
+        fromdate = datetime(2017, 8, 16)
+        # fromdate = datetime(todate.year-3, todate.month, todate.day)
+        todate = datetime(todate.year, todate.month, todate.day)
+        leverage = 1
         # Single Coin
         if strategy_class == 'NLS1':
-            data = bt.feeds.GenericCSVData(
-                dataname=f"{datapath}/binance-{args.ticker}-1h.csv",
-                dtformat=lambda x: format_dt_hourly(x),
-                # dtformat=ExchangeDTFormat[args.exchange],
-                open=ExchangeCSVIndex[args.exchange]['open'],
-                high=ExchangeCSVIndex[args.exchange]['high'],
-                low=ExchangeCSVIndex[args.exchange]['low'],
-                close=ExchangeCSVIndex[args.exchange]['close'],
-                volume=ExchangeCSVIndex[args.exchange]['volume'],
-                fromdate=datetime(args.from_year, args.from_month, args.from_date),
-                todate=datetime(args.to_year, args.to_month, args.to_date),
+            data = bt.feeds.MarketStore(
+                symbol=f'binance_BTC-USDT',
+                name=f'BTCUSDT',
+                query_timeframe='1H',
+                fromdate=fromdate,
+                todate=todate,
                 timeframe=bt.TimeFrame.Minutes,
                 compression=60,
-                nullvalue=0.0,
-                reverse=False)
+            )
             cerebro.adddata(data)
 
-            resample_timeframes = dict(
-                minutes=bt.TimeFrame.Minutes,
-                daily=bt.TimeFrame.Days,
-                weekly=bt.TimeFrame.Weeks,
-                monthly=bt.TimeFrame.Months)
+            # cerebro.resampledata(data,
+            #                      timeframe=bt.TimeFrame.Minutes,
+            #                      compression=60)
+            # data = bt.feeds.GenericCSVData(
+            #     dataname=f"{datapath}",
+            #     dtformat=lambda x: format_dt_hourly(x),
+            #     # dtformat=ExchangeDTFormat[args.exchange],
+            #     open=ExchangeCSVIndex[args.exchange]['open'],
+            #     high=ExchangeCSVIndex[args.exchange]['high'],
+            #     low=ExchangeCSVIndex[args.exchange]['low'],
+            #     close=ExchangeCSVIndex[args.exchange]['close'],
+            #     volume=ExchangeCSVIndex[args.exchange]['volume'],
+            #     fromdate=datetime(args.from_year, args.from_month, args.from_date),
+            #     todate=datetime(args.to_year, args.to_month, args.to_date),
+            #     timeframe=bt.TimeFrame.Minutes,
+            #     compression=60,
+            #     nullvalue=0.0,
+            #     reverse=False)
+            # cerebro.adddata(data)
+
+            # resample_timeframes = dict(
+            #     minutes=bt.TimeFrame.Minutes,
+            #     daily=bt.TimeFrame.Days,
+            #     weekly=bt.TimeFrame.Weeks,
+            #     monthly=bt.TimeFrame.Months)
 
             # Use to backtest hourly timeframe on minute data
             # cerebro.resampledata(data,
@@ -212,29 +240,32 @@ if __name__ == '__main__':
             #                      compression=60)
         # Altcoin Universe
         else:
-            todate = datetime.now()
-            fromdate = datetime(todate.year, todate.month-3, todate.day)
-            leverage = 3
             # New Yearly Highs
-            tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT',
-                       'XLM-USDT',
-                       'ADA-USDT',
-                       'XMR-USDT', 'DASH-USDT', 'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
-                       'BAT-USDT',
-                       'VET-USDT',
-                       'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
-                       'DOGE-USDT',
-                       'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+            # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT',
+            #            'XLM-USDT',
+            #            'ADA-USDT',
+            #            'XMR-USDT', 'DASH-USDT', 'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
+            #            'BAT-USDT',
+            #            'VET-USDT',
+            #            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
+            #            'DOGE-USDT',
+            #            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
             # CSMR Jan to Oct 2020
-            # tickers = ['ETH-USDT', 'BCH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT',
-            #            'ETC-USDT', 'LINK-USDT', 'XLM-USDT', 'ADA-USDT', 'XMR-USDT', 'DASH-USDT', 'ZEC-USDT',
-            #            'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT', 'BAT-USDT', 'VET-USDT',
-            #            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT',
-            #            'KNC-USDT', 'ZRX-USDT', 'COMP-USDT', 'OMG-USDT', 'DOGE-USDT', 'SXP-USDT', 'KAVA-USDT',
-            #            'BAND-USDT', 'RLC-USDT', 'WAVES-USDT', 'MKR-USDT', 'SNX-USDT', 'DOT-USDT', 'YFI-USDT',
-            #            'BAL-USDT', 'CRV-USDT', 'TRB-USDT', 'YFII-USDT', 'RUNE-USDT', 'SUSHI-USDT', 'SRM-USDT',
-            #            'BZRX-USDT', 'EGLD-USDT', 'SOL-USDT', 'ICX-USDT', 'STORJ-USDT', 'BLZ-USDT', 'UNI-USDT',
-            #            'AVAX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+            tickers = ['ETH-USDT', 'BCH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT',
+                       'ETC-USDT', 'LINK-USDT', 'XLM-USDT', 'ADA-USDT', 'XMR-USDT', 'DASH-USDT', 'ZEC-USDT',
+                       'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT', 'BAT-USDT', 'VET-USDT',
+                       'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT',
+                       'KNC-USDT', 'ZRX-USDT', 'COMP-USDT', 'OMG-USDT', 'DOGE-USDT', 'SXP-USDT', 'KAVA-USDT',
+                       'BAND-USDT', 'RLC-USDT', 'WAVES-USDT', 'MKR-USDT', 'SNX-USDT', 'DOT-USDT', 'YFI-USDT',
+                       'BAL-USDT', 'CRV-USDT', 'TRB-USDT', 'YFII-USDT', 'RUNE-USDT', 'SUSHI-USDT', 'SRM-USDT',
+                       'BZRX-USDT', 'EGLD-USDT', 'SOL-USDT', 'ICX-USDT', 'STORJ-USDT', 'BLZ-USDT', 'UNI-USDT',
+                       'AVAX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+            # Pair Trading
+            # tickers = ['BTC-USDT', 'ETH-USDT']
+            # tickers = ['YFI-USDT', 'YFII-USDT']
+            # tickers = ['ADA-USDT', 'XLM-USDT']
+            # ALT index
+            # tickers = ['BCH-USDT', 'BNB-USDT', 'EOS-USDT', 'ETH-USDT', 'LTC-USDT', 'XRP-USDT', 'TRX-USDT', 'DOT-USDT', 'LINK-USDT', 'ADA-USDT']
             # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
             #            'BAT-USDT', 'BCH-USDT',
             #            'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
@@ -290,17 +321,17 @@ if __name__ == '__main__':
                 data = bt.feeds.MarketStore(
                     symbol=f'binance_{ticker}',
                     name=f'{ticker}',
-                    query_timeframe='1H',
+                    query_timeframe='1Min',
                     timeframe=bt.TimeFrame.Minutes,
                     fromdate=fromdate,
                     todate=todate,
-                    compression=60,
+                    compression=1,
                 )
-                cerebro.adddata(data)
+                # cerebro.adddata(data)
 
-                # cerebro.resampledata(data,
-                #                      timeframe=bt.TimeFrame.Minutes,
-                #                      compression=30)
+                cerebro.resampledata(data,
+                                     timeframe=bt.TimeFrame.Minutes,
+                                     compression=60)
         cerebro.broker.set_coc(False)
         cerebro.broker.setcash(10000.0)
         # 627 21 - 1 pct change period
@@ -318,7 +349,7 @@ if __name__ == '__main__':
         cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
         # strats = cerebro.optstrategy(
         #     strategy,
-        #     order_target_percent=range(2, 20))
+        #     order_target_percent=range(2, 5))
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 

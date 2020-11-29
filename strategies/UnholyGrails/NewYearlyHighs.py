@@ -68,8 +68,6 @@ class NewYearlyHighs(StrategyBase):
             current_position = self.getposition(d).size
             if current_position > 0:
                 if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.close[0] < self.inds[ticker]['rolling_low'][0]):
-                    print(f"close below rolling low {d.close[0] < self.inds[ticker]['rolling_low'][0]}")
-                    print(f"bitcoin below sma {self.bitcoin.low[0] < self.bitcoin_sma[0]}")
                     try:
                         order = self.order_target_percent(data=d, target=0)
                         self.orders[ticker].append(order)

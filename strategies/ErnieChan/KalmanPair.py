@@ -8,7 +8,7 @@ import numpy as np
 class KalmanPair(StrategyBase):
     params = (
         ('exectype', bt.Order.Market),
-        ("printlog", False), ("quantity", 1000))
+        ("printlog", False), ("quantity", 1))
 
     # def log(self, txt, dt=None, doprint=False):
     #     """Logging function for strategy"""
@@ -62,11 +62,15 @@ class KalmanPair(StrategyBase):
             if e < -sqrt_Q:
                 self.sell(data=self.data0, size=(self.quantity * self.beta[0]))
                 self.buy(data=self.data1, size=self.quantity)
+                # self.order_target_percent(data=self.data0, target=-(0.5 * self.beta[0]))
+                # self.order_target_percent(data=self.data0, target=0.5)
 
                 self.position_type = "long"
             if e > sqrt_Q:
                 self.buy(data=self.data0, size=(self.quantity * self.beta[0]))
                 self.sell(data=self.data1, size=self.quantity)
+                # self.order_target_percent(data=self.data0, target=(0.5 * self.beta[0]))
+                # self.order_target_percent(data=self.data0, target=-0.5)
                 self.position_type = "short"
 
         self.log(f"beta: {self.beta[0]}, alpha: {self.beta[1]}")
