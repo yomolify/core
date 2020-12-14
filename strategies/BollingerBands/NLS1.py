@@ -49,7 +49,7 @@ class NLS1(StrategyBase):
             period=self.params.period_highest_high_mid, plot=False)
         self.highest_high_fast = bt.ind.Highest(
             period=self.params.period_highest_high_fast, plot=False)
-        cross_down_bb_top = bt.ind.CrossDown(self.datas[0].high, self.bollinger_bands.lines.top)
+        cross_down_bb_top = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.top)
         cross_down_bb_bot = bt.ind.CrossDown(self.datas[0].close, self.bollinger_bands.lines.bot)
         cross_up_bb_bot = bt.ind.CrossUp(self.datas[0].close, self.bollinger_bands.lines.bot)
         volSMA_slow = bt.ind.SMA(self.data.volume, subplot=True, period = self.params.period_vol_sma_slow, plot=False)
@@ -171,8 +171,8 @@ class NLS1(StrategyBase):
                     self.log('Cancelling short stop order')
                     self.cancel(self.short_stop_order)
                     self.short_stop_order = None
-            else:
-                self.update_indicators()
+            # else:
+            self.update_indicators()
             
         # if self.long_order or self.short_order or self.long_stop_order or self.short_stop_order:
         #     return

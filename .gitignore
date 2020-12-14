@@ -1,6 +1,7 @@
 /venv
 config.py
 /data
+/dataset
 params.json
 
 # Byte-compiled / optimized / DLL files

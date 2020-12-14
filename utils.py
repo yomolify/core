@@ -47,8 +47,8 @@ def send_telegram_message(message=""):
     if ENV != "PRODUCTION":
         return
 
-    base_url = "https://api.telegram.org/bot%s" % BITCOIN_TELEGRAM.get("bot")
+    base_url = "https://api.telegram.org/bot%s" % TELEGRAM.get("bot")
     return requests.get("%s/sendMessage" % base_url, params={
-        'chat_id': BITCOIN_TELEGRAM.get("channel"),
+        'chat_id': TELEGRAM.get("channel"),
         'text': message
     })

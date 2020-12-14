@@ -4,14 +4,16 @@ import backtrader as bt
 from termcolor import colored
 from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG, TRADING
 from utils import send_telegram_message
+from pymemcache.client import base
 
 # TODO implement isPosition
 LONG = "LONG"
 
 PERCENT = 0.99
+client = base.Client(('localhost', 11211))
 
 
-# Implementation of exec_trade, notifications & logging 
+# Implementation of exec_trade, notifications & logging
 class StrategyBase(bt.Strategy):
     def __init__(self):
         self.sl_price = None
@@ -28,6 +30,7 @@ class StrategyBase(bt.Strategy):
         self.status = "DISCONNECTED"
         self.buy_price_close = None
         self.sell_price_close = None
+        self.to_place_orders = []
         self.log("Base strategy initialized", send_telegram=True)
         self.log("Trading: {}".format(TRADING))
 
@@ -42,7 +45,7 @@ class StrategyBase(bt.Strategy):
 
     def exec_trade(self, direction, exectype, size=None, ref=None, price=None, oco=None):
         cash = None
-        color = ('red', 'green')[direction=='buy']
+        color = ('red', 'green')[direction == 'buy']
         close_price = self.data0.close[0]
         # self.log(f'{direction.capitalize()} supplied price is {price}')
         if ENV != PRODUCTION:
@@ -61,20 +64,20 @@ class StrategyBase(bt.Strategy):
                 self.log('Historical data, so not placing real order')
                 return
             # BUY/SELL BASE coin for QUOTE
-            target = (BASE, QUOTE)[direction=='buy']
+            target = (BASE, QUOTE)[direction == 'buy']
             if TRADING == "LIVE":
                 # If no position, we are entering long or short
                 target = 'USDT'
                 if abs(self.broker.getposition(self.datas[0]).size) < 0.0005:
-                    if direction=="buy":
+                    if direction == "buy":
                         cash, value = self.broker.get_wallet_balance(target)
                         self.log(f'cash is {cash}')
-                    if direction=="sell":
+                    if direction == "sell":
                         cash, value = self.broker.get_wallet_balance(target)
                         self.log(f'cash is {cash}')
-                        size = cash/self.data0.close[0]*PERCENT
+                        size = cash / self.data0.close[0] * PERCENT
                         self.log(f'size is {size}')
-                
+
                 # If we are in a position, we are in a long/short, so size of close order = position size
                 # if abs(self.broker.getposition(self.datas[0]).size) > 0.0005:
                 #     if direction=="close":
@@ -91,11 +94,11 @@ class StrategyBase(bt.Strategy):
 
             if size == None:
                 if cash is not None:
-                    amount = ((cash, cash/close_price)[direction=='buy'])*PERCENT
+                    amount = ((cash, cash / close_price)[direction == 'buy']) * PERCENT
             else:
                 amount = size
             # If we are in a position, we are in a long/short, so size of close order = position size. Close automatically uses size from position size
-            if TRADING == "LIVE" and direction=="close":
+            if TRADING == "LIVE" and direction == "close":
                 size = None
             # Hack for correct logs while paper trading
             if TRADING == "PAPER":
@@ -107,8 +110,8 @@ class StrategyBase(bt.Strategy):
             #     Amount: %.2f %s
             #     Cost: %.2f %s'''
             #     % (direction.capitalize(), amount, BASE, close_price*amount, QUOTE, close_price, amount, BASE, close_price*amount, QUOTE), True, color)
-                # Balance: $%.2f USDT
-                
+            # Balance: $%.2f USDT
+
         try:
             if direction == "buy":
                 self.last_operation = "BUY"
@@ -143,10 +146,6 @@ class StrategyBase(bt.Strategy):
         # if not order.alive():  # not alive - nullify
         #     print('-- No longer alive self.orders[order.data]: {} '.format(self.orders[ticker]))
 
-
-
-
-
         # if order.status in [order.Submitted]:
         #     # Buy/Sell order submitted to/by broker - Nothing to do
         #     if order.isbuy():
@@ -176,10 +175,11 @@ class StrategyBase(bt.Strategy):
                     self.buy_price_close = order.executed.price
                 self.log_order(order, 'buy')
                 if self.long_order and not self.long_stop_order:
-                    self.sl_price = self.data0.low[0]*0.95
-                    if 0.92*self.data0.open[0] > self.sl_price:
-                        self.sl_price = 0.92*self.data0.open[0]
-                    self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
+                    self.sl_price = self.data0.low[0] * 0.95
+                    if 0.92 * self.data0.open[0] > self.sl_price:
+                        self.sl_price = 0.92 * self.data0.open[0]
+                    self.long_stop_order = self.exec_trade(direction="close", price=self.sl_price,
+                                                           exectype=bt.Order.Stop)
                     self.log(f'Placing Long Stop @ {self.sl_price}')
                 # if ENV == PRODUCTION:
                 #     print('order.__dict__')
@@ -198,7 +198,7 @@ class StrategyBase(bt.Strategy):
                 #      order.executed.value/order.executed.price,
                 #      order.executed.value,
                 #      order.executed.comm), True)
-        
+
             elif order.issell():
                 if ENV == PRODUCTION and TRADING == "LIVE":
                     self.sell_price_close = float(order.ccxt_order['info']['avgPrice'])
@@ -207,9 +207,10 @@ class StrategyBase(bt.Strategy):
                 self.log_order(order, 'sell')
                 if self.short_order and not self.short_stop_order:
                     self.sl_price = self.highest_high_slow[0]
-                    if 1.04*self.data0.open[0] < self.sl_price:
-                        self.sl_price = 1.04*self.data0.open[0]
-                    self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price, exectype=bt.Order.Stop)
+                    if 1.04 * self.data0.open[0] < self.sl_price:
+                        self.sl_price = 1.04 * self.data0.open[0]
+                    self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price,
+                                                            exectype=bt.Order.Stop)
                     self.log(f'Placing Short Stop @ {self.sl_price}')
                 # if ENV == PRODUCTION:
                 #     print('order.__dict__')
@@ -222,13 +223,13 @@ class StrategyBase(bt.Strategy):
                 #     print(order.ccxt_order['info'])
                 #     print('order.ccxt_order[info].avgPrice')
                 #     print(order.ccxt_order['info']['avgPrice'])
-                    # print(order.executed.__dict__)
+                # print(order.executed.__dict__)
                 # self.log('SELL EXECUTED, Price: %.2f, Cost (BTC): %.2f, Cost (USD): %.2f, Comm %.2f' %
                 #          (order.executed.price,
                 #           order.executed.value/order.executed.price,
                 #           order.executed.value,
                 #           order.executed.comm), True)
-        
+
         #     # Sentinel to None: new orders allowed
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
             # if order.isbuy():
@@ -253,7 +254,8 @@ class StrategyBase(bt.Strategy):
         if trade.pnl < 0:
             color = 'red'
         # self.log(trade)
-        self.log(colored('%s OPERATION PROFIT, GROSS %.2f, NET %.2f\n' % (trade.data._name, trade.pnl, trade.pnlcomm), color), True)
+        self.log(colored('%s OPERATION PROFIT, GROSS %.2f, NET %.2f\n' % (trade.data._name, trade.pnl, trade.pnlcomm),
+                         color), True)
 
     def log_ohlc(self):
         self.log(f'''
@@ -325,10 +327,10 @@ class StrategyBase(bt.Strategy):
         if color:
             txt = colored(txt, color, highlight, attrs)
 
-        print('[%s] %s' % (value.strftime("%d-%m-%y %H:%M"), txt))
+        print('[%s] %s' % (value.strftime("%d-%m-%y %H:%M:%S"), txt))
         if TRADING == "LIVE":
             send_telegram_message(for_telegram)
-    
+
     def start(self):
         if ENV == PRODUCTION:
             if TRADING == "LIVE":
@@ -343,8 +345,75 @@ class StrategyBase(bt.Strategy):
         else:
             self.val_start = self.broker.get_cash()
 
-    # def stop(self):
-        # Calculate ROI
-        # self.roi = (self.broker.get_value() / self.val_start) - 1.0
-        # print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
+    def stop(self):
+        self.roi = (self.broker.get_value() / self.val_start) - 1.0
+        print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
 
+    def add_order(self, data, type, target, price=None, size=None, **kwargs):
+        size, direction = self.get_size_and_direction(data, target, price=price, size=size)
+        to_place_order = {
+            "symbol": data._name,
+            "quantity": size,
+            "side": direction,
+            "price": price,
+            "type": type
+        }
+        to_place_order = self.add_owner_and_data(to_place_order, data)
+        self.to_place_orders.append(to_place_order)
+        return
+
+        if ENV == PRODUCTION:
+            # Place batch order
+            pass
+        possize = self.getposition(data).size
+        if not target and possize:  # closing a position
+            return self.close(data=data, size=possize, price=price, **kwargs)
+        if direction == 'buy':
+            return self.buy(data=data, size=size, price=price, **kwargs)
+        elif direction == 'sell':
+            return self.sell(data=data, size=size, price=price, **kwargs)
+
+    def get_size_and_direction(self, data, target, price=None, size=None, **kwargs):
+        possize = self.getposition(data).size
+        direction = None
+        # Total value of all positions
+        if ENV == PRODUCTION:
+            value = float(client.get('margin_balance').decode())
+        else:
+            value = self.broker.getvalue()
+        target *= value
+        # Closing a position
+        # Make sure a price is there, price is used for limit orders
+        price = price if price is not None else data.close[0]
+
+        if not target and possize:
+            size = abs(size if size is not None else possize)
+            if possize > 0:
+                direction = 'sell'
+            elif possize < 0:
+                direction = 'buy'
+
+        # Order Target Percent
+        else:
+            value = possize * price
+            # print(f'value of {data._name} is {value}')
+            # print(f'target of {data._name} is {target}')
+            comminfo = self.broker.getcommissioninfo(data)
+
+            if target > value:
+                size = comminfo.getsize(price, target - value)
+                direction = 'buy'
+
+            elif target < value:
+                size = comminfo.getsize(price, value - target)
+                direction = 'sell'
+        return size, direction
+
+    def add_to_batch_order(self, data, target, price=None, size=None, **kwargs):
+        self.broker.submit_batch_order(data=data, size=size, price=price, **kwargs)
+        # self.broker.submit_batch_order()
+
+    def place_batch_order(self, orders):
+        orders = self.broker.submit_batch_order(orders)
+        self.to_place_orders = []
+        return orders

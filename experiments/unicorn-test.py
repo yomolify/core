@@ -51,6 +51,7 @@ def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
         if binance_websocket_api_manager.is_manager_stopping():
             exit(0)
         oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer()
+        print(oldest_stream_data_from_stream_buffer)
         if oldest_stream_data_from_stream_buffer is False:
             time.sleep(0.01)
 
@@ -63,7 +64,8 @@ binance_je_api_secret = ""
 binance_websocket_api_manager.set_private_api_config(binance_je_api_key, binance_je_api_secret)
 
 markets = {'btcusdt', 'bchusdt', 'ethusdt'}
-binance_websocket_api_manager.create_stream(["kline_1h"], markets)
+# binance_websocket_api_manager.create_stream(["kline_1h"], markets)
+binance_websocket_api_manager.create_stream(["aggTrade"], markets)
 
 
 # start a worker process to move the received stream_data from the stream_buffer to a print function
@@ -72,5 +74,5 @@ worker_thread.start()
 
 # show an overview
 while True:
-    binance_websocket_api_manager.print_summary()
+    # binance_websocket_api_manager.print_summary()
     time.sleep(1)
