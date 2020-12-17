@@ -70,10 +70,10 @@ class StrategyBase(bt.Strategy):
                 target = 'USDT'
                 if abs(self.broker.getposition(self.datas[0]).size) < 0.0005:
                     if direction == "buy":
-                        cash, value = self.broker.get_wallet_balance(target)
+                        cash, value = self.broker.get_balance(target)
                         self.log(f'cash is {cash}')
                     if direction == "sell":
-                        cash, value = self.broker.get_wallet_balance(target)
+                        cash, value = self.broker.get_balance(target)
                         self.log(f'cash is {cash}')
                         size = cash / self.data0.close[0] * PERCENT
                         self.log(f'size is {size}')
@@ -274,10 +274,9 @@ class StrategyBase(bt.Strategy):
             price = 0.0
 
         if ENV == PRODUCTION and TRADING == "LIVE":
-            executed_size = order.ccxt_order['info']['executedQty']
+            executed_size = float(order.ccxt_order['info']['executedQty'])
         else:
-            executed_size = order.executed.size
-
+            executed_size = float(order.executed.size)
         color = ('red', 'green')[direction == 'buy']
         if direction == 'error':
             color = 'cyan'
@@ -286,12 +285,13 @@ class StrategyBase(bt.Strategy):
         self.log(f'''
         {action} {ticker}!
         {action} Price: {price}
-        {action} Size: {round(abs(executed_size), 2)}
+        {action} Size: {round(abs(executed_size), 3)}
         Open: {order.data.tick_open}
         High: {order.data.tick_high}
         Low: {order.data.tick_low}
         Close: {order.data.tick_close}
         ''', True, color)
+        # {action} Size: {round(abs(executed_size), 2)}
         # PnL: {order.executed.pnl}
         # Remaining size: {order.executed.remsize}
         # Open: {self.data0.open[0]}
@@ -336,7 +336,7 @@ class StrategyBase(bt.Strategy):
             if TRADING == "LIVE":
                 # self.val_start = (self.broker.get_wallet_balance(BASE))[0]
                 # self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
-                self.quote_available = (self.broker.get_wallet_balance(QUOTE))[0]
+                self.quote_available = (self.broker.get_balance())[0]
                 self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
                 # cash, value = self.broker.get_balance()
                 # self.log('Cash, value available: {} {}'.format(cash, value), color='yellow')
@@ -349,8 +349,8 @@ class StrategyBase(bt.Strategy):
         self.roi = (self.broker.get_value() / self.val_start) - 1.0
         print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
 
-    def add_order(self, data, type, target, price=None, size=None, **kwargs):
-        size, direction = self.get_size_and_direction(data, target, price=price, size=size)
+    def add_order(self, data, type, target=None, price=None, size=None, **kwargs):
+        size, direction, price = self.get_size_and_direction(data=data, target=target, price=price, size=size)
         to_place_order = {
             "symbol": data._name,
             "quantity": size,
@@ -362,18 +362,18 @@ class StrategyBase(bt.Strategy):
         self.to_place_orders.append(to_place_order)
         return
 
-        if ENV == PRODUCTION:
-            # Place batch order
-            pass
-        possize = self.getposition(data).size
-        if not target and possize:  # closing a position
-            return self.close(data=data, size=possize, price=price, **kwargs)
-        if direction == 'buy':
-            return self.buy(data=data, size=size, price=price, **kwargs)
-        elif direction == 'sell':
-            return self.sell(data=data, size=size, price=price, **kwargs)
+        # if ENV == PRODUCTION:
+        #     # Place batch order
+        #     pass
+        # possize = self.getposition(data).size
+        # if not target and possize:  # closing a position
+        #     return self.close(data=data, size=possize, price=price, **kwargs)
+        # if direction == 'buy':
+        #     return self.buy(data=data, size=size, price=price, **kwargs)
+        # elif direction == 'sell':
+        #     return self.sell(data=data, size=size, price=price, **kwargs)
 
-    def get_size_and_direction(self, data, target, price=None, size=None, **kwargs):
+    def get_size_and_direction(self, data, target=None, price=None, size=None, **kwargs):
         possize = self.getposition(data).size
         direction = None
         # Total value of all positions
@@ -381,7 +381,9 @@ class StrategyBase(bt.Strategy):
             value = float(client.get('margin_balance').decode())
         else:
             value = self.broker.getvalue()
-        target *= value
+        # Convert target percentage to target dollar amount
+        if target is not None:
+            target *= value
         # Closing a position
         # Make sure a price is there, price is used for limit orders
         price = price if price is not None else data.close[0]
@@ -395,22 +397,23 @@ class StrategyBase(bt.Strategy):
 
         # Order Target Percent
         else:
-            value = possize * price
-            # print(f'value of {data._name} is {value}')
-            # print(f'target of {data._name} is {target}')
-            comminfo = self.broker.getcommissioninfo(data)
+            if target is not None:
+                value = possize * price
+                # print(f'value of {data._name} is {value}')
+                # print(f'target of {data._name} is {target}')
+                comminfo = self.broker.getcommissioninfo(data)
 
-            if target > value:
-                size = comminfo.getsize(price, target - value)
-                direction = 'buy'
+                if target > value:
+                    size = comminfo.getsize(price, target - value)
+                    direction = 'buy'
 
-            elif target < value:
-                size = comminfo.getsize(price, value - target)
-                direction = 'sell'
-        return size, direction
+                elif target < value:
+                    size = comminfo.getsize(price, value - target)
+                    direction = 'sell'
+        return size, direction, price
 
-    def add_to_batch_order(self, data, target, price=None, size=None, **kwargs):
-        self.broker.submit_batch_order(data=data, size=size, price=price, **kwargs)
+    # def add_to_batch_order(self, data, target, price=None, size=None, **kwargs):
+    #     self.broker.submit_batch_order(data=data, size=size, price=price, **kwargs)
         # self.broker.submit_batch_order()
 
     def place_batch_order(self, orders):

@@ -2,8 +2,13 @@ import time
 import ccxt
 import json
 import pprint
-from pymemcache.client import base
-client = base.Client(('localhost', 11211))
+# import redis
+import asyncio
+import aioredis
+import msgpack
+import datetime as dt
+
+
 with open('params.json', 'r') as f:
     params = json.load(f)
 exchange = ccxt.binance({
@@ -15,11 +20,37 @@ exchange = ccxt.binance({
     'secret': params["binance-lh"]["secret"],
 })
 
+
+async def cache_wallet(positions, assets):
+    redis = await aioredis.create_redis_pool(
+        'redis://localhost')
+    await redis.set('positions', msgpack.packb(positions))
+    await redis.set('assets', msgpack.packb(assets))
+    positions = await redis.get('positions')
+    assets = await redis.get('assets')
+    print(msgpack.unpackb(positions))
+    print(msgpack.unpackb(assets))
+    redis.close()
+    await redis.wait_closed()
+
 while True:
-    margin_balance = exchange.fetch_balance()["info"]["totalMarginBalance"]
-    # margin_balance = exchange.fetch_balance()
-    client.set('margin_balance', margin_balance)
+    # if dt.datetime.now().second / 1 == 0:
+    exchange_info = exchange.fetch_balance()["info"]
+    positions = exchange_info["positions"]
+    assets = exchange_info["assets"]
     # print(f'Margin Balance: {margin_balance}')
     # pprint.pprint(json.loads(json.dumps(margin_balance)))
-    time.sleep(2)
-    print(float(client.get('margin_balance').decode()))
+    asyncio.run(cache_wallet(positions, assets))
+    time.sleep(20)
+        # print(float(client.get('margin_balance').decode()))
+
+
+
+
+# positions: {
+#     "ALPHAUSDT": {
+#         "unrealizedProfit":
+#
+#     }
+#
+# }

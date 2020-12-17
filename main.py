@@ -14,7 +14,14 @@ import os
 import pandas as pd
 import glob
 import importlib
-
+import concurrent.futures
+# Make add_order work with both size and target
+# TODO - in fetch_orders thread, update all positions and in add_order use these updated positions for target calculation
+# TODO - single command that runs get_wallet_balance, marketstore and core
+# TODO - https://community.backtrader.com/topic/2153/backtrader-with-a-lot-of-datafeed-trick-to-reduce-data-loading-time
+# TODO - https://community.backtrader.com/topic/2240/how-to-speed-up-almost-100-times-when-add-data-and-preload-data
+# TODO - copy over strategy.py, ccxtbroker.py and ccxtstore.py and ccxtfeed.py to aws
+# TODO - test new yearly highs using batch orders and marketstore
 from config import BINANCE, ENV, PRODUCTION, BASE, QUOTE, DEBUG, TRADING
 
 if ENV == PRODUCTION:
@@ -26,6 +33,7 @@ from analyzers import *
 from btplotting import BacktraderPlotting, BacktraderPlottingLive
 from btplotting.schemes import Blackly, Tradimo
 from btplotting.analyzers import RecorderAnalyzer
+from threading import Thread, Event
 
 from dicts import ExchangeCSVIndex, ExchangeDTFormat, Strategy, ExecType
 
@@ -57,15 +65,15 @@ if ENV == PRODUCTION:  # Live trading with Binance
         params = json.load(f)
     cerebro = bt.Cerebro(quicknotify=True, exactbars=True)
 
-    config = {'apiKey': params["binance-lh"]["apikey"],
-              'secret': params["binance-lh"]["secret"],
+    config = {'apiKey': params["binance"]["apikey"],
+              'secret': params["binance"]["secret"],
               'enableRateLimit': True,
               'options': {
                   'defaultType': 'future',
                 }
               }
 
-    store = CCXTStore(exchange='binance', currency='USDT', config=config, retries=5, debug=True)
+    store = CCXTStore(exchange='binance', currency='USDT', config=config, retries=5, debug=False)
 
     broker_mapping = {
         'order_types': {
@@ -79,11 +87,24 @@ if ENV == PRODUCTION:  # Live trading with Binance
                 'key': 'status',
                 'value': 'closed'
             },
+            'filled_order': {
+                'key': 'status',
+                'value': 'filled'
+            },
             'canceled_order': {
                 'key': 'status',
                 'value': 'canceled'}
         }
     }
+
+
+def add_data(ticker, cerebro, hist_start_date=datetime.utcnow() - timedelta(hours=500), resample_timeframe=bt.TimeFrame.Minutes, resample_compression=60):
+    data = store.getdata(dataname=ticker, name=ticker,
+                         timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                         compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)
+                         # compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True)  # , historical=True)
+
+    cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
 
 
 def _run_resampler(data_timeframe,
@@ -112,8 +133,9 @@ def _run_resampler(data_timeframe,
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
 
     # hist_start_date = datetime.utcnow() - timedelta(minutes=1000)
-    if strategy_class == 'SMA':
-        hist_start_date = datetime.utcnow() - timedelta(minutes=0)
+    # if strategy_class == 'SMA':
+    if strategy_class == 'NewYearlyHighs':
+        # hist_start_date = datetime.utcnow() - timedelta(minutes=0)
 
         # data = bt.feeds.MarketStore(
         #     symbol='binancefutures_BTC-USDT',
@@ -148,55 +170,80 @@ def _run_resampler(data_timeframe,
     #     cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
     # else:
         # Keep hist_start_date exactly the same as max period in strategy
-        hist_start_date = datetime.utcnow() - timedelta(minutes=2)
+        # hist_start_date = datetime.utcnow() - timedelta(minutes=2)
         # hist_start_date = datetime.utcnow() - timedelta(minutes=2)
 
         # Prod
-        tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT', 'BCH/USDT',
+        tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT',
+                   'BCH/USDT',
                    'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
                    'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
                    'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'IOTA/USDT', 'KAVA/USDT', 'KNC/USDT', 'LINK/USDT', 'LTC/USDT',
-                   'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT', 'SNX/USDT',
+                   'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT',
+                   'SNX/USDT',
                    'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT', 'TRX/USDT',
                    'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT', 'YFII/USDT',
                    'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT',
                    'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
-                   'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT']
+                   'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT', 'AXS/USDT', 'ZEN/USDT', 'ALPHA/USDT',
+                   'CTK/USDT', 'BEL/USDT', 'CVC/USDT']
 
-        tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT',
-                   'BCH/USDT']
+        # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT', 'BCH/USDT',
+        #            'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
+        #            'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
+        #            'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'CTK/USDT', 'BEL/USDT', 'CVC/USDT', 'LTC/USDT', 'ALPHA/USDT']
+        # 'SKL/USDT' - 8 Dec
+        # tickers = ['BTC/USDT']
 
-        # tickers = ['BTC/USDT', 'ETH/USDT']
-        tickers = ['BTC/USDT']
+        # We can use a with statement to ensure threads are cleaned up promptly
+        with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+            # Start the load operations and mark each future with its URL
+            ticker_add_data = {executor.submit(add_data, ticker, cerebro): ticker for ticker in tickers}
+            for future in concurrent.futures.as_completed(ticker_add_data):
+                ticker = ticker_add_data[future]
+                try:
+                    data = future.result()
+                except Exception as exc:
+                    print('%r generated an exception: %s' % (ticker, exc))
+                else:
+                    print('%r ticker loaded' % (ticker))
 
-        for ticker in tickers:
-            # data = store.getdata(dataname=ticker, name=ticker.replace('/', ''),
-            #                      tf="1Min", fromdate=hist_start_date)
 
-            data = store.getdata(dataname=ticker, name=ticker,
-                                 timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-                                 # compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)
-                                 compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
 
-            cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
+        # for ticker in tickers:
+        #     t_add_data = Thread(target=add_data, args=[ticker, cerebro, hist_start_date, resample_timeframe, resample_compression])
+        #     t_add_data.start()
+            # thread_started = True
+    # So that it doesn't run a lot within that 1 second
+    #         time.sleep(10)
+    #         if thread_started == True:
+    #             t_add_data.join()
+    #     thread_started = False
+        # for ticker in tickers:
+        #     data = store.getdata(dataname=ticker, name=ticker,
+        #                          timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+        #                          # compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)
+        #                          compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
+        #
+        #     cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
 
     res = cerebro.run()
     return cerebro, res[0]
 
 
 if __name__ == '__main__':
-    cerebro = bt.Cerebro(quicknotify=False, oldbuysell=True)
+    cerebro = bt.Cerebro(quicknotify=True, oldbuysell=True)
     warnings.filterwarnings("ignore")
     print("Running in {} and {} trading".format(ENV, TRADING))
 
     if ENV == PRODUCTION:  # Live trading with Binance
         logging.basicConfig(format='%(asctime)s %(name)s:%(levelname)s:%(message)s', level=logging.INFO)
         cerebro, strat = _run_resampler(data_timeframe=bt.TimeFrame.Minutes,
-                                        # data_compression=60,
-                                        data_compression=1,
+                                        data_compression=60,
+                                        # data_compression=1,
                                         resample_timeframe=bt.TimeFrame.Minutes,
-                                        # resample_compression=60,
-                                        resample_compression=1,
+                                        resample_compression=60,
+                                        # resample_compression=1,
                                         runtime_seconds=60000,
                                         tick_interval=timedelta(seconds=60),
                                         )
@@ -207,12 +254,12 @@ if __name__ == '__main__':
         todate = datetime.now()
         # BTCUSDT listed on Binance
         # fromdate = datetime(2017, 8, 16)
-        fromdate = datetime(todate.year-1, todate.month-10, todate.day-10)
+        fromdate = datetime(todate.year-1, todate.month, todate.day-16)
         todate = datetime(todate.year, todate.month, todate.day)
         #
         # fromdate = datetime(args.from_year, args.from_month, args.from_date)
         # todate = datetime(args.to_year, args.to_month, args.to_date)
-        leverage = 1
+        leverage = 3
         # Single Coin
         if strategy_class == 'NLS1':
             leverage = 1
@@ -278,6 +325,25 @@ if __name__ == '__main__':
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+                #
+                # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
+                #            'BAT-USDT',
+                #            'BCH-USDT',
+                #            'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
+                #            'DOT-USDT', 'EGLD-USDT', 'ENJ-USDT', 'EOS-USDT', 'ETC-USDT', 'ETH-USDT', 'FLM-USDT',
+                #            'FTM-USDT',
+                #            'HNT-USDT', 'ICX-USDT', 'IOST-USDT', 'IOTA-USDT', 'KAVA-USDT', 'KNC-USDT', 'LINK-USDT',
+                #            'LTC-USDT',
+                #            'MKR-USDT', 'NEO-USDT', 'OMG-USDT', 'ONT-USDT', 'QTUM-USDT', 'REN-USDT', 'RLC-USDT',
+                #            'RUNE-USDT',
+                #            'SNX-USDT',
+                #            'SOL-USDT', 'SRM-USDT', 'STORJ-USDT', 'SUSHI-USDT', 'SXP-USDT', 'THETA-USDT', 'TRB-USDT',
+                #            'TRX-USDT',
+                #            'UNI-USDT', 'VET-USDT', 'WAVES-USDT', 'XLM-USDT', 'XMR-USDT', 'XRP-USDT', 'XTZ-USDT',
+                #            'YFII-USDT',
+                #            'YFI-USDT', 'ZEC-USDT', 'ZIL-USDT', 'ZRX-USDT',
+                #            'TOMO-USDT', 'RSR-USDT', 'NEAR-USDT', 'MATIC-USDT',
+                #            'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT']
                 cerebro.broker.setcash(10000.0)
 
             # CSMR Jan to Oct 2020
@@ -298,7 +364,7 @@ if __name__ == '__main__':
                 cerebro.broker.setcash(1.0)
 
                 # tickers = ['ETH-USDT', 'LTC-USDT', 'BNB-USDT', 'XRP-USDT', 'BCH-USDT', 'LINK-USDT', 'DOT-USDT', 'ADA-USDT', 'XLM-USDT', 'XMR-USDT', 'TRX-USDT', 'XTZ-USDT', 'XEM-USDT', 'NEO-USDT', 'DASH-USDT', 'ATOM-USDT', 'VET-USDT', 'WAVES-USDT', 'IOTA-USDT', 'ALGO-USDT', 'ETC-USDT', 'THETA-USDT', 'ZIL-USDT', 'MKR-USDT', 'OMG-USDT', 'DCR-USDT', 'BAT-USDT', 'ZRX-USDT', 'REN-USDT', 'QTUM-USDT', 'KNC-USDT', 'LRC-USDT', 'REP-USDT', 'ICX-USDT', 'TFUEL-USDT', 'IOST-USDT', 'FTM-USDT', 'LTO-USDT', 'DUSK-USDT', 'COTI-USDT', 'AAVE-USDT']
-            tickers = ['ETH-BTC']
+            # tickers = ['ETH-BTC']
 
             # Pair Trading
             # tickers = ['BTC-USDT', 'ETH-USDT']
@@ -383,8 +449,8 @@ if __name__ == '__main__':
         # 1060 21 - 10
         # 3224 16
         cerebro.addsizer(FullMoney)
-        # cerebro.broker.setcommission(commission=0.00036, leverage=leverage)
-        cerebro.broker.setcommission(commission=0.00075, leverage=leverage)
+        cerebro.broker.setcommission(commission=0.00036, leverage=leverage)
+        # cerebro.broker.setcommission(commission=0.00075, leverage=leverage)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)
         cerebro.addobserver(bt.observers.DrawDown)

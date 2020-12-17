@@ -58,87 +58,60 @@ class NewYearlyHighs(StrategyBase):
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
 
     def next(self):
-        if self.i % 20 == 0:
-            self.rebalance_portfolio()
-        self.i += 1
-        available = list(filter(lambda d: len(d) > 500, self.altcoins))
-        available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
-        for i, d in enumerate(available):
-            ticker = d._name
-            current_position = self.getposition(d).size
-            if current_position > 0:
-                if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.close[0] < self.inds[ticker]['rolling_low'][0]):
-                    try:
-                        order = self.place_order(data=d, target=0)
-                        self.orders[ticker].append(order)
-                        if ENV == PRODUCTION and TRADING == "LIVE":
-                            order_info = self.orders[ticker][1].ccxt_order['info']
-                            qty = order_info['executedQty']
-                            price = order_info['avgPrice']
-                            quote = order_info['cumQuote']
-                            self.log(f'Exit Long {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
-                        else:
-                            self.log(f'Exit Long {ticker[:-4]} @ {d.close[0]}')
-                    except Exception as e:
-                        self.log("ERROR: {}".format(sys.exc_info()[0]))
-                        self.log("{}".format(e))
-            elif current_position < 0:
-                if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or (d.high[0] > self.inds[ticker]['rolling_high'][0]):
-                    try:
-                        order = self.place_order(data=d, target=0)
-                        self.orders[ticker].append(order)
-                        if ENV == PRODUCTION and TRADING == "LIVE":
-                            order_info = self.orders[ticker][1].ccxt_order['info']
-                            qty = order_info['executedQty']
-                            price = order_info['avgPrice']
-                            quote = order_info['cumQuote']
-                            self.log(f'Exit Short {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
-                        else:
-                            self.log(f'Exit Short {ticker[:-4]} @ {d.close[0]}')
-                    except Exception as e:
-                        self.log("ERROR: {}".format(sys.exc_info()[0]))
-                        self.log("{}".format(e))
-            if current_position == 0:
-                volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
-                volatility_factor = 1/(volatility*100)
-                closes_above_sma = 0
-                for lookback in [0, -1, -2, -3, -4]:
-                    if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
-                        closes_above_sma += 1
-                if self.bitcoin.close[0] > self.bitcoin_sma[0] and closes_above_sma == 5:
-                    if d.close[0] > self.inds[ticker]['sma_fast'][0]:
-                        if d.high[0] > self.inds[ticker]['rolling_high'][0] and d.close[0] > self.inds[ticker]['sma_highs'][0]:
-                            try:
-                                self.orders[ticker] = [self.place_order(data=d, target=((self.p.order_target_percent/100) * volatility_factor))]
+        if self.status == "LIVE":
+            if self.i % 20 == 0:
+                self.rebalance_portfolio()
+            self.i += 1
+            available = list(filter(lambda d: len(d) > 500, self.altcoins))
+            available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
+            for i, d in enumerate(available):
+                ticker = d._name
+                current_position = 0
+                position = self.getposition(d)
+                if position is not None:
+                    current_position = self.getposition(d)["size"]
+                if current_position:
+                    print(f'{ticker} position is: {current_position}')
+                if current_position > 0:
+                    if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.close[0] < self.inds[ticker]['rolling_low'][0]):
+                        try:
+                            order = self.add_order(data=d, target=0, type='market')
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
+                elif current_position < 0:
+                    if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or (d.high[0] > self.inds[ticker]['rolling_high'][0]):
+                        try:
+                            order = self.add_order(data=d, target=0, type="market")
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
+                if current_position == 0:
+                    volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
+                    volatility_factor = 1/(volatility*100)
+                    closes_above_sma = 0
+                    for lookback in [0, -1, -2, -3, -4]:
+                        if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
+                            closes_above_sma += 1
+                    if self.bitcoin.close[0] > self.bitcoin_sma[0] and closes_above_sma == 5:
+                        if d.close[0] > self.inds[ticker]['sma_fast'][0]:
+                            if d.high[0] > self.inds[ticker]['rolling_high'][0] and d.close[0] > self.inds[ticker]['sma_highs'][0]:
+                                try:
+                                    self.orders[ticker] = [self.add_order(data=d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")]
+                                except Exception as e:
+                                    self.log("ERROR: {}".format(sys.exc_info()[0]))
+                                    self.log("{}".format(e))
 
-                                if ENV == PRODUCTION and TRADING == "LIVE":
-                                    order_info = self.orders[ticker][0].ccxt_order['info']
-                                    qty = order_info['executedQty']
-                                    price = order_info['avgPrice']
-                                    quote = order_info['cumQuote']
-                                    self.log(f'Enter Long {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
-                                else:
-                                    self.log(f'Enter Long {ticker[:-4]} @ {d.close[0]}')
-                            except Exception as e:
-                                self.log("ERROR: {}".format(sys.exc_info()[0]))
-                                self.log("{}".format(e))
-
-                elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
-                    if d.low[0] < self.inds[ticker]['rolling_low'][0]:
-                        if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
-                            try:
-                                self.orders[ticker] = [self.place_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor)]
-                                if ENV == PRODUCTION and TRADING == "LIVE":
-                                    order_info = self.orders[ticker][0].ccxt_order['info']
-                                    qty = order_info['executedQty']
-                                    price = order_info['avgPrice']
-                                    quote = order_info['cumQuote']
-                                    self.log(f'Enter Short {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
-                                else:
-                                    self.log(f'Enter Short {ticker[:-4]} @ {d.close[0]}')
-                            except Exception as e:
-                                self.log("ERROR: {}".format(sys.exc_info()[0]))
-                                self.log("{}".format(e))
+                    elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
+                        if d.low[0] < self.inds[ticker]['rolling_low'][0]:
+                            if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
+                                try:
+                                    self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor)]
+                                except Exception as e:
+                                    self.log("ERROR: {}".format(sys.exc_info()[0]))
+                                    self.log("{}".format(e))
+            if len(self.to_place_orders) > 0:
+                self.place_batch_order(self.to_place_orders)
 
     def rebalance_portfolio(self):
         self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
@@ -146,20 +119,13 @@ class NewYearlyHighs(StrategyBase):
 
         # Rebalance any coins in lowest momentum that are in positions
         for i, d in enumerate(self.rankings[:5]):
-            if self.getposition(d).size:
+            current_position = 0
+            position = self.getposition(d)
+            if position is not None:
+                current_position = self.getposition(d)["size"]
+            if current_position:
                 try:
-                    order = self.place_order(data=d, target=abs(self.inds[d._name]["roc"][0]))
-                    ticker = d._name
-                    self.orders[ticker].append(order)
-                    if ENV == PRODUCTION and TRADING == "LIVE":
-                        order_info = self.orders[ticker][1].ccxt_order['info']
-                        qty = order_info['executedQty']
-                        price = order_info['avgPrice']
-                        quote = order_info['cumQuote']
-                        side = order_info['side']
-                        self.log(f'Rebalanced {ticker[:-4]} to {round(abs(self.inds[d._name]["roc"][0])*100, 2)}% by {side.lower()}ing {qty} {ticker[:-4]} @ ${price} for {quote} USDT')
-                    else:
-                        self.log(f'Rebalanced {ticker[:-4]} @ {d.close[0]}')
+                    order = self.add_order(data=d, target=abs(self.inds[d._name]["roc"][0]))
                 except Exception as e:
                     self.log("ERROR: {}".format(sys.exc_info()[0]))
                     self.log("{}".format(e))

@@ -7,6 +7,7 @@ utc = pytz.UTC
 from strategies.base import StrategyBase
 from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG, TRADING
 import sys
+import datetime as dt
 
 
 class SMA(StrategyBase):
@@ -119,9 +120,19 @@ class SMA(StrategyBase):
         # print('next called')
         if self.status == "LIVE":
             for i, d in enumerate(self.altcoins):
+                # print("in next")
+                # print(dt.datetime.now())
                 ticker = d._name
+                current_size = 0
+                entry_price = 0
                 # print(ticker)
-                current_position = self.getposition(d).size
+                position = self.getposition(d)
+                if position is not None:
+                    current_size = self.getposition(d)["size"]
+                    entry_price = self.getposition(d)["entry_price"]
+                if current_size:
+                    print(f'{ticker} position: {current_size} @ {entry_price}')
+
                 # self.log('{} Position {}'.format(ticker, current_position))
                 mod = len(self.data)
                 # self.log(f'mod: {mod}')
@@ -137,14 +148,9 @@ class SMA(StrategyBase):
                 # for order in self.created_orders:
                 #     self.cancel(order)
                 #     self.created_orders = []
-                # self.orders[ticker] = [self.add_order(data=d, target=((
-                #                                                           self.p.order_target_percent) * volatility_factor) / 2,
-                #                                       execType=bt.Order.Limit, price=(0.5 * d.close) - mod)]
+
                 # if mod % 2 == 0:
-                # print(f'adding order for {ticker} length of data = {mod}')
-                self.add_order(data=d, target=((
-                                                   self.p.order_target_percent) * volatility_factor) / 2,
-                               type="limit", price=(0.5 * d.close) - mod-1)
+
                 # if mod % 3 == 0:
 
                 #     # self.orders[ticker] = [self.order_target_percent(data=d, target=(self.p.order_target_percent / 100) * volatility_factor)]
@@ -214,6 +220,14 @@ class SMA(StrategyBase):
                 #     price = order_info['avgPrice']
                 #     quote = order_info['cumQuote']
                 #     self.log(f'Close Short {qty} {ticker} @ {price} for {quote} USDT')
+
+                # Batch orders
+                # print(f'adding order for {ticker}')
+                # if current_position:
+                    # self.add_order(data=d, target=0, type="market")
+                # if not current_position:
+                #     self.add_order(data=d, target=((
+                #                                        self.p.order_target_percent) * volatility_factor) / 3,
+                #                    type="market")
             if len(self.to_place_orders) > 0:
                 self.created_orders = self.place_batch_order(self.to_place_orders)
-
