@@ -73,7 +73,7 @@ if ENV == PRODUCTION:  # Live trading with Binance
                 }
               }
 
-    store = CCXTStore(exchange='binance', currency='USDT', config=config, retries=5, debug=False)
+    store = CCXTStore(exchange='binance', currency='USDT', config=config, retries=5, debug=True)
 
     broker_mapping = {
         'order_types': {
@@ -98,13 +98,12 @@ if ENV == PRODUCTION:  # Live trading with Binance
     }
 
 
-def add_data(ticker, cerebro, hist_start_date=datetime.utcnow() - timedelta(hours=500), resample_timeframe=bt.TimeFrame.Minutes, resample_compression=60):
+def add_data(ticker, cerebro, hist_start_date=datetime.utcnow() - timedelta(hours=4)):
     data = store.getdata(dataname=ticker, name=ticker,
-                         timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-                         compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)
-                         # compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True)  # , historical=True)
+                         fromdate=hist_start_date,
+                         ohlcv_limit=50, backfill_start=True)
 
-    cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
+    cerebro.adddata(data)
 
 
 def _run_resampler(data_timeframe,
@@ -133,8 +132,8 @@ def _run_resampler(data_timeframe,
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
 
     # hist_start_date = datetime.utcnow() - timedelta(minutes=1000)
-    # if strategy_class == 'SMA':
-    if strategy_class == 'NewYearlyHighs':
+    if strategy_class == 'SMA':
+    # if strategy_class == 'NewYearlyHighs':
         # hist_start_date = datetime.utcnow() - timedelta(minutes=0)
 
         # data = bt.feeds.MarketStore(
@@ -193,7 +192,7 @@ def _run_resampler(data_timeframe,
         #            'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
         #            'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'CTK/USDT', 'BEL/USDT', 'CVC/USDT', 'LTC/USDT', 'ALPHA/USDT']
         # 'SKL/USDT' - 8 Dec
-        # tickers = ['BTC/USDT']
+        tickers = ['BTC/USDT']
 
         # We can use a with statement to ensure threads are cleaned up promptly
         with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
@@ -237,25 +236,48 @@ if __name__ == '__main__':
     print("Running in {} and {} trading".format(ENV, TRADING))
 
     if ENV == PRODUCTION:  # Live trading with Binance
-        logging.basicConfig(format='%(asctime)s %(name)s:%(levelname)s:%(message)s', level=logging.INFO)
-        cerebro, strat = _run_resampler(data_timeframe=bt.TimeFrame.Minutes,
-                                        data_compression=60,
-                                        # data_compression=1,
-                                        resample_timeframe=bt.TimeFrame.Minutes,
-                                        resample_compression=60,
-                                        # resample_compression=1,
-                                        runtime_seconds=60000,
-                                        tick_interval=timedelta(seconds=60),
-                                        )
-
+        # logging.basicConfig(format='%(asctime)s %(name)s:%(levelname)s:%(message)s', level=logging.INFO)
+        # cerebro, strat = _run_resampler(data_timeframe=bt.TimeFrame.Minutes,
+        #                                 data_compression=60,
+        #                                 # data_compression=1,
+        #                                 resample_timeframe=bt.TimeFrame.Minutes,
+        #                                 resample_compression=60,
+        #                                 # resample_compression=1,
+        #                                 runtime_seconds=60000,
+        #                                 tick_interval=timedelta(seconds=60),
+        #                                 )
+        if TRADING == 'LIVE':
+            broker = store.getbroker(broker_mapping=broker_mapping)
+            cerebro.setbroker(broker)
+        else:
+            cerebro.broker.setcash(10000.0)
+        cerebro.addsizer(FullMoney)
+        cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
+        cerebro.broker.setcommission(leverage=1)
+        if strategy_class == 'SMA':
+            tickers = ['BTC/USDT']
+            # We can use a with statement to ensure threads are cleaned up promptly
+            with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+                # Start the load operations and mark each future with its URL
+                ticker_add_data = {executor.submit(add_data, ticker, cerebro): ticker for ticker in tickers}
+                for future in concurrent.futures.as_completed(ticker_add_data):
+                    ticker = ticker_add_data[future]
+                    try:
+                        data = future.result()
+                    except Exception as exc:
+                        print('%r generated an exception: %s' % (ticker, exc))
+                    else:
+                        print('%r ticker loaded' % (ticker))
+        cerebro.run()
     else:  # Backtesting with CSV file
         # datapath = '../fetch-historical-data'
         #
         todate = datetime.now()
         # BTCUSDT listed on Binance
         # fromdate = datetime(2017, 8, 16)
-        fromdate = datetime(todate.year-1, todate.month, todate.day-16)
-        todate = datetime(todate.year, todate.month, todate.day)
+        # fromdate = datetime(todate.year-1, todate.month, todate.day-16)
+        fromdate = datetime(2019, 11, 14)
+        todate = datetime(2020, 11, 28)
         #
         # fromdate = datetime(args.from_year, args.from_month, args.from_date)
         # todate = datetime(args.to_year, args.to_month, args.to_date)
@@ -429,11 +451,11 @@ if __name__ == '__main__':
                     name=f'{ticker}',
                     # query_timeframe='1Min',
                     query_timeframe='1H',
-                    timeframe=bt.TimeFrame.Minutes,
+                    # timeframe=bt.TimeFrame.Minutes,
                     fromdate=fromdate,
                     todate=todate,
                     # compression=1,
-                    compression=60,
+                    # compression=60,
                 )
                 cerebro.adddata(data)
 

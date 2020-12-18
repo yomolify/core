@@ -11,7 +11,7 @@ cli = pymkts.Client()
 
 # TODO - Read data as 1Min OHCLV of one symbol
 # while True:
-reply = cli.query(pymkts.Params('binancefutures_BTC-USDT', '1Min', 'OHLCV')).first().df()
+reply = cli.query(pymkts.Params('binancefutures_BTC-USDT', '1H', 'OHLCV')).first().df()
 print(reply)
 #
 #

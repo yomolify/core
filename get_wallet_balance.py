@@ -16,8 +16,8 @@ exchange = ccxt.binance({
     'options': {
         'defaultType': 'future',
     },
-    'apiKey': params["binance-lh"]["apikey"],  # https://github.com/ccxt/ccxt/wiki/Manual#authentication
-    'secret': params["binance-lh"]["secret"],
+    'apiKey': params["binance"]["apikey"],  # https://github.com/ccxt/ccxt/wiki/Manual#authentication
+    'secret': params["binance"]["secret"],
 })
 
 
@@ -41,7 +41,7 @@ while True:
     # print(f'Margin Balance: {margin_balance}')
     # pprint.pprint(json.loads(json.dumps(margin_balance)))
     asyncio.run(cache_wallet(positions, assets))
-    time.sleep(20)
+    time.sleep(1746)
         # print(float(client.get('margin_balance').decode()))
 
 

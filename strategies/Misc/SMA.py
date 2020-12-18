@@ -120,8 +120,8 @@ class SMA(StrategyBase):
         # print('next called')
         if self.status == "LIVE":
             for i, d in enumerate(self.altcoins):
-                # print("in next")
-                # print(dt.datetime.now())
+                print("in next")
+                print(dt.datetime.now())
                 ticker = d._name
                 current_size = 0
                 entry_price = 0
@@ -229,5 +229,5 @@ class SMA(StrategyBase):
                 #     self.add_order(data=d, target=((
                 #                                        self.p.order_target_percent) * volatility_factor) / 3,
                 #                    type="market")
-            if len(self.to_place_orders) > 0:
-                self.created_orders = self.place_batch_order(self.to_place_orders)
+            # if len(self.to_place_orders) > 0:
+            #     self.created_orders = self.place_batch_order(self.to_place_orders)

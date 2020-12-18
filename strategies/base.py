@@ -349,7 +349,10 @@ class StrategyBase(bt.Strategy):
         self.roi = (self.broker.get_value() / self.val_start) - 1.0
         print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
 
-    def add_order(self, data, type, target=None, price=None, size=None, **kwargs):
+    def add_order(self, data, type='market', target=None, price=None, size=None, **kwargs):
+        if ENV == DEVELOPMENT:
+            self.order_target_percent(data, target)
+            return
         size, direction, price = self.get_size_and_direction(data=data, target=target, price=price, size=size)
         to_place_order = {
             "symbol": data._name,
