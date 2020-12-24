@@ -15,7 +15,7 @@ NEO - September 7, 2017
 XRP - May 19, 2017
 
 # EC2
-python3.8 main.py --exchange=binance --strategy=UnholyGrails.NewYearlyHighs --exectype=Market --quote=USDT
+nodemon --exec "python3.8 main.py --exchange=binance --strategy=UnholyGrails.NewYearlyHighs --exectype=Market --quote=USDT"
 python3.8 main.py --exchange=binance --strategy=MeanReversion.CrossSectional --exectype=Market --quote=USD
 # Local
 python main.py --exchange=binance --strategy=Misc.SMA --exectype=Market --quote=USDT

@@ -4,14 +4,11 @@ import backtrader as bt
 from termcolor import colored
 from config import DEVELOPMENT, BASE, QUOTE, ENV, PRODUCTION, DEBUG, TRADING
 from utils import send_telegram_message
-from pymemcache.client import base
 
 # TODO implement isPosition
 LONG = "LONG"
 
 PERCENT = 0.99
-client = base.Client(('localhost', 11211))
-
 
 # Implementation of exec_trade, notifications & logging
 class StrategyBase(bt.Strategy):
@@ -328,18 +325,14 @@ class StrategyBase(bt.Strategy):
             txt = colored(txt, color, highlight, attrs)
 
         print('[%s] %s' % (value.strftime("%d-%m-%y %H:%M:%S"), txt))
-        if TRADING == "LIVE":
-            send_telegram_message(for_telegram)
+        # if TRADING == "LIVE":
+        #     send_telegram_message(for_telegram)
 
     def start(self):
         if ENV == PRODUCTION:
             if TRADING == "LIVE":
-                # self.val_start = (self.broker.get_wallet_balance(BASE))[0]
-                # self.log('BASE currency available: {} {}'.format(self.val_start, BASE), color='yellow')
                 self.quote_available = (self.broker.get_balance())[0]
                 self.log('QUOTE currency available: {} {}'.format(self.quote_available, QUOTE), color='yellow')
-                # cash, value = self.broker.get_balance()
-                # self.log('Cash, value available: {} {}'.format(cash, value), color='yellow')
             else:
                 self.val_start = self.broker.get_cash()
         else:
@@ -365,25 +358,11 @@ class StrategyBase(bt.Strategy):
         self.to_place_orders.append(to_place_order)
         return
 
-        # if ENV == PRODUCTION:
-        #     # Place batch order
-        #     pass
-        # possize = self.getposition(data).size
-        # if not target and possize:  # closing a position
-        #     return self.close(data=data, size=possize, price=price, **kwargs)
-        # if direction == 'buy':
-        #     return self.buy(data=data, size=size, price=price, **kwargs)
-        # elif direction == 'sell':
-        #     return self.sell(data=data, size=size, price=price, **kwargs)
-
     def get_size_and_direction(self, data, target=None, price=None, size=None, **kwargs):
-        possize = self.getposition(data).size
+        possize = self.getposition(data)["size"]
         direction = None
         # Total value of all positions
-        if ENV == PRODUCTION:
-            value = float(client.get('margin_balance').decode())
-        else:
-            value = self.broker.getvalue()
+        value = self.broker.getvalue()
         # Convert target percentage to target dollar amount
         if target is not None:
             target *= value
@@ -402,8 +381,6 @@ class StrategyBase(bt.Strategy):
         else:
             if target is not None:
                 value = possize * price
-                # print(f'value of {data._name} is {value}')
-                # print(f'target of {data._name} is {target}')
                 comminfo = self.broker.getcommissioninfo(data)
 
                 if target > value:
@@ -415,11 +392,17 @@ class StrategyBase(bt.Strategy):
                     direction = 'sell'
         return size, direction, price
 
-    # def add_to_batch_order(self, data, target, price=None, size=None, **kwargs):
-    #     self.broker.submit_batch_order(data=data, size=size, price=price, **kwargs)
-        # self.broker.submit_batch_order()
-
     def place_batch_order(self, orders):
         orders = self.broker.submit_batch_order(orders)
         self.to_place_orders = []
         return orders
+
+    def get_position(self, d):
+        position = self.getposition(d)
+        current_position = None
+        if position is not None:
+            if ENV == DEVELOPMENT:
+                current_position = self.getposition(d).size
+            else:
+                current_position = self.getposition(d).size["size"]
+        return current_position

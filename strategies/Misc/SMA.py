@@ -120,7 +120,7 @@ class SMA(StrategyBase):
         # print('next called')
         if self.status == "LIVE":
             for i, d in enumerate(self.altcoins):
-                print("in next")
+                # print("in next")
                 print(dt.datetime.now())
                 ticker = d._name
                 current_size = 0

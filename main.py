@@ -15,8 +15,8 @@ import pandas as pd
 import glob
 import importlib
 import concurrent.futures
-# Make add_order work with both size and target
-# TODO - in fetch_orders thread, update all positions and in add_order use these updated positions for target calculation
+# TODO - why is backtest not entering bitcoin?
+# TODO - Make add_order work with both size and target
 # TODO - single command that runs get_wallet_balance, marketstore and core
 # TODO - https://community.backtrader.com/topic/2153/backtrader-with-a-lot-of-datafeed-trick-to-reduce-data-loading-time
 # TODO - https://community.backtrader.com/topic/2240/how-to-speed-up-almost-100-times-when-add-data-and-preload-data
@@ -73,7 +73,7 @@ if ENV == PRODUCTION:  # Live trading with Binance
                 }
               }
 
-    store = CCXTStore(exchange='binance', currency='USDT', config=config, retries=5, debug=True)
+    store = CCXTStore(exchange='binance', currency='USDT', config=config, retries=5, debug=False)
 
     broker_mapping = {
         'order_types': {
@@ -97,155 +97,12 @@ if ENV == PRODUCTION:  # Live trading with Binance
         }
     }
 
-
-def add_data(ticker, cerebro, hist_start_date=datetime.utcnow() - timedelta(hours=4)):
-    data = store.getdata(dataname=ticker, name=ticker,
-                         fromdate=hist_start_date,
-                         ohlcv_limit=50, backfill_start=True)
-
-    cerebro.adddata(data)
-
-
-def _run_resampler(data_timeframe,
-                   data_compression,
-                   resample_timeframe,
-                   resample_compression,
-                   runtime_seconds=27,
-                   tick_interval=timedelta(seconds=1),
-                   ) -> bt.Strategy:
-    _logger.info("Constructing Cerebro")
-
-    # cerebro = bt.Cerebro()
-    if TRADING == 'LIVE':
-        broker = store.getbroker(broker_mapping=broker_mapping)
-        cerebro.setbroker(broker)
-    else:
-        cerebro.broker.setcash(10000.0)
-    cerebro.addsizer(FullMoney)
-    cerebro.addobserver(bta.observers.SLTPTracking)
-    cerebro.addobserver(bt.observers.DrawDown)
-    cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-    cerebro.broker.setcommission(leverage=1)
-    cerebro.addanalyzer(RecorderAnalyzer)
-    cerebro.addanalyzer(BacktraderPlottingLive, volume=True, http_port=8080, scheme=Blackly(
-        hovertool_timeformat='%F %R:%S'), lookback=12000)
-    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trade_analyzer')
-
-    # hist_start_date = datetime.utcnow() - timedelta(minutes=1000)
-    if strategy_class == 'SMA':
-    # if strategy_class == 'NewYearlyHighs':
-        # hist_start_date = datetime.utcnow() - timedelta(minutes=0)
-
-        # data = bt.feeds.MarketStore(
-        #     symbol='binancefutures_BTC-USDT',
-        #     dataname='BTC/USDT',
-        #     name='BTC',
-        #     query_timeframe='1Min',
-        #     # query_timeframe='1H',
-        #     timeframe=bt.TimeFrame.Minutes,
-        #     fromdate=hist_start_date,
-        #     # todate=todate,
-        #     compression=1,
-        #     # compression=60,
-        # )
-
-        # dataname = "{}/{}".format(args.base, args.quote)
-        # dataname = "BTC/USDT"
-        # data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
-        #                      tf="1Min", fromdate=hist_start_date,
-        #                      # compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)  # , historical=True)
-        #                      compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
-        #
-        # cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
-
-    # if strategy_class == 'NLS1':
-    #     hist_start_date = datetime.utcnow() - timedelta(hours=1000)
-    #     dataname = "{}/{}".format(args.base, args.quote)
-    #     data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
-    #                          timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-    #                          compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)  # , historical=True)
-    #     #  compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
-    #
-    #     cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
-    # else:
-        # Keep hist_start_date exactly the same as max period in strategy
-        # hist_start_date = datetime.utcnow() - timedelta(minutes=2)
-        # hist_start_date = datetime.utcnow() - timedelta(minutes=2)
-
-        # Prod
-        tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT',
-                   'BCH/USDT',
-                   'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
-                   'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
-                   'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'IOTA/USDT', 'KAVA/USDT', 'KNC/USDT', 'LINK/USDT', 'LTC/USDT',
-                   'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT',
-                   'SNX/USDT',
-                   'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT', 'TRX/USDT',
-                   'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT', 'YFII/USDT',
-                   'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT',
-                   'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
-                   'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT', 'AXS/USDT', 'ZEN/USDT', 'ALPHA/USDT',
-                   'CTK/USDT', 'BEL/USDT', 'CVC/USDT']
-
-        # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT', 'BAT/USDT', 'BCH/USDT',
-        #            'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
-        #            'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
-        #            'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'CTK/USDT', 'BEL/USDT', 'CVC/USDT', 'LTC/USDT', 'ALPHA/USDT']
-        # 'SKL/USDT' - 8 Dec
-        tickers = ['BTC/USDT']
-
-        # We can use a with statement to ensure threads are cleaned up promptly
-        with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
-            # Start the load operations and mark each future with its URL
-            ticker_add_data = {executor.submit(add_data, ticker, cerebro): ticker for ticker in tickers}
-            for future in concurrent.futures.as_completed(ticker_add_data):
-                ticker = ticker_add_data[future]
-                try:
-                    data = future.result()
-                except Exception as exc:
-                    print('%r generated an exception: %s' % (ticker, exc))
-                else:
-                    print('%r ticker loaded' % (ticker))
-
-
-
-        # for ticker in tickers:
-        #     t_add_data = Thread(target=add_data, args=[ticker, cerebro, hist_start_date, resample_timeframe, resample_compression])
-        #     t_add_data.start()
-            # thread_started = True
-    # So that it doesn't run a lot within that 1 second
-    #         time.sleep(10)
-    #         if thread_started == True:
-    #             t_add_data.join()
-    #     thread_started = False
-        # for ticker in tickers:
-        #     data = store.getdata(dataname=ticker, name=ticker,
-        #                          timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-        #                          # compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True)
-        #                          compression=1, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
-        #
-        #     cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
-
-    res = cerebro.run()
-    return cerebro, res[0]
-
-
 if __name__ == '__main__':
     cerebro = bt.Cerebro(quicknotify=True, oldbuysell=True)
     warnings.filterwarnings("ignore")
     print("Running in {} and {} trading".format(ENV, TRADING))
 
     if ENV == PRODUCTION:  # Live trading with Binance
-        # logging.basicConfig(format='%(asctime)s %(name)s:%(levelname)s:%(message)s', level=logging.INFO)
-        # cerebro, strat = _run_resampler(data_timeframe=bt.TimeFrame.Minutes,
-        #                                 data_compression=60,
-        #                                 # data_compression=1,
-        #                                 resample_timeframe=bt.TimeFrame.Minutes,
-        #                                 resample_compression=60,
-        #                                 # resample_compression=1,
-        #                                 runtime_seconds=60000,
-        #                                 tick_interval=timedelta(seconds=60),
-        #                                 )
         if TRADING == 'LIVE':
             broker = store.getbroker(broker_mapping=broker_mapping)
             cerebro.setbroker(broker)
@@ -253,21 +110,38 @@ if __name__ == '__main__':
             cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
         cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-        cerebro.broker.setcommission(leverage=1)
-        if strategy_class == 'SMA':
-            tickers = ['BTC/USDT']
-            # We can use a with statement to ensure threads are cleaned up promptly
-            with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
-                # Start the load operations and mark each future with its URL
-                ticker_add_data = {executor.submit(add_data, ticker, cerebro): ticker for ticker in tickers}
-                for future in concurrent.futures.as_completed(ticker_add_data):
-                    ticker = ticker_add_data[future]
-                    try:
-                        data = future.result()
-                    except Exception as exc:
-                        print('%r generated an exception: %s' % (ticker, exc))
-                    else:
-                        print('%r ticker loaded' % (ticker))
+        cerebro.broker.setcommission(leverage=3)
+        if strategy_class == 'NewYearlyHighs' or strategy_class == 'SMA' or strategy_class == 'TestSMA':
+            tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT']
+            # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT',
+            #            'BAT/USDT',
+            #            'BCH/USDT',
+            #            'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
+            #            'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
+            #            'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'IOTA/USDT', 'KAVA/USDT', 'KNC/USDT', 'LINK/USDT',
+            #            'LTC/USDT',
+            #            'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT',
+            #            'SNX/USDT',
+            #            'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT',
+            #            'TRX/USDT',
+            #            'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT',
+            #            'YFII/USDT',
+            #            'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT',
+            #            'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
+            #            'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT', 'AXS/USDT', 'ZEN/USDT',
+            #            'ALPHA/USDT',
+            #            'CTK/USDT', 'BEL/USDT', 'CVC/USDT']
+            # hist_start_date = datetime.utcnow() - timedelta(hours=501)
+            hist_start_date = datetime.utcnow() - timedelta(minutes=1)
+            for ticker in tickers:
+                data = store.getdata(dataname=ticker, name=ticker,
+                                     timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                                     compression=1, ohlcv_limit=50, drop_newest=True)  # , historical=True)
+                # data = store.getdata(dataname=ticker, name=ticker,
+                #                      fromdate=hist_start_date,
+                #                      tf='1Min')
+
+                cerebro.adddata(data)
         cerebro.run()
     else:  # Backtesting with CSV file
         # datapath = '../fetch-historical-data'
@@ -277,7 +151,11 @@ if __name__ == '__main__':
         # fromdate = datetime(2017, 8, 16)
         # fromdate = datetime(todate.year-1, todate.month, todate.day-16)
         fromdate = datetime(2019, 11, 14)
-        todate = datetime(2020, 11, 28)
+        # fromdate = datetime(2020, 10, 14)
+        # fromdate = datetime(todate.year, todate.month - 1, todate.day)
+        # todate = datetime(todate.year, todate.month, todate.day)
+        # fromdate = datetime(2019, 11, 14)
+        # todate = datetime(2020, 11, 28)
         #
         # fromdate = datetime(args.from_year, args.from_month, args.from_date)
         # todate = datetime(args.to_year, args.to_month, args.to_date)
@@ -347,7 +225,26 @@ if __name__ == '__main__':
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
-                #
+                # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
+                #            'BAT-USDT',
+                #            'BCH-USDT',
+                #            'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
+                #            'DOT-USDT', 'EGLD-USDT', 'ENJ-USDT', 'EOS-USDT', 'ETC-USDT', 'ETH-USDT', 'FLM-USDT', 'FTM-USDT',
+                #            'HNT-USDT', 'ICX-USDT', 'IOST-USDT', 'IOTA-USDT', 'KAVA-USDT', 'KNC-USDT', 'LINK-USDT',
+                #            'LTC-USDT',
+                #            'MKR-USDT', 'NEO-USDT', 'OMG-USDT', 'ONT-USDT', 'QTUM-USDT', 'REN-USDT', 'RLC-USDT', 'RUNE-USDT',
+                #            'SNX-USDT',
+                #            'SOL-USDT', 'SRM-USDT', 'STORJ-USDT', 'SUSHI-USDT', 'SXP-USDT', 'THETA-USDT', 'TRB-USDT',
+                #            'TRX-USDT',
+                #            'UNI-USDT', 'VET-USDT', 'WAVES-USDT', 'XLM-USDT', 'XMR-USDT', 'XRP-USDT', 'XTZ-USDT',
+                #            'YFII-USDT',
+                #            'YFI-USDT', 'ZEC-USDT', 'ZIL-USDT', 'ZRX-USDT',
+                #            'TOMO-USDT', 'RSR-USDT', 'NEAR-USDT', 'MATIC-USDT',
+                #            'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
+                #            'ALPHA-USDT',
+                #            'CTK-USDT', 'BEL-USDT', 'CVC-USDT']
+                # tickers = ['BTC-USDT', 'SXP-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #            'BAT-USDT',
                 #            'BCH-USDT',
@@ -447,6 +344,7 @@ if __name__ == '__main__':
 
             for ticker in tickers:
                 data = bt.feeds.MarketStore(
+                    # symbol=f'binancefutures_{ticker}',
                     symbol=f'binance_{ticker}',
                     name=f'{ticker}',
                     # query_timeframe='1Min',

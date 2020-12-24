@@ -2,7 +2,6 @@ import time
 import ccxt
 import json
 import pprint
-# import redis
 import asyncio
 import aioredis
 import msgpack
@@ -41,16 +40,5 @@ while True:
     # print(f'Margin Balance: {margin_balance}')
     # pprint.pprint(json.loads(json.dumps(margin_balance)))
     asyncio.run(cache_wallet(positions, assets))
-    time.sleep(1746)
-        # print(float(client.get('margin_balance').decode()))
-
-
-
-
-# positions: {
-#     "ALPHAUSDT": {
-#         "unrealizedProfit":
-#
-#     }
-#
-# }
+    # time.sleep(1746)
+    time.sleep(25)
