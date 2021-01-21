@@ -28,8 +28,7 @@ class SHA(StrategyBase):
         for d in self.datas:
             ticker = d._name
             self.inds[ticker] = {}
-            self.inds[ticker]["sha"] = SmoothedHeikinAshi(d)
-            self.inds[ticker]["swing"] = Swing(d)
+            self.inds[ticker]["sha"] = SmoothedHeikinAshi(d, plot=True, subplot=False)
 
     def next(self):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
@@ -40,7 +39,8 @@ class SHA(StrategyBase):
                 # print(self.inds[ticker]['sha'].lines.sha_open[0])
                 # print(self.inds[ticker]['sha'].lines.sha_open[0])
                 if current_position > 0:
-                    if self.inds[ticker]['sha'].lines.sha_close[0] < self.inds[ticker]['sha'].lines.sha_open[0] and self.inds[ticker]['sha'].lines.sha_low[0] < self.inds[ticker]['sha'].lines.sha_high[0]:
+                    # if self.inds[ticker]['sha'].lines.sha_close[0] < self.inds[ticker]['sha'].lines.sha_open[0] and self.inds[ticker]['sha'].lines.sha_low[0] < self.inds[ticker]['sha'].lines.sha_high[0]:
+                    if self.inds[ticker]['sha'].lines.sha_close[0] < self.inds[ticker]['sha'].lines.sha_open[0] or (self.inds[ticker]['sha'].lines.sha_close[0] - self.inds[ticker]['sha'].lines.sha_open[0]) < (self.inds[ticker]['sha'].lines.sha_close[-1] - self.inds[ticker]['sha'].lines.sha_open[-1]):
                         try:
                             order = self.add_order(data=d, target=0, type='market')
                         except Exception as e:
@@ -56,7 +56,8 @@ class SHA(StrategyBase):
                 if current_position == 0:
                     # volatility = self.inds[ticker]["average_true_range"][0] / d.close[0]
                     # volatility_factor = 1 / (volatility * 100)
-                    if self.inds[ticker]['sha'].lines.sha_close[0] > self.inds[ticker]['sha'].lines.sha_open[0] and self.inds[ticker]['sha'].lines.sha_high[0] > self.inds[ticker]['sha'].lines.sha_low[0]:
+                    # if self.inds[ticker]['sha'].lines.sha_close[0] > self.inds[ticker]['sha'].lines.sha_open[0] and self.inds[ticker]['sha'].lines.sha_high[0] > self.inds[ticker]['sha'].lines.sha_low[0]:
+                    if self.inds[ticker]['sha'].lines.sha_close[0] > self.inds[ticker]['sha'].lines.sha_open[0] and (self.inds[ticker]['sha'].lines.sha_close[0] - self.inds[ticker]['sha'].lines.sha_open[0]) > (self.inds[ticker]['sha'].lines.sha_close[-1] - self.inds[ticker]['sha'].lines.sha_open[-1]):
                         try:
                             # self.orders[ticker] = [
                                 # self.add_order(data=d, target=((self.p.order_target_percent / 100) * volatility_factor),

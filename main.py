@@ -148,8 +148,8 @@ if __name__ == '__main__':
         #
         # Benchmark backtest
         todate = datetime.now()
-        todate = datetime(2021, 1, 19)
-        fromdate = datetime(2020, 1, 17)
+        # todate = datetime(2020, 3, 19)
+        fromdate = datetime(2020, 2, 1)
 
         # fromdate = datetime(2020, 3, 14)
 
@@ -364,6 +364,8 @@ if __name__ == '__main__':
                     # compression=1,
                     # compression=60,
                 )
+                data.addfilter(bt.filters.HeikinAshi(data))
+
                 cerebro.adddata(data)
 
                 # cerebro.resampledata(data,

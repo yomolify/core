@@ -13,7 +13,16 @@ class SmoothedHeikinAshi(bt.Indicator):
         self.ema_c = EMA(self.data.close, period=self.p.period_ema)
         self.ema_h = EMA(self.data.high, period=self.p.period_ema)
         self.ema_l = EMA(self.data.low, period=self.p.period_ema)
+        plotlines = dict(sha_open=dict(ls='--'))
 
+    def _plotlabel(self):
+            # This method returns a list of labels that will be displayed
+            # behind the name of the indicator on the plot
+
+            # The period must always be there
+            plabels = [self.p.period_ema]
+
+            return plabels
 
     def next(self):
         self.lines.sha_open[0] = (self.ema_o.get(ago=-1)[0] + self.ema_c.get(ago=-1)[0]) / 2
