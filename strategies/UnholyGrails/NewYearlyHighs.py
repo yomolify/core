@@ -100,17 +100,18 @@ class NewYearlyHighs(StrategyBase):
                                     self.log("ERROR: {}".format(sys.exc_info()[0]))
                                     self.log("{}".format(e))
 
-                    elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
-                        if d.low[0] < self.inds[ticker]['rolling_low'][-1]:
-                            if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
-                                try:
-                                    self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, type="market")]
-                                except Exception as e:
-                                    self.log("ERROR: {}".format(sys.exc_info()[0]))
-                                    self.log("{}".format(e))
+                    # elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
+                    #     if d.low[0] < self.inds[ticker]['rolling_low'][-1]:
+                    #         if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
+                    #             try:
+                    #                 self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, type="market")]
+                    #             except Exception as e:
+                    #                 self.log("ERROR: {}".format(sys.exc_info()[0]))
+                    #                 self.log("{}".format(e))
             if len(self.to_place_orders) > 0:
-                self.place_batch_order(self.to_place_orders)
-
+                order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
+                for order_chunk in order_chunks:
+                    self.place_batch_order(order_chunk)
     def rebalance_portfolio(self):
         self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
         self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))

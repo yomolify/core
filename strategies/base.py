@@ -343,9 +343,9 @@ class StrategyBase(bt.Strategy):
         print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
 
     def add_order(self, data, type='market', target=None, price=None, size=None, **kwargs):
-        if ENV == DEVELOPMENT:
-            self.order_target_percent(data, target)
-            return
+        # if ENV == DEVELOPMENT:
+        #     self.order_target_percent(data, target)
+        #     return
         size, direction, price = self.get_size_and_direction(data=data, target=target, price=price, size=size)
         to_place_order = {
             "symbol": data._name,
@@ -359,7 +359,8 @@ class StrategyBase(bt.Strategy):
         return
 
     def get_size_and_direction(self, data, target=None, price=None, size=None, **kwargs):
-        possize = self.getposition(data)["size"]
+        # possize = self.getposition(data)["size"]
+        possize = self.get_position(data)
         direction = None
         # Total value of all positions
         value = self.broker.getvalue()
@@ -372,6 +373,8 @@ class StrategyBase(bt.Strategy):
 
         if not target and possize:
             size = abs(size if size is not None else possize)
+            if ENV == DEVELOPMENT:
+                return self.close(data=data, size=size, price=price, **kwargs)
             if possize > 0:
                 direction = 'sell'
             elif possize < 0:
@@ -386,13 +389,20 @@ class StrategyBase(bt.Strategy):
                 if target > value:
                     size = comminfo.getsize(price, target - value)
                     direction = 'buy'
+                    if ENV == DEVELOPMENT:
+                        return self.buy(data=data, size=size, price=price, **kwargs)
 
                 elif target < value:
                     size = comminfo.getsize(price, value - target)
                     direction = 'sell'
+                    if ENV == DEVELOPMENT:
+                        return self.sell(data=data, size=size, price=price, **kwargs)
+
         return size, direction, price
 
     def place_batch_order(self, orders):
+        if ENV == DEVELOPMENT:
+            return
         orders = self.broker.submit_batch_order(orders)
         self.to_place_orders = []
         return orders

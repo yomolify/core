@@ -146,11 +146,18 @@ if __name__ == '__main__':
     else:  # Backtesting with CSV file
         # datapath = '../fetch-historical-data'
         #
+        # Benchmark backtest
         todate = datetime.now()
+        todate = datetime(2021, 1, 19)
+        fromdate = datetime(2020, 1, 17)
+
+        # fromdate = datetime(2020, 3, 14)
+
+        # Recent
+        # fromdate = datetime(2020, 11, 14)
         # BTCUSDT listed on Binance
         # fromdate = datetime(2017, 8, 16)
         # fromdate = datetime(todate.year-1, todate.month, todate.day-16)
-        fromdate = datetime(2019, 11, 14)
         # fromdate = datetime(2020, 10, 14)
         # fromdate = datetime(todate.year, todate.month - 1, todate.day)
         # todate = datetime(todate.year, todate.month, todate.day)
@@ -159,7 +166,7 @@ if __name__ == '__main__':
         #
         # fromdate = datetime(args.from_year, args.from_month, args.from_date)
         # todate = datetime(args.to_year, args.to_month, args.to_date)
-        leverage = 3
+        leverage = 1
         # Single Coin
         if strategy_class == 'NLS1':
             leverage = 1
@@ -215,7 +222,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'NewYearlyHighs':
+            if strategy_class == 'NewYearlyHighs' or "HMA":
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT',
                            'XLM-USDT',
                            'ADA-USDT',
@@ -225,6 +232,8 @@ if __name__ == '__main__':
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+                tickers = ['ETH-USDT']
+                # tickers = ['BTC-USDT']
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #            'BAT-USDT',
                 #            'BCH-USDT',
