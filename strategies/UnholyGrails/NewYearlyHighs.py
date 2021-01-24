@@ -69,7 +69,7 @@ class NewYearlyHighs(StrategyBase):
             available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
             for i, d in enumerate(available):
                 ticker = d._name
-                current_position = self.get_position(d)
+                current_position = self.get_position(d=d, attribute='size')
                 if current_position > 0:
                     if (self.bitcoin.low[0] < self.bitcoin_sma[0]) or (d.close[0] < self.inds[ticker]['rolling_low'][-1]):
                         try:
@@ -117,7 +117,7 @@ class NewYearlyHighs(StrategyBase):
         self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
         # Rebalance any coins in lowest momentum that are in positions
         for i, d in enumerate(self.rankings[:5]):
-            current_position = self.get_position(d)
+            current_position = self.get_position(d=d, attribute='size')
             if current_position:
                 try:
                     order = self.add_order(data=d, target=abs(self.inds[d._name]["roc"][0]), type="market")

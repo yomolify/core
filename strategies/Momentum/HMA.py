@@ -18,7 +18,7 @@ class HMA(StrategyBase):
         ('period_sma_veryslow', 500),
         ('period_sma_highs', 20),
         ('period_sma_lows', 8),
-        ('order_target_percent', 100)
+        ('order_target_percent', 5)
     )
 
     def __init__(self):
@@ -75,6 +75,13 @@ class HMA(StrategyBase):
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
+                if current_position < 0:
+                    if self.inds[ticker]['sma_mid'][0] > self.inds[ticker]['sma_slow'][0] or self.inds[ticker]['sma_fast'][0] > self.inds[ticker]['sma_mid'][0]:
+                        try:
+                            order = self.add_order(data=d, target=0, type='market')
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
                 if current_position == 0:
                     volatility = self.inds[ticker]["average_true_range"][0] / d.close[0]
                     volatility_factor = 1 / (volatility * 100)
@@ -87,7 +94,7 @@ class HMA(StrategyBase):
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
-
+                    #
                     # if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
                     #     try:
                     #         # self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, type="market")]

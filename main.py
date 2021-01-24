@@ -149,7 +149,8 @@ if __name__ == '__main__':
         # Benchmark backtest
         todate = datetime.now()
         # todate = datetime(2020, 3, 19)
-        fromdate = datetime(2020, 2, 1)
+        # fromdate = datetime(2019, 11, 1)
+        fromdate = datetime(2020, 10, 1)
 
         # fromdate = datetime(2020, 3, 14)
 
@@ -166,7 +167,8 @@ if __name__ == '__main__':
         #
         # fromdate = datetime(args.from_year, args.from_month, args.from_date)
         # todate = datetime(args.to_year, args.to_month, args.to_date)
-        leverage = 1
+        leverage = 3
+        # 80 and 15 on 1x
         # Single Coin
         if strategy_class == 'NLS1':
             leverage = 1
@@ -222,9 +224,11 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'NewYearlyHighs' or "HMA":
-                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT',
-                           'XLM-USDT',
+            if strategy_class == 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops":
+                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT']
+                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
+                           'LINK-USDT',
+                            'XLM-USDT',
                            'ADA-USDT',
                            'XMR-USDT', 'DASH-USDT', 'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
                            'BAT-USDT',
@@ -232,7 +236,7 @@ if __name__ == '__main__':
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
-                tickers = ['ETH-USDT']
+                # tickers = ['ETH-USDT']
                 # tickers = ['BTC-USDT']
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #            'BAT-USDT',
@@ -353,8 +357,8 @@ if __name__ == '__main__':
 
             for ticker in tickers:
                 data = bt.feeds.MarketStore(
-                    # symbol=f'binancefutures_{ticker}',
-                    symbol=f'binance_{ticker}',
+                    symbol=f'binancefutures_{ticker}',
+                    # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
                     # query_timeframe='1Min',
                     query_timeframe='1H',
@@ -364,9 +368,27 @@ if __name__ == '__main__':
                     # compression=1,
                     # compression=60,
                 )
-                data.addfilter(bt.filters.HeikinAshi(data))
+                # cerebro.resampledata(data,
+                #                                           timeframe=bt.TimeFrame.Minutes,
+                #                                           compression=480)
+                cerebro.adddata(data, name=f'{ticker}')
 
-                cerebro.adddata(data)
+            # To add Heikin Ashi data source
+            # for ticker in tickers:
+            #     ha_data = bt.feeds.MarketStore(
+            #         # symbol=f'binancefutures_{ticker}',
+            #         symbol=f'binance_{ticker}',
+            #         name=f'{ticker}',
+            #         # query_timeframe='1Min',
+            #         query_timeframe='1H',
+            #         # timeframe=bt.TimeFrame.Minutes,
+            #         fromdate=fromdate,
+            #         todate=todate,
+            #         # compression=1,
+            #         # compression=60,
+            #     )
+            #     ha_data.addfilter(bt.filters.HeikinAshi(ha_data))
+            #     cerebro.adddata(ha_data, name=f'Heikin_{ticker}')
 
                 # cerebro.resampledata(data,
                 #                      timeframe=bt.TimeFrame.Minutes,

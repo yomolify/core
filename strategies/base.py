@@ -346,7 +346,11 @@ class StrategyBase(bt.Strategy):
         # if ENV == DEVELOPMENT:
         #     self.order_target_percent(data, target)
         #     return
+        if ENV == DEVELOPMENT:
+            order = self.get_size_and_direction(data=data, target=target, price=price, size=size)
+            return order
         size, direction, price = self.get_size_and_direction(data=data, target=target, price=price, size=size)
+
         to_place_order = {
             "symbol": data._name,
             "quantity": size,
@@ -360,7 +364,7 @@ class StrategyBase(bt.Strategy):
 
     def get_size_and_direction(self, data, target=None, price=None, size=None, **kwargs):
         # possize = self.getposition(data)["size"]
-        possize = self.get_position(data)
+        possize = self.get_position(data, attribute='size')
         direction = None
         # Total value of all positions
         value = self.broker.getvalue()
@@ -407,12 +411,18 @@ class StrategyBase(bt.Strategy):
         self.to_place_orders = []
         return orders
 
-    def get_position(self, d):
+    def get_position(self, d, attribute):
         position = self.getposition(d)
-        current_position = None
+        return_value = None
         if position is not None:
-            if ENV == DEVELOPMENT:
-                current_position = self.getposition(d).size
-            else:
-                current_position = self.getposition(d).size["size"]
-        return current_position
+            if attribute == "size":
+                if ENV == DEVELOPMENT:
+                    return_value = self.getposition(d).size
+                else:
+                    return_value = self.getposition(d).size["size"]
+            if attribute == "price":
+                if ENV == DEVELOPMENT:
+                    return_value = self.getposition(d).price
+                else:
+                    return_value = self.getposition(d).price["price"]
+        return return_value
