@@ -26,14 +26,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="+++ 200 bitcoin sma and rebalance interval = 20">
-      <change afterPath="$PROJECT_DIR$/strategies/Momentum/HeikinAshiSignalBuyOnReal.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCrossStops.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighsStops.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/Momentum/HMA.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/Momentum/HMA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/Momentum/SHA.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/Momentum/SHA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/NewYearlyHighs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCrossStops.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCrossStops.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/base.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -1212,7 +1210,7 @@
       <workItem from="1609369247117" duration="2762000" />
       <workItem from="1609817004702" duration="1346000" />
       <workItem from="1609869232946" duration="1756000" />
-      <workItem from="1611107569205" duration="49736000" />
+      <workItem from="1611107569205" duration="62727000" />
     </task>
     <task id="LOCAL-00001" summary="+++ 200 bitcoin sma and rebalance interval = 20">
       <created>1605377976543</created>
@@ -1242,7 +1240,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611197844466</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="GoldenCrossStops.py">
+      <created>1611527618349</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1611527618350</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1278,7 +1283,8 @@
     <MESSAGE value="Remove multithreaded add_data and add -1 to rolling_xxx conditions" />
     <MESSAGE value="first iteration of SHA" />
     <MESSAGE value="What the fuck am I looking at?" />
-    <option name="LAST_COMMIT_MESSAGE" value="What the fuck am I looking at?" />
+    <MESSAGE value="GoldenCrossStops.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="GoldenCrossStops.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="496" y="225" key="#Deployment" timestamp="1603912566592">
@@ -1310,14 +1316,14 @@
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
     <state x="976" y="333" key="#com.intellij.ide.util.MemberChooser/0.0.2341.1234@0.0.2341.1234" timestamp="1603294604140" />
-    <state x="1012" y="77" width="780" height="924" key="#xdebugger.evaluate" timestamp="1611521084216">
+    <state x="515" y="96" width="780" height="924" key="#xdebugger.evaluate" timestamp="1611543223129">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="1012" y="77" width="780" height="924" key="#xdebugger.evaluate/0.0.1792.1120@0.0.1792.1120" timestamp="1611521084216" />
-    <state width="937" height="646" key="DebuggerActiveHint" timestamp="1611132090431">
+    <state x="515" y="96" width="780" height="924" key="#xdebugger.evaluate/0.0.1792.1120@0.0.1792.1120" timestamp="1611543223129" />
+    <state width="937" height="646" key="DebuggerActiveHint" timestamp="1611537041181">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="937" height="646" key="DebuggerActiveHint/0.0.1792.1120@0.0.1792.1120" timestamp="1611132090431" />
+    <state width="937" height="646" key="DebuggerActiveHint/0.0.1792.1120@0.0.1792.1120" timestamp="1611537041181" />
     <state x="98" y="99" width="1592" height="920" key="DiffContextDialog" timestamp="1609369721096">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -1336,59 +1342,59 @@
     </state>
     <state x="728" y="338" key="FileChooserDialogImpl/0.0.1792.1120@0.0.1792.1120" timestamp="1608134079514" />
     <state x="951" y="372" key="FileChooserDialogImpl/0.0.2341.1234@0.0.2341.1234" timestamp="1603469573877" />
-    <state width="710" height="985" key="GridCell.Tab.0.bottom" timestamp="1611527457513">
+    <state width="710" height="985" key="GridCell.Tab.0.bottom" timestamp="1611606106427">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611527457513" />
+    <state width="710" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611606106427" />
     <state width="2297" height="431" key="GridCell.Tab.0.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.bottom/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="710" height="985" key="GridCell.Tab.0.center" timestamp="1611527457512">
+    <state width="710" height="985" key="GridCell.Tab.0.center" timestamp="1611606106426">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611527457512" />
+    <state width="710" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611606106426" />
     <state width="2297" height="431" key="GridCell.Tab.0.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.center/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="710" height="985" key="GridCell.Tab.0.left" timestamp="1611527457512">
+    <state width="710" height="985" key="GridCell.Tab.0.left" timestamp="1611606106425">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611527457512" />
+    <state width="710" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611606106425" />
     <state width="2297" height="431" key="GridCell.Tab.0.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.left/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783835" />
-    <state width="710" height="985" key="GridCell.Tab.0.right" timestamp="1611527457513">
+    <state width="710" height="985" key="GridCell.Tab.0.right" timestamp="1611606106426">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611527457513" />
+    <state width="710" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611606106426" />
     <state width="2297" height="431" key="GridCell.Tab.0.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.right/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="717" height="962" key="GridCell.Tab.1.bottom" timestamp="1611521229226">
+    <state width="717" height="985" key="GridCell.Tab.1.bottom" timestamp="1611543243926">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="717" height="962" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611521229226" />
+    <state width="717" height="985" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611543243926" />
     <state width="2297" height="431" key="GridCell.Tab.1.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710111" />
-    <state width="717" height="962" key="GridCell.Tab.1.center" timestamp="1611521229226">
+    <state width="717" height="985" key="GridCell.Tab.1.center" timestamp="1611543243926">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="717" height="962" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611521229226" />
+    <state width="717" height="985" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611543243926" />
     <state width="2297" height="431" key="GridCell.Tab.1.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="717" height="962" key="GridCell.Tab.1.left" timestamp="1611521229226">
+    <state width="717" height="985" key="GridCell.Tab.1.left" timestamp="1611543243926">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="717" height="962" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611521229226" />
+    <state width="717" height="985" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611543243926" />
     <state width="2297" height="431" key="GridCell.Tab.1.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="717" height="962" key="GridCell.Tab.1.right" timestamp="1611521229226">
+    <state width="717" height="985" key="GridCell.Tab.1.right" timestamp="1611543243926">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="717" height="962" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611521229226" />
+    <state width="717" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611543243926" />
     <state width="2297" height="431" key="GridCell.Tab.1.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state x="397" y="199" width="1259" height="722" key="SettingsEditor" timestamp="1611480154210">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1611480154210" />
     <state x="519" y="219" key="SettingsEditor/0.0.2341.1234@0.0.2341.1234" timestamp="1603247718767" />
-    <state x="496" y="281" key="Vcs.Push.Dialog.v2" timestamp="1611197846712">
+    <state x="496" y="281" key="Vcs.Push.Dialog.v2" timestamp="1611527621590">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="496" y="281" key="Vcs.Push.Dialog.v2/0.0.1792.1120@0.0.1792.1120" timestamp="1611197846712" />
+    <state x="496" y="281" key="Vcs.Push.Dialog.v2/0.0.1792.1120@0.0.1792.1120" timestamp="1611527621590" />
     <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1608253915433">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -1418,10 +1424,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state width="600" height="440" key="javadoc.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1605561849734" />
-    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup" timestamp="1611526437691">
+    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup" timestamp="1611605319043">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1611526437691" />
+    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1611605319043" />
     <state x="733" y="277" width="876" height="745" key="search.everywhere.popup/0.0.2341.1234@0.0.2341.1234" timestamp="1603294612727" />
     <state x="561" y="269" width="670" height="663" key="search.everywhere.popup/0.23.1792.1097@0.23.1792.1097" timestamp="1605194747946" />
     <state x="719" y="436" key="webDeployment.PermissionsDialog" timestamp="1603912618386">
@@ -1456,6 +1462,11 @@
           <url>file://$PROJECT_DIR$/strategies/Momentum/HMAFT.py</url>
           <line>45</line>
           <option name="timeStamp" value="216" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/strategies/base.py</url>
+          <line>236</line>
+          <option name="timeStamp" value="274" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -1516,7 +1527,7 @@
     <SUITE FILE_PATH="coverage/core$KalmanPair.coverage" NAME="KalmanPair Coverage Results" MODIFIED="1605501129663" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$CrossSectional_Jun___Oct_2020.coverage" NAME="CrossSectional Jun - Oct 2020 Coverage Results" MODIFIED="1605511424973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_2020_NLS1.coverage" NAME="BTCUSDT 2020 NLS1 Coverage Results" MODIFIED="1611371195174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$GoldenCrossStops.coverage" NAME="GoldenCrossStops Coverage Results" MODIFIED="1611527534712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$GoldenCrossStops.coverage" NAME="GoldenCrossStops Coverage Results" MODIFIED="1611606162968" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Equity_Momentum.coverage" NAME="Equity Momentum Coverage Results" MODIFIED="1604442761756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Small_TF.coverage" NAME="BTCUSDT All Time NewYearlyHighs Small TF Coverage Results" MODIFIED="1607882050386" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Hourly.coverage" NAME="BTCUSDT All Time NewYearlyHighs Hourly Coverage Results" MODIFIED="1603569443635" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

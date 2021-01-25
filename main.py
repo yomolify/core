@@ -150,7 +150,7 @@ if __name__ == '__main__':
         todate = datetime.now()
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
-        fromdate = datetime(2020, 10, 1)
+        fromdate = datetime(2020, 8, 1)
 
         # fromdate = datetime(2020, 3, 14)
 
@@ -225,7 +225,7 @@ if __name__ == '__main__':
         else:
             # New Yearly Highs
             if strategy_class == 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops":
-                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT']
+                tickers = ['AAVE-USDT']
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
                             'XLM-USDT',
@@ -372,6 +372,11 @@ if __name__ == '__main__':
                 #                                           timeframe=bt.TimeFrame.Minutes,
                 #                                           compression=480)
                 cerebro.adddata(data, name=f'{ticker}')
+
+            # add btc dominance data to cerebro
+            # btc_dom = bt.feeds.GenericCSVData(
+            #
+            # )
 
             # To add Heikin Ashi data source
             # for ticker in tickers:

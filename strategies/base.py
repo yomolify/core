@@ -388,19 +388,32 @@ class StrategyBase(bt.Strategy):
         else:
             if target is not None:
                 value = possize * price
-                comminfo = self.broker.getcommissioninfo(data)
+                if possize > 0:
+                    # print(f'value of {data._name} is {value}')
+                    # print(f'target of {data._name} is {target}')
+                    # comminfo = self.broker.getcommissioninfo(data)
 
-                if target > value:
-                    size = comminfo.getsize(price, target - value)
-                    direction = 'buy'
-                    if ENV == DEVELOPMENT:
-                        return self.buy(data=data, size=size, price=price, **kwargs)
+                    if target > value:
+                        size = (target - value)/price
+                        direction = 'buy'
 
-                elif target < value:
-                    size = comminfo.getsize(price, value - target)
-                    direction = 'sell'
-                    if ENV == DEVELOPMENT:
-                        return self.sell(data=data, size=size, price=price, **kwargs)
+                    elif target < value:
+                        size = (value - target)/price
+                        direction = 'sell'
+                # Enter new position so multiply by leverage to get size
+                else:
+                    comminfo = self.broker.getcommissioninfo(data)
+                    if target > value:
+                        size = comminfo.getsize(price, target - value)
+                        direction = 'buy'
+                        if ENV == DEVELOPMENT:
+                            return self.buy(data=data, size=size, price=price, **kwargs)
+
+                    elif target < value:
+                        size = comminfo.getsize(price, value - target)
+                        direction = 'sell'
+                        if ENV == DEVELOPMENT:
+                            return self.sell(data=data, size=size, price=price, **kwargs)
 
         return size, direction, price
 
