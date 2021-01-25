@@ -224,7 +224,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops":
+            if strategy_class == 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS":
                 tickers = ['AAVE-USDT']
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
@@ -236,7 +236,7 @@ if __name__ == '__main__':
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
-                # tickers = ['ETH-USDT']
+                tickers = ['ETH-USDT']
                 # tickers = ['BTC-USDT']
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #            'BAT-USDT',
