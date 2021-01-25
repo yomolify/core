@@ -69,14 +69,15 @@ class GoldenCrossStops(StrategyBase):
             self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
             self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
+            self.inds[ticker]["sma_roc"] = bt.ind.HMA(self.inds[ticker]["roc"], period=self.params.period_vol_sma, plot=False)
 
     def next(self):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
             # Without rebalance = 217 & 40
             # With 218 and 41
-            if self.i % 20 == 0:
-                self.rebalance_portfolio()
-            self.i += 1
+            # if self.i % 20 == 0:
+            #     self.rebalance_portfolio()
+            # self.i += 1
             available = list(filter(lambda d: len(d) > 500, self.altcoins))
             available.sort(reverse=True,
                            key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (

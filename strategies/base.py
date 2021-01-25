@@ -343,9 +343,6 @@ class StrategyBase(bt.Strategy):
         print('\nROI:        {:.2f}%'.format(100.0 * self.roi))
 
     def add_order(self, data, type='market', target=None, price=None, size=None, **kwargs):
-        # if ENV == DEVELOPMENT:
-        #     self.order_target_percent(data, target)
-        #     return
         if ENV == DEVELOPMENT:
             order = self.get_size_and_direction(data=data, target=target, price=price, size=size)
             return order
@@ -396,10 +393,14 @@ class StrategyBase(bt.Strategy):
                     if target > value:
                         size = (target - value)/price
                         direction = 'buy'
+                        if ENV == DEVELOPMENT:
+                            return self.buy(data=data, size=size, price=price, **kwargs)
 
                     elif target < value:
                         size = (value - target)/price
                         direction = 'sell'
+                        if ENV == DEVELOPMENT:
+                            return self.sell(data=data, size=size, price=price, **kwargs)
                 # Enter new position so multiply by leverage to get size
                 else:
                     comminfo = self.broker.getcommissioninfo(data)
