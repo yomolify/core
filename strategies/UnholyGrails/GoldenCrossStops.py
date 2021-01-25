@@ -183,7 +183,6 @@ class GoldenCrossStops(StrategyBase):
                 if current_position == 0:
                     volatility = self.inds[ticker]["average_true_range"][0] / d.close[0]
                     volatility_factor = 1 / (volatility * 100)
-                    volatility_factor = 1
                     # volatility_factor = 0.99
                     # closes_above_sma = 0
                     # for lookback in [0, -1, -2, -3, -4]:
