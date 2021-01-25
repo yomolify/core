@@ -74,9 +74,9 @@ class GoldenCrossStops(StrategyBase):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
             # Without rebalance = 217 & 40
             # With 218 and 41
-            # if self.i % 100 == 0:
-            #     self.rebalance_portfolio()
-            # self.i += 1
+            if self.i % 20 == 0:
+                self.rebalance_portfolio()
+            self.i += 1
             available = list(filter(lambda d: len(d) > 500, self.altcoins))
             available.sort(reverse=True,
                            key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (
@@ -92,66 +92,46 @@ class GoldenCrossStops(StrategyBase):
                     self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker][
                         "price"]) * 100
                     if self.pos[ticker]["profit_percentage"] > 205:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 2.9 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 195:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 2.8 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 195:
+                    #     self.pos[ticker]["new_sl_price"] = 2.8 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 185:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 2.7 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 175:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 2.6 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 175:
+                    #     self.pos[ticker]["new_sl_price"] = 2.6 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 165:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 2.5 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 155:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 2.4 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 155:
+                    #     self.pos[ticker]["new_sl_price"] = 2.4 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 145:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 2.3 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 135:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 2.2 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 135:
+                    #     self.pos[ticker]["new_sl_price"] = 2.2 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 125:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 2.1 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 115:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 2 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 115:
+                    #     self.pos[ticker]["new_sl_price"] = 2 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 105:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 1.9 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 95:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 1.8 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 95:
+                    #     self.pos[ticker]["new_sl_price"] = 1.8 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 85:
-                        self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 1.7 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 75:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 1.6 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 75:
+                    #     self.pos[ticker]["new_sl_price"] = 1.6 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 65:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 1.5 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 55:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 1.4 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 55:
+                    #     self.pos[ticker]["new_sl_price"] = 1.4 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 45:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
                         self.pos[ticker]["new_sl_price"] = 1.3 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 35:
-                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
-                        self.pos[ticker]["new_sl_price"] = 1.2 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 35:
+                    #     self.pos[ticker]["new_sl_price"] = 1.2 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 25:
-                        # self.log(f'{ticker} Long profit > 25%, updating stop win to 20%')
                         self.pos[ticker]["new_sl_price"] = 1.1 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 15:
-                        # self.log(f'{ticker} Long profit > 15%, updating stop win to 10%')
-                        self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] < 15:
+                    # elif self.pos[ticker]["profit_percentage"] > 15:
+                    #     self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
+                    if self.pos[ticker]["profit_percentage"] < 5:
                         # self.log(f'{ticker} Long profit > 15%, updating stop win to 10%')
                         self.pos[ticker]["new_sl_price"] = self.pos[ticker]["sl_price"]
                     if self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and self.pos[ticker]["new_sl_price"] > self.pos[ticker]["sl_price"]:
@@ -162,6 +142,7 @@ class GoldenCrossStops(StrategyBase):
                             self.cancel(self.stop_order[ticker])
                         self.stop_order[ticker] = None
                         self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
+                        # self.stop_order[ticker] = self.sell(data=d, size=current_position/2, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
 
                     if d.close[0] < self.inds[ticker]['rolling_low'][-1]:
                         try:
