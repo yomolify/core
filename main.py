@@ -151,6 +151,7 @@ if __name__ == '__main__':
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
         fromdate = datetime(2020, 8, 1)
+        fromdate = datetime(2020, 12, 16)
         # fromdate = datetime(2020, 1, 1)
 
         # fromdate = datetime(2020, 3, 14)
@@ -225,8 +226,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS":
-                tickers = ['AAVE-USDT']
+            if strategy_class == 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min":
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
                             'XLM-USDT',
@@ -239,6 +239,8 @@ if __name__ == '__main__':
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
                 tickers = ['ETH-USDT']
                 # tickers = ['BTC-USDT']
+                # tickers = ['AAVE-USDT']
+
                 # tickers = ['LTC-USDT']
                 # tickers = ['DOT-USDT']
                 # tickers = ['BTC-USDT']
@@ -365,7 +367,8 @@ if __name__ == '__main__':
                     # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
                     # query_timeframe='1Min',
-                    query_timeframe='1H',
+                    # query_timeframe='1H',
+                    query_timeframe='5Min',
                     # timeframe=bt.TimeFrame.Minutes,
                     fromdate=fromdate,
                     todate=todate,

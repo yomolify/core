@@ -4,7 +4,7 @@ from strategies.base import StrategyBase
 from config import ENV, PRODUCTION, TRADING, DEVELOPMENT
 
 
-class LS(StrategyBase):
+class LS5Min(StrategyBase):
     # 68 and 40 without stops
     # 286 and 39 with HullMA
     params = (
@@ -17,13 +17,17 @@ class LS(StrategyBase):
         ('period_sma_mid', 50),
         ('period_sma_slow', 200),
         ('period_sma_veryslow', 500),
-        ('period_vol_sma', 50),
+        ('period_vol_sma', 200),
         ('period_roc_sma_fast', 10),
         ('period_roc_sma_slow', 50),
+        ('period_roc_sma_veryslow', 200),
         ('period_sma_highs', 20),
         ('period_sma_lows', 8),
         # ('order_target_percent', 100)
-        ('order_target_percent', 99)
+        ('order_target_percent', 99),
+        ('period_highest_high_slow', 20),
+        ('period_highest_high_mid', 10),
+        ('period_highest_high_fast', 5),
     )
 
     def __init__(self):
@@ -66,15 +70,23 @@ class LS(StrategyBase):
             #                                                                plot=True)
             self.inds[ticker]["vol_sma"] = bt.ind.HullMovingAverage(d.volume,
                                                                          period=self.params.period_vol_sma,
-                                                                         plot=False, subplot=False)
+                                                                         plot=True, subplot=True)
 
             self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False, subplot=False)
             self.inds[ticker]["adx"] = bt.ind.ADX(d, period=14, plot=False, subplot=False)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
             # When roc_sma_slow goes from being increasingly negative to being decreasingly negative, then long
-            self.inds[ticker]["roc_sma_slow"] = bt.ind.HMA(self.inds[ticker]["roc"], period=self.params.period_roc_sma_slow, plot=True, subplot=True)
-            self.inds[ticker]["roc_sma_fast"] = bt.ind.HMA(self.inds[ticker]["roc"], period=self.params.period_roc_sma_fast, plot=True, subplot=True)
+            self.inds[ticker]["roc_sma_veryslow"] = bt.ind.HMA(self.inds[ticker]["roc"], period=self.params.period_roc_sma_veryslow, plot=False, subplot=False)
+            self.inds[ticker]["roc_sma_slow"] = bt.ind.HMA(self.inds[ticker]["roc"], period=self.params.period_roc_sma_slow, plot=False, subplot=False)
+            self.inds[ticker]["roc_sma_fast"] = bt.ind.HMA(self.inds[ticker]["roc"], period=self.params.period_roc_sma_fast, plot=False, subplot=False)
+            self.highest_high_slow = bt.ind.Highest(
+                period=self.params.period_highest_high_slow, plot=False)
+            self.highest_high_mid = bt.ind.Highest(
+                period=self.params.period_highest_high_mid, plot=False)
+            self.highest_high_fast = bt.ind.Highest(
+                period=self.params.period_highest_high_fast, plot=False)
             # self.inds[ticker]["sdev_roc_sma_slow"] = bt.ind.StdDev(self.inds[ticker]["roc_sma_slow"], plot=True, subplot=True)
+            self.inds[ticker]["sdev_vol_sma"] = bt.ind.StdDev(self.inds[ticker]["vol_sma"], plot=True, subplot=True)
             # self.inds[ticker]["sdev_roc_sma_slow"] = bt.ind.ROC(self.inds[ticker]["roc_sma_slow"], period=1, plot=True, subplot=True)
 
     def next(self):
@@ -135,9 +147,13 @@ class LS(StrategyBase):
                     # elif self.pos[ticker]["profit_percentage"] > 35:
                     #     self.pos[ticker]["new_sl_price"] = 1.2 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 25:
-                        self.pos[ticker]["new_sl_price"] = 1.1 * self.pos[ticker]["price"]
+                        self.pos[ticker]["new_sl_price"] = 1.15 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 15:
-                        self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
+                        self.pos[ticker]["new_sl_price"] = 1.1 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 10:
+                    #     self.pos[ticker]["new_sl_price"] = 1.05 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 5:
+                    #     self.pos[ticker]["new_sl_price"] = 1.03 * self.pos[ticker]["price"]
                     # Initial stop
                     # elif self.pos[ticker]["profit_percentage"] < 15:
                         # self.log(f'sl = {self.pos[ticker]["sl_price"]}')
@@ -167,20 +183,71 @@ class LS(StrategyBase):
                         # self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.StopTrail, trailpercent=0.1)
                         # self.stop_order[ticker] = self.sell(data=d, size=current_position/2, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
 
-                    if d.close[0] < self.inds[ticker]['rolling_low'][-1]:
+                    if self.inds[ticker]['rsi'][0] > 80 and self.pos[ticker]["profit_percentage"] > 0:
                         try:
                             order = self.add_order(data=d, target=0, type='market')
-                            self.cancel(self.stop_order[ticker])
-                            self.log('Long Sell Signal')
+                            if ticker in self.stop_order:
+                                self.cancel(self.stop_order[ticker])
+                            self.log('RSI > 80 Sell Signal')
+                            print(self.pos[ticker]["profit_percentage"])
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
+                    # if d.close[0] < self.inds[ticker]['rolling_low'][-1]:
+                    #     try:
+                    #         order = self.add_order(data=d, target=0, type='market')
+                    #         if ticker in self.stop_order:
+                    #             self.cancel(self.stop_order[ticker])
+                    #         self.log('Long Sell Signal')
+                    #     except Exception as e:
+                    #         self.log("ERROR: {}".format(sys.exc_info()[0]))
+                    #         self.log("{}".format(e))
                 elif current_position < 0:
-                    print("I am not supposed to be here")
-                    if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or (
-                            d.high[0] > self.inds[ticker]['rolling_high'][-1]):
+                    self.pos[ticker]["profit"] = self.pos[ticker]["price"] - d.close[0]
+                    self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker][
+                        "price"]) * 100
+                    if self.pos[ticker]["profit_percentage"] > 65:
+                        self.pos[ticker]["new_sl_price"] = 1.5 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 55:
+                    #     self.pos[ticker]["new_sl_price"] = 1.4 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 45:
+                    #     self.pos[ticker]["new_sl_price"] = 0.85 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 35:
+                    #     self.pos[ticker]["new_sl_price"] = 1.2 * self.pos[ticker]["price"]
+                    if self.pos[ticker]["profit_percentage"] > 10:
+                        self.pos[ticker]["new_sl_price"] = self.highest_high_mid[0]
+                    elif self.pos[ticker]["profit_percentage"] > 5:
+                        self.pos[ticker]["new_sl_price"] = self.highest_high_fast[0]
+                    # Initial stop
+                    # elif self.pos[ticker]["profit_percentage"] < 15:
+                    # self.log(f'sl = {self.pos[ticker]["sl_price"]}')
+                    # self.log(f'new sl = {self.pos[ticker]["new_sl_price"]}')
+                    # Initial stop
+                    # if self.pos[ticker]["new_sl_price"] is None:
+                    # self.stop_order[ticker] = self.close(data=d, price=0.8*d.close[0],
+                    #                                      exectype=bt.Order.StopTrail,
+                    #                                      trailamount=d.close[0] / 10)
+                    # self.stop_order[ticker] = self.close(data=d, price=0.8*d.close[0],
+                    #                                      exectype=bt.Order.Stop
+                    #                                      )
+                    # self.pos[ticker]["new_sl_price"] = self.pos[ticker]["sl_price"]
+                    if self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and self.pos[ticker][
+                        "new_sl_price"] < self.pos[ticker]["sl_price"]:
+                        self.log(
+                            f'{ticker} Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
+                        self.pos[ticker]["sl_price"] = self.pos[ticker]["new_sl_price"]
+                        if ticker in self.stop_order:
+                            self.cancel(self.stop_order[ticker])
+                        self.stop_order[ticker] = None
+                        # self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
+                        self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"],
+                                                             exectype=bt.Order.StopTrail, trailamount=50)
+                    if d.high[0] > self.inds[ticker]['rolling_high'][-1]:
                         try:
                             order = self.add_order(data=d, target=0, type="market")
+                            print("Short close signal")
+                            if ticker in self.stop_order:
+                                self.cancel(self.stop_order[ticker])
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
@@ -193,7 +260,7 @@ class LS(StrategyBase):
                     #     if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
                     #         closes_above_sma += 1
                     # if closes_above_sma == 5:
-                    if self.inds[ticker]["roc_sma_slow"][0] < 0 and self.inds[ticker]["roc_sma_slow"][0] > self.inds[ticker]["roc_sma_slow"][-1]:
+                    if self.inds[ticker]["roc_sma_slow"][0] < 0 and self.inds[ticker]["roc_sma_slow"][0] > self.inds[ticker]["roc_sma_slow"][-1] or self.inds[ticker]["rsi"][0] < 20:
                     # if d.volume[0] > self.inds[ticker]['vol_sma'][0] and d.close[0] > self.inds[ticker]['sma_slow'][0] - 2*self.inds[ticker]["average_true_range"][0] and self.inds[ticker]["rsi"] < 60:
                         try:
                             self.add_order(data=d, target=(
@@ -204,9 +271,13 @@ class LS(StrategyBase):
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
-                    # elif self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
+                    # elif self.inds[ticker]["rsi"][0] > 85:
                     #     try:
-                    #         self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, type="market")]
+                    #         self.add_order(data=d, target=-(
+                    #                 (self.p.order_target_percent / 100) * volatility_factor),
+                    #                        type="market")
+                    #         self.pos[ticker]["sl_price"] = d.close[0] + self.inds[ticker]["average_true_range"][0]
+                    #         self.pos[ticker]["new_sl_price"] = None
                     #     except Exception as e:
                     #         self.log("ERROR: {}".format(sys.exc_info()[0]))
                     #         self.log("{}".format(e))
