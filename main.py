@@ -151,6 +151,7 @@ if __name__ == '__main__':
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
         fromdate = datetime(2020, 8, 1)
+        # fromdate = datetime(2020, 1, 1)
 
         # fromdate = datetime(2020, 3, 14)
 
@@ -237,6 +238,9 @@ if __name__ == '__main__':
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
                 tickers = ['ETH-USDT']
+                # tickers = ['BTC-USDT']
+                # tickers = ['LTC-USDT']
+                # tickers = ['DOT-USDT']
                 # tickers = ['BTC-USDT']
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #            'BAT-USDT',

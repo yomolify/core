@@ -64,9 +64,9 @@ class LS(StrategyBase):
             #                                                                plot=True)
             self.inds[ticker]["vol_sma"] = bt.ind.HullMovingAverage(d.volume,
                                                                          period=self.params.period_vol_sma,
-                                                                         plot=True, subplot=True)
+                                                                         plot=False, subplot=False)
 
-            self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
+            self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=True, subplot=True)
             self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
             self.inds[ticker]["sma_roc"] = bt.ind.HMA(self.inds[ticker]["roc"], period=self.params.period_vol_sma, plot=False)
@@ -132,9 +132,19 @@ class LS(StrategyBase):
                         self.pos[ticker]["new_sl_price"] = 1.1 * self.pos[ticker]["price"]
                     elif self.pos[ticker]["profit_percentage"] > 15:
                         self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
-                    if self.pos[ticker]["profit_percentage"] < 5:
-                        # self.log(f'{ticker} Long profit > 15%, updating stop win to 10%')
-                        self.pos[ticker]["new_sl_price"] = self.pos[ticker]["sl_price"]
+                    # Initial stop
+                    # elif self.pos[ticker]["profit_percentage"] < 15:
+                        # self.log(f'sl = {self.pos[ticker]["sl_price"]}')
+                        # self.log(f'new sl = {self.pos[ticker]["new_sl_price"]}')
+                        # Initial stop
+                        # if self.pos[ticker]["new_sl_price"] is None:
+                            # self.stop_order[ticker] = self.close(data=d, price=0.8*d.close[0],
+                            #                                      exectype=bt.Order.StopTrail,
+                            #                                      trailamount=d.close[0] / 10)
+                            # self.stop_order[ticker] = self.close(data=d, price=0.8*d.close[0],
+                            #                                      exectype=bt.Order.Stop
+                            #                                      )
+                            # self.pos[ticker]["new_sl_price"] = self.pos[ticker]["sl_price"]
                     if self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and self.pos[ticker]["new_sl_price"] > self.pos[ticker]["sl_price"]:
                         self.log(
                             f'{ticker} Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
@@ -144,6 +154,11 @@ class LS(StrategyBase):
                         self.stop_order[ticker] = None
                         # self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
                         self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.StopTrail, trailamount=50)
+                        volatility_stop = self.inds[ticker]["average_true_range"][0] / d.close[0]
+                        volatility_factor_stop = 1 / (volatility_stop * 100)
+                        # self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.StopTrail, trailpercent=abs(self.inds[ticker]["roc"][0]*volatility_factor_stop))
+                        # self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.StopTrail, trailamount=d.close[0]/10)
+                        # self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.StopTrail, trailpercent=0.1)
                         # self.stop_order[ticker] = self.sell(data=d, size=current_position/2, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
 
                     if d.close[0] < self.inds[ticker]['rolling_low'][-1]:
@@ -172,7 +187,7 @@ class LS(StrategyBase):
                     #     if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
                     #         closes_above_sma += 1
                     # if closes_above_sma == 5:
-                    if d.volume[0] > self.inds[ticker]['vol_sma'][0] and d.close[0] > self.inds[ticker]['sma_slow'][0] - 2*self.inds[ticker]["average_true_range"][0]:
+                    if d.volume[0] > self.inds[ticker]['vol_sma'][0] and d.close[0] > self.inds[ticker]['sma_slow'][0] - 2*self.inds[ticker]["average_true_range"][0] and self.inds[ticker]["rsi"] < 60:
                         try:
                             self.add_order(data=d, target=(
                                         (self.p.order_target_percent / 100) * volatility_factor),
