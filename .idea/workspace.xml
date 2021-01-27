@@ -26,11 +26,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="+++ 200 bitcoin sma and rebalance interval = 20">
-      <change afterPath="$PROJECT_DIR$/indicators/RSIDivergence.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/strategies/UnholyGrails/LS5Min.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/strategies/UnholyGrails/QFL.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCrossStops.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCrossStops.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/LS.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/LS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/LS5Min.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/LS5Min.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +81,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.LS5Min">
+  <component name="RunManager" selected="Python.GoldenCrossStops">
     <configuration name="BTCEMA" type="PythonConfigurationType" factoryName="Python" folderName="Backtest">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -972,6 +973,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="QFL" type="PythonConfigurationType" factoryName="Python" folderName="Backtest">
+      <module name="core" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="--exchange=binance --ticker=BTCUSDT --data_timeframe=1m --from_year=2019 --from_month=12 --from_date=11 --to_year=2020 --to_month=10 --to_date=23 --exectype=Market --strategy=UnholyGrails.QFL --plot=True" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="SHA" type="PythonConfigurationType" factoryName="Python" folderName="Backtest">
       <module name="core" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -1171,6 +1194,7 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.NewYearlyHighs" />
       <item itemvalue="Python.TurtleTrader" />
       <item itemvalue="Python.Equity Momentum from file" />
       <item itemvalue="Python.GoldenCross 2020" />
@@ -1198,6 +1222,7 @@
       <item itemvalue="Python.GoldenCrossStops" />
       <item itemvalue="Python.LS" />
       <item itemvalue="Python.LS5Min" />
+      <item itemvalue="Python.QFL" />
       <item itemvalue="Python.NewYearlyHighs 11/12/20 - 19/1/21" />
       <item itemvalue="Python.HMA" />
       <item itemvalue="Python.SHA" />
@@ -1253,7 +1278,8 @@
       <workItem from="1609369247117" duration="2762000" />
       <workItem from="1609817004702" duration="1346000" />
       <workItem from="1609869232946" duration="1756000" />
-      <workItem from="1611107569205" duration="84093000" />
+      <workItem from="1611107569205" duration="96011000" />
+      <workItem from="1611709688416" duration="4253000" />
     </task>
     <task id="LOCAL-00001" summary="+++ 200 bitcoin sma and rebalance interval = 20">
       <created>1605377976543</created>
@@ -1332,7 +1358,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611619674028</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="LS5Min high return high dd">
+      <created>1611632356679</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1611632356679</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1374,7 +1407,8 @@
     <MESSAGE value="No rebalancing gives better results for this" />
     <MESSAGE value="LS with trailing is too good" />
     <MESSAGE value="improvement with rsi &lt; 60" />
-    <option name="LAST_COMMIT_MESSAGE" value="improvement with rsi &lt; 60" />
+    <MESSAGE value="LS5Min high return high dd" />
+    <option name="LAST_COMMIT_MESSAGE" value="LS5Min high return high dd" />
   </component>
   <component name="WindowStateProjectService">
     <state x="496" y="225" key="#Deployment" timestamp="1603912566592">
@@ -1389,10 +1423,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="518" y="230" key="#Options/0.0.1792.1120@0.0.1792.1120" timestamp="1603912795968" />
-    <state x="0" y="0" width="1792" height="1120" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1611626942869">
+    <state x="0" y="0" width="1792" height="1120" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1611694096144">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="0" y="0" width="1792" height="1120" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611626942869" />
+    <state x="0" y="0" width="1792" height="1120" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611694096144" />
     <state x="470" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1603294552852" />
     <state x="607" y="360" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1611185974556">
       <screen x="0" y="0" width="1792" height="1120" />
@@ -1406,10 +1440,10 @@
       <screen x="0" y="0" width="2341" height="1234" />
     </state>
     <state x="976" y="333" key="#com.intellij.ide.util.MemberChooser/0.0.2341.1234@0.0.2341.1234" timestamp="1603294604140" />
-    <state x="515" y="96" width="780" height="924" key="#xdebugger.evaluate" timestamp="1611543223129">
+    <state x="790" y="162" width="780" height="924" key="#xdebugger.evaluate" timestamp="1611643112113">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="515" y="96" width="780" height="924" key="#xdebugger.evaluate/0.0.1792.1120@0.0.1792.1120" timestamp="1611543223129" />
+    <state x="790" y="162" width="780" height="924" key="#xdebugger.evaluate/0.0.1792.1120@0.0.1792.1120" timestamp="1611643112113" />
     <state width="937" height="646" key="DebuggerActiveHint" timestamp="1611537041181">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -1418,7 +1452,6 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="98" y="99" width="1592" height="920" key="DiffContextDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611612726979" />
-    <state x="128" y="109" width="2080" height="1014" key="DiffContextDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1602720424011" />
     <state x="100" y="100" width="1592" height="920" key="DirDiffDialog" timestamp="1604509741893">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -1432,68 +1465,67 @@
     </state>
     <state x="728" y="338" key="FileChooserDialogImpl/0.0.1792.1120@0.0.1792.1120" timestamp="1608134079514" />
     <state x="951" y="372" key="FileChooserDialogImpl/0.0.2341.1234@0.0.2341.1234" timestamp="1603469573877" />
-    <state width="710" height="985" key="GridCell.Tab.0.bottom" timestamp="1611632144691">
+    <state width="710" height="985" key="GridCell.Tab.0.bottom" timestamp="1611713921255">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611632144691" />
+    <state width="710" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611713921255" />
     <state width="2297" height="431" key="GridCell.Tab.0.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.bottom/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="710" height="985" key="GridCell.Tab.0.center" timestamp="1611632144691">
+    <state width="710" height="985" key="GridCell.Tab.0.center" timestamp="1611713921254">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611632144691" />
+    <state width="710" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611713921254" />
     <state width="2297" height="431" key="GridCell.Tab.0.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.center/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="710" height="985" key="GridCell.Tab.0.left" timestamp="1611632144691">
+    <state width="710" height="985" key="GridCell.Tab.0.left" timestamp="1611713921254">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611632144691" />
+    <state width="710" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611713921254" />
     <state width="2297" height="431" key="GridCell.Tab.0.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.left/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783835" />
-    <state width="710" height="985" key="GridCell.Tab.0.right" timestamp="1611632144691">
+    <state width="710" height="985" key="GridCell.Tab.0.right" timestamp="1611713921255">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611632144691" />
+    <state width="710" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611713921255" />
     <state width="2297" height="431" key="GridCell.Tab.0.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.right/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="717" height="985" key="GridCell.Tab.1.bottom" timestamp="1611610745787">
+    <state width="800" height="985" key="GridCell.Tab.1.bottom" timestamp="1611697894658">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="717" height="985" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611610745787" />
+    <state width="800" height="985" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611697894658" />
     <state width="2297" height="431" key="GridCell.Tab.1.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710111" />
-    <state width="717" height="985" key="GridCell.Tab.1.center" timestamp="1611610745787">
+    <state width="800" height="985" key="GridCell.Tab.1.center" timestamp="1611697894656">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="717" height="985" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611610745787" />
+    <state width="800" height="985" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611697894656" />
     <state width="2297" height="431" key="GridCell.Tab.1.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="717" height="985" key="GridCell.Tab.1.left" timestamp="1611610745786">
+    <state width="800" height="985" key="GridCell.Tab.1.left" timestamp="1611697894656">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="717" height="985" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611610745786" />
+    <state width="800" height="985" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611697894656" />
     <state width="2297" height="431" key="GridCell.Tab.1.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
-    <state width="717" height="985" key="GridCell.Tab.1.right" timestamp="1611610745787">
+    <state width="800" height="985" key="GridCell.Tab.1.right" timestamp="1611697894657">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="717" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611610745787" />
+    <state width="800" height="985" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611697894657" />
     <state width="2297" height="431" key="GridCell.Tab.1.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state x="397" y="199" width="1259" height="722" key="SettingsEditor" timestamp="1611480154210">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1611480154210" />
     <state x="519" y="219" key="SettingsEditor/0.0.2341.1234@0.0.2341.1234" timestamp="1603247718767" />
-    <state x="496" y="281" key="Vcs.Push.Dialog.v2" timestamp="1611619675214">
+    <state x="496" y="281" key="Vcs.Push.Dialog.v2" timestamp="1611632358017">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="496" y="281" key="Vcs.Push.Dialog.v2/0.0.1792.1120@0.0.1792.1120" timestamp="1611619675214" />
+    <state x="496" y="281" key="Vcs.Push.Dialog.v2/0.0.1792.1120@0.0.1792.1120" timestamp="1611632358017" />
     <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1608253915433">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="737" y="219" key="VcsDiffUtil.ChangesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1608253915433" />
-    <state x="963" y="241" key="VcsDiffUtil.ChangesDialog/0.0.2341.1234@0.0.2341.1234" timestamp="1602740655410" />
-    <state width="896" height="560" key="XDebugger.FullValuePopup" timestamp="1611195150097">
+    <state width="896" height="560" key="XDebugger.FullValuePopup" timestamp="1611638736951">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="896" height="560" key="XDebugger.FullValuePopup/0.0.1792.1120@0.0.1792.1120" timestamp="1611195150097" />
+    <state width="896" height="560" key="XDebugger.FullValuePopup/0.0.1792.1120@0.0.1792.1120" timestamp="1611638736951" />
     <state x="627" y="178" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1603913657690">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -1518,10 +1550,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state width="600" height="440" key="javadoc.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1605561849734" />
-    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup" timestamp="1611628198918">
+    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup" timestamp="1611697286374">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1611628198918" />
+    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1611697286374" />
     <state x="733" y="277" width="876" height="745" key="search.everywhere.popup/0.0.2341.1234@0.0.2341.1234" timestamp="1603294612727" />
     <state x="561" y="269" width="670" height="663" key="search.everywhere.popup/0.23.1792.1097@0.23.1792.1097" timestamp="1605194747946" />
     <state x="719" y="436" key="webDeployment.PermissionsDialog" timestamp="1603912618386">
@@ -1615,10 +1647,10 @@
     <SUITE FILE_PATH="coverage/core$pymkt_read.coverage" NAME="pymkt-read Coverage Results" MODIFIED="1606682399242" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/core$NewYearlyHighs_2020_Till_Nov_13.coverage" NAME="NewYearlyHighs 2020 Till Nov 13 Coverage Results" MODIFIED="1605343691830" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$NewYearlyHighs_11_12_20___19_1_21.coverage" NAME="NewYearlyHighs 11/12/20 - 19/1/21 Coverage Results" MODIFIED="1611126406883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$NewYearlyHighsStops.coverage" NAME="NewYearlyHighsStops Coverage Results" MODIFIED="1611526563039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$NewYearlyHighsStops.coverage" NAME="NewYearlyHighsStops Coverage Results" MODIFIED="1611697294822" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$NewYearlyHighs_Oct_2020.coverage" NAME="NewYearlyHighs Oct 2020 Coverage Results" MODIFIED="1605305745418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$HMA.coverage" NAME="HMA Coverage Results" MODIFIED="1611256043658" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$LS.coverage" NAME="LS Coverage Results" MODIFIED="1611626871617" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$LS.coverage" NAME="LS Coverage Results" MODIFIED="1611695558601" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$GoldenCross_2020.coverage" NAME="GoldenCross 2020 Coverage Results" MODIFIED="1604371083507" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$SHA.coverage" NAME="SHA Coverage Results" MODIFIED="1611203916375" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$100DayBreakout.coverage" NAME="HundredDayBreakout Coverage Results" MODIFIED="1603853225019" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -1627,16 +1659,17 @@
     <SUITE FILE_PATH="coverage/core$KalmanPair.coverage" NAME="KalmanPair Coverage Results" MODIFIED="1605501129663" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$CrossSectional_Jun___Oct_2020.coverage" NAME="CrossSectional Jun - Oct 2020 Coverage Results" MODIFIED="1605511424973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_2020_NLS1.coverage" NAME="BTCUSDT 2020 NLS1 Coverage Results" MODIFIED="1611371195174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$GoldenCrossStops.coverage" NAME="GoldenCrossStops Coverage Results" MODIFIED="1611613450257" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$GoldenCrossStops.coverage" NAME="GoldenCrossStops Coverage Results" MODIFIED="1611713988951" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Equity_Momentum.coverage" NAME="Equity Momentum Coverage Results" MODIFIED="1604442761756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Small_TF.coverage" NAME="BTCUSDT All Time NewYearlyHighs Small TF Coverage Results" MODIFIED="1607882050386" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Hourly.coverage" NAME="BTCUSDT All Time NewYearlyHighs Hourly Coverage Results" MODIFIED="1603569443635" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$QFL.coverage" NAME="QFL Coverage Results" MODIFIED="1611695349848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$CrossSectionalImproved.coverage" NAME="CrossSectionalImproved Coverage Results" MODIFIED="1604976955152" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/strategies/MeanReversion" />
     <SUITE FILE_PATH="coverage/core$Live_Trading_CrossSectional.coverage" NAME="Live Trading CrossSectional Coverage Results" MODIFIED="1605210018690" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSD_No_SW.coverage" NAME="BTCUSD No SW Coverage Results" MODIFIED="1602691426532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_Current.coverage" NAME="NewYearlyHighss Coverage Results" MODIFIED="1611613112890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$NewYearlyHighs_Current.coverage" NAME="NewYearlyHighss Coverage Results" MODIFIED="1611697501540" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$HMAFT.coverage" NAME="HMAFT Coverage Results" MODIFIED="1611134127353" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$LS5Min.coverage" NAME="LS5Min Coverage Results" MODIFIED="1611632326912" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$LS5Min.coverage" NAME="LS5Min Coverage Results" MODIFIED="1611692527750" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$batch_orders.coverage" NAME="batch_orders Coverage Results" MODIFIED="1606939108162" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/core$unicorn_test.coverage" NAME="unicorn-test Coverage Results" MODIFIED="1607546016177" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/core$get_wallet_balance.coverage" NAME="get_wallet_balance Coverage Results" MODIFIED="1609124394251" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

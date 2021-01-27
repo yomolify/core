@@ -151,9 +151,9 @@ if __name__ == '__main__':
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
         fromdate = datetime(2020, 8, 1)
-        fromdate = datetime(2020, 12, 16)
+        # fromdate = datetime(2020, 12, 16)
         # fromdate = datetime(2020, 1, 1)
-
+        #
         # fromdate = datetime(2020, 3, 14)
 
         # Recent
@@ -237,7 +237,7 @@ if __name__ == '__main__':
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
-                tickers = ['ETH-USDT']
+                # tickers = ['ETH-USDT']
                 # tickers = ['BTC-USDT']
                 # tickers = ['AAVE-USDT']
 
@@ -361,19 +361,33 @@ if __name__ == '__main__':
 
             # 'BCHABCUSDT', 'BCCUSDT','BUSDUSDT', 'USDCUSDT', 'USDSUSDT', 'TUSDUSDT',
 
+            # for ticker in tickers:
+            #     data = bt.feeds.MarketStore(
+            #         symbol=f'binancefutures_{ticker}',
+            #         # symbol=f'binance_{ticker}',
+            #         name=f'{ticker}',
+            #         # query_timeframe='1Min',
+            #         # query_timeframe='1H',
+            #         query_timeframe='5Min',
+            #         # timeframe=bt.TimeFrame.Minutes,
+            #         fromdate=fromdate,
+            #         todate=todate,
+            #         # compression=1,
+            #         # compression=60,
+            #     )
+            #
+            #     cerebro.adddata(data, name=f'5min_{ticker}')
+                # cerebro.resampledata(data,
+                #                                           timeframe=bt.TimeFrame.Minutes,
+                #                                           compression=60, name=f'hourly_{ticker}')
             for ticker in tickers:
                 data = bt.feeds.MarketStore(
                     symbol=f'binancefutures_{ticker}',
                     # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
-                    # query_timeframe='1Min',
-                    # query_timeframe='1H',
-                    query_timeframe='5Min',
-                    # timeframe=bt.TimeFrame.Minutes,
+                    query_timeframe='1H',
                     fromdate=fromdate,
                     todate=todate,
-                    # compression=1,
-                    # compression=60,
                 )
                 # cerebro.resampledata(data,
                 #                                           timeframe=bt.TimeFrame.Minutes,

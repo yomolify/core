@@ -23,7 +23,7 @@ class LS(StrategyBase):
         ('period_sma_highs', 20),
         ('period_sma_lows', 8),
         # ('order_target_percent', 100)
-        ('order_target_percent', 99)
+        ('order_target_percent', 5)
     )
 
     def __init__(self):
