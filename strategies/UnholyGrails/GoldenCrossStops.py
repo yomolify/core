@@ -166,25 +166,90 @@ class GoldenCrossStops(StrategyBase):
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
-
+                    elif self.pos[ticker]["profit_percentage"] > 100:
+                        try:
+                            order = self.sell(data=d, size=self.pos[ticker]["size"], type='market')
+                            if ticker in self.stop_order:
+                                self.cancel(self.stop_order[ticker])
+                            self.log(f'Reduce 100% {ticker} in 100% profit')
+                            self.pos[ticker]["reset_stop"] = True
+                            # self.pos[ticker]["new_sl_price"] = 1.05*self.pos[ticker]["sl_price"]
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
+                    elif self.pos[ticker]["profit_percentage"] > 75:
+                        try:
+                            order = self.sell(data=d, size=self.pos[ticker]["size"] / 1.5, type='market')
+                            if ticker in self.stop_order:
+                                self.cancel(self.stop_order[ticker])
+                            self.log(f'Reduce 67% {ticker} in 75% profit')
+                            self.pos[ticker]["reset_stop"] = True
+                            # self.pos[ticker]["new_sl_price"] = 1.05*self.pos[ticker]["sl_price"]
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
+                    elif self.pos[ticker]["profit_percentage"] > 50:
+                        try:
+                            order = self.sell(data=d, size=self.pos[ticker]["size"] / 2, type='market')
+                            if ticker in self.stop_order:
+                                self.cancel(self.stop_order[ticker])
+                            self.log(f'Reduce 50% {ticker} in 50% profit')
+                            self.pos[ticker]["reset_stop"] = True
+                            # self.pos[ticker]["new_sl_price"] = 1.05*self.pos[ticker]["sl_price"]
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
                     elif self.pos[ticker]["profit_percentage"] > 5 and self.pos[ticker]["previous_profit_percentage"] > 0 and ((self.pos[ticker]["profit_percentage"] - self.pos[ticker]["previous_profit_percentage"])/self.pos[ticker]["previous_profit_percentage"]) > 0.05:
-                        if self.pos[ticker]["profit_percentage"] > 20:
+                        if self.pos[ticker]["profit_percentage"] > 40:
                             try:
-                                order = self.sell(data=d, size=self.pos[ticker]["size"]/3, type='market')
+                                order = self.sell(data=d, size=self.pos[ticker]["size"]/2, type='market')
                                 if ticker in self.stop_order:
                                     self.cancel(self.stop_order[ticker])
-                                self.log(f'Reduce 33% {ticker} in 20% profit')
+                                self.log(f'Reduce 50% {ticker} in 40% profit')
                                 self.pos[ticker]["reset_stop"] = True
                                 # self.pos[ticker]["new_sl_price"] = 1.05*self.pos[ticker]["sl_price"]
                             except Exception as e:
                                 self.log("ERROR: {}".format(sys.exc_info()[0]))
                                 self.log("{}".format(e))
-                        elif self.pos[ticker]["profit_percentage"] > 10:
+                        elif self.pos[ticker]["profit_percentage"] > 30:
+                            try:
+                                order = self.sell(data=d, size=self.pos[ticker]["size"]/3, type='market')
+                                if ticker in self.stop_order:
+                                    self.cancel(self.stop_order[ticker])
+                                self.log(f'Reduce 33% {ticker} in 25% profit')
+                                self.pos[ticker]["reset_stop"] = True
+                                # self.pos[ticker]["new_sl_price"] = 1.05*self.pos[ticker]["sl_price"]
+                            except Exception as e:
+                                self.log("ERROR: {}".format(sys.exc_info()[0]))
+                                self.log("{}".format(e))
+                        elif self.pos[ticker]["profit_percentage"] > 20:
                             try:
                                 order = self.sell(data=d, size=self.pos[ticker]["size"]/4, type='market')
                                 if ticker in self.stop_order:
                                     self.cancel(self.stop_order[ticker])
-                                self.log(f'Reduce 25% {ticker} in 10% profit')
+                                self.log(f'Reduce 25% {ticker} in 20% profit')
+                                self.pos[ticker]["reset_stop"] = True
+                                # self.pos[ticker]["new_sl_price"] = 1.05*self.pos[ticker]["sl_price"]
+                            except Exception as e:
+                                self.log("ERROR: {}".format(sys.exc_info()[0]))
+                                self.log("{}".format(e))
+                        elif self.pos[ticker]["profit_percentage"] > 15:
+                            try:
+                                order = self.sell(data=d, size=self.pos[ticker]["size"]/5, type='market')
+                                if ticker in self.stop_order:
+                                    self.cancel(self.stop_order[ticker])
+                                self.log(f'Reduce 20% {ticker} in 15% profit')
+                                self.pos[ticker]["reset_stop"] = True
+                                # self.pos[ticker]["new_sl_price"] = 1.025*self.pos[ticker]["sl_price"]
+                            except Exception as e:
+                                self.log("ERROR: {}".format(sys.exc_info()[0]))
+                                self.log("{}".format(e))
+                        elif self.pos[ticker]["profit_percentage"] > 10:
+                            try:
+                                order = self.sell(data=d, size=self.pos[ticker]["size"]/6, type='market')
+                                if ticker in self.stop_order:
+                                    self.cancel(self.stop_order[ticker])
+                                self.log(f'Reduce 16% {ticker} in 10% profit')
                                 self.pos[ticker]["reset_stop"] = True
                                 # self.pos[ticker]["new_sl_price"] = 1.025*self.pos[ticker]["sl_price"]
                             except Exception as e:
@@ -192,7 +257,7 @@ class GoldenCrossStops(StrategyBase):
                                 self.log("{}".format(e))
                         else:
                             try:
-                                order = self.sell(data=d, size=self.pos[ticker]["size"]/5, type='market')
+                                order = self.sell(data=d, size=self.pos[ticker]["size"]/8, type='market')
                                 if ticker in self.stop_order:
                                     self.cancel(self.stop_order[ticker])
                                 self.log(f'Reduce 20% {ticker} in 5% profit')
@@ -201,7 +266,6 @@ class GoldenCrossStops(StrategyBase):
                             except Exception as e:
                                 self.log("ERROR: {}".format(sys.exc_info()[0]))
                                 self.log("{}".format(e))
-                        # self.pos[ticker]["new_sl_price"] = 1.01 * self.pos[ticker]["sl_price"]
                 elif current_position < 0:
                     print("I am not supposed to be here")
                     if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or (

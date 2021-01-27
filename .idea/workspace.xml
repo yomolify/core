@@ -26,12 +26,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="+++ 200 bitcoin sma and rebalance interval = 20">
-      <change afterPath="$PROJECT_DIR$/strategies/UnholyGrails/QFL.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCrossStops.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/GoldenCrossStops.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/LS.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/LS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strategies/UnholyGrails/LS5Min.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/UnholyGrails/LS5Min.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1279,7 +1275,7 @@
       <workItem from="1609817004702" duration="1346000" />
       <workItem from="1609869232946" duration="1756000" />
       <workItem from="1611107569205" duration="96011000" />
-      <workItem from="1611709688416" duration="4253000" />
+      <workItem from="1611709688416" duration="6712000" />
     </task>
     <task id="LOCAL-00001" summary="+++ 200 bitcoin sma and rebalance interval = 20">
       <created>1605377976543</created>
@@ -1365,7 +1361,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611632356679</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Partial exits improvement">
+      <created>1611714039484</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1611714039484</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1408,7 +1411,8 @@
     <MESSAGE value="LS with trailing is too good" />
     <MESSAGE value="improvement with rsi &lt; 60" />
     <MESSAGE value="LS5Min high return high dd" />
-    <option name="LAST_COMMIT_MESSAGE" value="LS5Min high return high dd" />
+    <MESSAGE value="Partial exits improvement" />
+    <option name="LAST_COMMIT_MESSAGE" value="Partial exits improvement" />
   </component>
   <component name="WindowStateProjectService">
     <state x="496" y="225" key="#Deployment" timestamp="1603912566592">
@@ -1465,28 +1469,28 @@
     </state>
     <state x="728" y="338" key="FileChooserDialogImpl/0.0.1792.1120@0.0.1792.1120" timestamp="1608134079514" />
     <state x="951" y="372" key="FileChooserDialogImpl/0.0.2341.1234@0.0.2341.1234" timestamp="1603469573877" />
-    <state width="710" height="985" key="GridCell.Tab.0.bottom" timestamp="1611713921255">
+    <state width="710" height="985" key="GridCell.Tab.0.bottom" timestamp="1611716435108">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611713921255" />
+    <state width="710" height="985" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1611716435108" />
     <state width="2297" height="431" key="GridCell.Tab.0.bottom/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.bottom/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="710" height="985" key="GridCell.Tab.0.center" timestamp="1611713921254">
+    <state width="710" height="985" key="GridCell.Tab.0.center" timestamp="1611716435106">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611713921254" />
+    <state width="710" height="985" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1611716435106" />
     <state width="2297" height="431" key="GridCell.Tab.0.center/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.center/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
-    <state width="710" height="985" key="GridCell.Tab.0.left" timestamp="1611713921254">
+    <state width="710" height="985" key="GridCell.Tab.0.left" timestamp="1611716435105">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611713921254" />
+    <state width="710" height="985" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1611716435105" />
     <state width="2297" height="431" key="GridCell.Tab.0.left/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.left/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783835" />
-    <state width="710" height="985" key="GridCell.Tab.0.right" timestamp="1611713921255">
+    <state width="710" height="985" key="GridCell.Tab.0.right" timestamp="1611716435107">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="710" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611713921255" />
+    <state width="710" height="985" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1611716435107" />
     <state width="2297" height="431" key="GridCell.Tab.0.right/0.0.2341.1234@0.0.2341.1234" timestamp="1603294710110" />
     <state width="673" height="962" key="GridCell.Tab.0.right/0.23.1792.1097@0.23.1792.1097" timestamp="1605194783836" />
     <state width="800" height="985" key="GridCell.Tab.1.bottom" timestamp="1611697894658">
@@ -1514,10 +1518,10 @@
     </state>
     <state x="397" y="199" width="1259" height="722" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1611480154210" />
     <state x="519" y="219" key="SettingsEditor/0.0.2341.1234@0.0.2341.1234" timestamp="1603247718767" />
-    <state x="496" y="281" key="Vcs.Push.Dialog.v2" timestamp="1611632358017">
+    <state x="496" y="281" key="Vcs.Push.Dialog.v2" timestamp="1611714042597">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="496" y="281" key="Vcs.Push.Dialog.v2/0.0.1792.1120@0.0.1792.1120" timestamp="1611632358017" />
+    <state x="496" y="281" key="Vcs.Push.Dialog.v2/0.0.1792.1120@0.0.1792.1120" timestamp="1611714042597" />
     <state x="737" y="219" key="VcsDiffUtil.ChangesDialog" timestamp="1608253915433">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -1659,7 +1663,7 @@
     <SUITE FILE_PATH="coverage/core$KalmanPair.coverage" NAME="KalmanPair Coverage Results" MODIFIED="1605501129663" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$CrossSectional_Jun___Oct_2020.coverage" NAME="CrossSectional Jun - Oct 2020 Coverage Results" MODIFIED="1605511424973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_2020_NLS1.coverage" NAME="BTCUSDT 2020 NLS1 Coverage Results" MODIFIED="1611371195174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$GoldenCrossStops.coverage" NAME="GoldenCrossStops Coverage Results" MODIFIED="1611713988951" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$GoldenCrossStops.coverage" NAME="GoldenCrossStops Coverage Results" MODIFIED="1611716435058" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Equity_Momentum.coverage" NAME="Equity Momentum Coverage Results" MODIFIED="1604442761756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Small_TF.coverage" NAME="BTCUSDT All Time NewYearlyHighs Small TF Coverage Results" MODIFIED="1607882050386" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCUSDT_All_Time_NewYearlyHighs_Hourly.coverage" NAME="BTCUSDT All Time NewYearlyHighs Hourly Coverage Results" MODIFIED="1603569443635" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
