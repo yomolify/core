@@ -21,7 +21,10 @@ class GoldenCrossStops(StrategyBase):
         ('period_sma_highs', 20),
         ('period_sma_lows', 8),
         # ('order_target_percent', 100)
-        ('order_target_percent', 5)
+        ('order_target_percent', 5),
+        ('period_highest_high_slow', 20),
+        ('period_highest_high_mid', 10),
+        ('period_highest_high_fast', 5),
     )
 
     def __init__(self):
@@ -70,6 +73,12 @@ class GoldenCrossStops(StrategyBase):
             self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
             self.inds[ticker]["sma_roc"] = bt.ind.HMA(self.inds[ticker]["roc"], period=self.params.period_vol_sma, plot=False)
+            self.highest_high_slow = bt.ind.Highest(
+                period=self.params.period_highest_high_slow, plot=False)
+            self.highest_high_mid = bt.ind.Highest(
+                period=self.params.period_highest_high_mid, plot=False)
+            self.highest_high_fast = bt.ind.Highest(
+                period=self.params.period_highest_high_fast, plot=False)
 
     def next(self):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
@@ -267,11 +276,52 @@ class GoldenCrossStops(StrategyBase):
                                 self.log("ERROR: {}".format(sys.exc_info()[0]))
                                 self.log("{}".format(e))
                 elif current_position < 0:
-                    print("I am not supposed to be here")
-                    if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or (
-                            d.high[0] > self.inds[ticker]['rolling_high'][-1]):
+                    self.pos[ticker]["profit"] = self.pos[ticker]["price"] - d.close[0]
+                    self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker][
+                        "price"]) * 100
+                    if self.pos[ticker]["profit_percentage"] > 65:
+                        self.pos[ticker]["new_sl_price"] = 1.5 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 55:
+                    #     self.pos[ticker]["new_sl_price"] = 1.4 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 45:
+                    #     self.pos[ticker]["new_sl_price"] = 0.85 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 35:
+                    #     self.pos[ticker]["new_sl_price"] = 1.2 * self.pos[ticker]["price"]
+                    if self.pos[ticker]["profit_percentage"] > 10:
+                        self.pos[ticker]["new_sl_price"] = self.highest_high_mid[0]
+                    elif self.pos[ticker]["profit_percentage"] > 5:
+                        self.pos[ticker]["new_sl_price"] = self.highest_high_fast[0]
+                    # Initial stop
+                    # elif self.pos[ticker]["profit_percentage"] < 15:
+                    # self.log(f'sl = {self.pos[ticker]["sl_price"]}')
+                    # self.log(f'new sl = {self.pos[ticker]["new_sl_price"]}')
+                    # Initial stop
+                    # if self.pos[ticker]["new_sl_price"] is None:
+                    # self.stop_order[ticker] = self.close(data=d, price=0.8*d.close[0],
+                    #                                      exectype=bt.Order.StopTrail,
+                    #                                      trailamount=d.close[0] / 10)
+                    # self.stop_order[ticker] = self.close(data=d, price=0.8*d.close[0],
+                    #                                      exectype=bt.Order.Stop
+                    #                                      )
+                    # self.pos[ticker]["new_sl_price"] = self.pos[ticker]["sl_price"]
+                    if self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and \
+                            self.pos[ticker][
+                                "new_sl_price"] < self.pos[ticker]["sl_price"]:
+                        self.log(
+                            f'{ticker} Update short stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
+                        self.pos[ticker]["sl_price"] = self.pos[ticker]["new_sl_price"]
+                        if ticker in self.stop_order:
+                            self.cancel(self.stop_order[ticker])
+                        self.stop_order[ticker] = None
+                        # self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
+                        self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"],
+                                                             exectype=bt.Order.StopTrail, trailpercent=0.1)
+                    if d.close[0] > self.inds[ticker]['rolling_high'][-1] + self.inds[ticker]["average_true_range"][0]:
                         try:
                             order = self.add_order(data=d, target=0, type="market")
+                            print("Short close signal")
+                            if ticker in self.stop_order:
+                                self.cancel(self.stop_order[ticker])
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
@@ -284,7 +334,8 @@ class GoldenCrossStops(StrategyBase):
                     #     if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
                     #         closes_above_sma += 1
                     # if closes_above_sma == 5:
-                    if d.volume[0] > self.inds[ticker]['vol_sma'][0] and d.close[0] > self.inds[ticker]['sma_slow'][0] - 2*self.inds[ticker]["average_true_range"][0] or self.inds[ticker]['rsi'][0] < 20:
+                    # TODO - if percentage gain in the last 5 candles is > 10 don't enter
+                    if d.volume[0] > self.inds[ticker]['vol_sma'][0] and d.close[0] > self.inds[ticker]['sma_slow'][0] - 2*self.inds[ticker]["average_true_range"][0] and self.inds[ticker]['rsi'][0] < 80 or self.inds[ticker]['rsi'][0] < 20:
                         try:
                             self.add_order(data=d, target=(
                                         (self.p.order_target_percent / 100) * volatility_factor),
@@ -296,9 +347,13 @@ class GoldenCrossStops(StrategyBase):
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
-                    # elif self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
+                    # elif self.inds[ticker]['rsi'][0] > 85:
                     #     try:
                     #         self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, type="market")]
+                    #         self.pos[ticker]["sl_price"] = d.close[0] + self.inds[ticker]["average_true_range"][0]
+                    #         self.pos[ticker]["new_sl_price"] = None
+                    #         self.pos[ticker]["profit_percentage"] = 0
+                    #         self.pos[ticker]["reset_stop"] = False
                     #     except Exception as e:
                     #         self.log("ERROR: {}".format(sys.exc_info()[0]))
                     #         self.log("{}".format(e))

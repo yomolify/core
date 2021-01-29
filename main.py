@@ -130,7 +130,15 @@ if __name__ == '__main__':
             #            'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
             #            'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT', 'AXS/USDT', 'ZEN/USDT',
             #            'ALPHA/USDT',
-            #            'CTK/USDT', 'BEL/USDT', 'CVC/USDT']
+            #            'CTK/USDT', 'BEL/USDT', 'CVC/USDT', 'DEFI/USDT', 'SKL/USDT', 'GRT/USDT', '1INCH/USDT']
+            # new coins
+            # AKRO / USDT
+            # DOTECO / USDT
+            # CHZ / USDT
+            # SAND / USDT
+            # ANKR / USDT
+            # LUNA / USD
+            # AKRO/USDT
             # hist_start_date = datetime.utcnow() - timedelta(hours=501)
             hist_start_date = datetime.utcnow() - timedelta(minutes=1)
             for ticker in tickers:
@@ -150,7 +158,8 @@ if __name__ == '__main__':
         todate = datetime.now()
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
-        fromdate = datetime(2020, 8, 1)
+        fromdate = datetime(2020, 12, 1)
+        # fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 16)
         # fromdate = datetime(2020, 1, 1)
         #
@@ -226,7 +235,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min":
+            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved":
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
                             'XLM-USDT',
@@ -237,9 +246,29 @@ if __name__ == '__main__':
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+                tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
+                          'BAT-USDT',
+                          'BCH-USDT',
+                          'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
+                          'DOT-USDT', 'EGLD-USDT', 'ENJ-USDT', 'EOS-USDT', 'ETC-USDT', 'ETH-USDT', 'FLM-USDT', 'FTM-USDT',
+                          'HNT-USDT', 'ICX-USDT', 'IOST-USDT', 'IOTA-USDT', 'KAVA-USDT', 'KNC-USDT', 'LINK-USDT',
+                          'LTC-USDT',
+                          'MKR-USDT', 'NEO-USDT', 'OMG-USDT', 'ONT-USDT', 'QTUM-USDT', 'REN-USDT', 'RLC-USDT', 'RUNE-USDT',
+                          'SNX-USDT',
+                          'SOL-USDT', 'SRM-USDT', 'STORJ-USDT', 'SUSHI-USDT', 'SXP-USDT', 'THETA-USDT', 'TRB-USDT',
+                          'TRX-USDT',
+                          'UNI-USDT', 'VET-USDT', 'WAVES-USDT', 'XLM-USDT', 'XMR-USDT', 'XRP-USDT', 'XTZ-USDT',
+                          'YFII-USDT',
+                          'YFI-USDT', 'ZEC-USDT', 'ZIL-USDT', 'ZRX-USDT',
+                          'TOMO-USDT', 'RSR-USDT', 'NEAR-USDT', 'MATIC-USDT',
+                          'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
+                          'ALPHA-USDT',
+                          'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
+                # tickers = ['BTC-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT']
                 # tickers = ['ETH-USDT']
                 # tickers = ['BTC-USDT']
                 # tickers = ['AAVE-USDT']
+                # tickers = ['DOGE-USDT']
 
                 # tickers = ['LTC-USDT']
                 # tickers = ['DOT-USDT']
@@ -385,6 +414,7 @@ if __name__ == '__main__':
                     symbol=f'binancefutures_{ticker}',
                     # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
+                    # query_timeframe='5Min',
                     query_timeframe='1H',
                     fromdate=fromdate,
                     todate=todate,

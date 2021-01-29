@@ -1,0 +1,5 @@
+Long
+On 12H
+- MA 5 > MA 10 > MA 20
+- d.high[0] > rolling_high
+-
