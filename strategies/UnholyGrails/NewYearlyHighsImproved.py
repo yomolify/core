@@ -83,6 +83,17 @@ class NewYearlyHighsImproved(StrategyBase):
             self.inds[ticker]["vol_sma_slow"] = bt.ind.HullMovingAverage(d.volume,
                                                                          period=self.params.period_vol_sma_slow,
                                                                          plot=False, subplot=False)
+
+    def updateProfit(self, d):
+        ticker = d._name
+        current_position = self.get_position(d=d, attribute='size')
+        self.pos[ticker]["size"] = self.get_position(d=d, attribute='size')
+        self.pos[ticker]["price"] = self.get_position(d=d, attribute='price')
+        if current_position > 0:
+            self.pos[ticker]["previous_profit_percentage"] = self.pos[ticker]["profit_percentage"]
+            self.pos[ticker]["profit"] = d.close[0] - self.pos[ticker]["price"]
+            self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker]["price"]) * 100
+
     def updateStops(self, d):
         ticker = d._name
         current_position = self.get_position(d=d, attribute='size')
@@ -318,15 +329,20 @@ class NewYearlyHighsImproved(StrategyBase):
     def next(self):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
             if self.i % 20 == 0:
-                self.rebalance_portfolio()
+                self.rebalance_profits()
+                # self.rebalance_portfolio()
             self.i += 1
+            # if self.i % 20 == 0:
+            #     self.rebalance_profits()
+            # self.i += 1
             available = list(filter(lambda d: len(d) > 500, self.altcoins))
             available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
             for i, d in enumerate(available):
                 ticker = d._name
                 current_position = self.get_position(d=d, attribute='size')
                 if current_position > 0:
-                    self.updateStops(d)
+                    # self.updateStops(d)
+                    self.updateProfit(d)
                     if (d.close[0] < self.inds[ticker]['rolling_low'][-1]):
                         try:
                             order = self.add_order(data=d, target=0, type='market')
@@ -345,21 +361,19 @@ class NewYearlyHighsImproved(StrategyBase):
                     volatility_factor = 1/(volatility*100)
                     volatility_factor = 0.99
                     closes_above_sma = 0
-                    for lookback in [0, -1, -2, -3, -4]:
-                        if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
-                            closes_above_sma += 1
-                    if closes_above_sma == 5:
-                        if d.close[0] > self.inds[ticker]['sma_fast'][0]:
-                            if d.high[0] > self.inds[ticker]['rolling_high'][-1] and d.close[0] > self.inds[ticker]['sma_highs'][0]:
-                                try:
-                                    self.orders[ticker] = [self.add_order(data=d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")]
-                                    self.pos[ticker]["sl_price"] = d.close[0] - self.inds[ticker]["average_true_range"][0]
-                                    self.pos[ticker]["new_sl_price"] = None
-                                    self.pos[ticker]["profit_percentage"] = 0
-                                    self.pos[ticker]["reset_stop"] = False
-                                except Exception as e:
-                                    self.log("ERROR: {}".format(sys.exc_info()[0]))
-                                    self.log("{}".format(e))
+                    # for lookback in [0, -1, -2, -3, -4]:
+                    #     if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
+                    #         closes_above_sma += 1
+                    if d.high[0] > self.inds[ticker]['rolling_high'][-1] and d.close[0] > self.inds[ticker]['sma_highs'][0]:
+                        try:
+                            self.orders[ticker] = [self.add_order(data=d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")]
+                            self.pos[ticker]["sl_price"] = d.close[0] - self.inds[ticker]["average_true_range"][0]
+                            self.pos[ticker]["new_sl_price"] = None
+                            self.pos[ticker]["profit_percentage"] = 0
+                            self.pos[ticker]["reset_stop"] = False
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
                     elif self.inds[ticker]["roc_sma_slow"][0] < 0 and self.inds[ticker]["roc_sma_slow"][0] > self.inds[ticker]["roc_sma_slow"][-1] and d.volume[0] > self.inds[ticker]['vol_sma_slow'][0] or self.inds[ticker]["rsi"][0] < 20:
                         try:
                             self.orders[ticker] = [
@@ -384,6 +398,31 @@ class NewYearlyHighsImproved(StrategyBase):
                 order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
                 for order_chunk in order_chunks:
                     self.place_batch_order(order_chunk)
+
+    def rebalance_profits(self):
+        self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
+        # self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
+        self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
+        # Rebalance any coins in lowest momentum that are in positions
+        for i, d in enumerate(self.rankings[:30]):
+            current_position = self.get_position(d=d, attribute='size')
+            if current_position:
+                if self.pos[d._name]["profit_percentage"] > 0.1:
+                    try:
+                        self.log(f'Selling {self.pos[d._name]["size"]/3} {d._name} in profit')
+                        self.sell(d, size=self.pos[d._name]["size"]/3)
+                    except Exception as e:
+                        self.log("ERROR: {}".format(sys.exc_info()[0]))
+                        self.log("{}".format(e))
+                elif self.pos[d._name]["profit_percentage"] < -0.1:
+                    try:
+                        self.log(f'Buying {self.pos[d._name]["size"]/3} {d._name} in loss')
+                        self.buy(d, size=self.pos[d._name]["size"]/3)
+                    except Exception as e:
+                        self.log("ERROR: {}".format(sys.exc_info()[0]))
+                        self.log("{}".format(e))
+
+
     def rebalance_portfolio(self):
         self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
         # self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))

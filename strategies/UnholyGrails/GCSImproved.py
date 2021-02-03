@@ -21,7 +21,7 @@ class GCSImproved(StrategyBase):
         ('period_sma_highs', 20),
         ('period_sma_lows', 8),
         # ('order_target_percent', 100)
-        ('order_target_percent', 99),
+        ('order_target_percent', 5),
         ('period_highest_high_slow', 20),
         ('period_highest_high_mid', 10),
         ('period_highest_high_fast', 5),

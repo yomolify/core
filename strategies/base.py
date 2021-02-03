@@ -381,15 +381,14 @@ class StrategyBase(bt.Strategy):
             elif possize < 0:
                 direction = 'buy'
 
-        # Order Target Percent
         else:
             if target is not None:
                 value = possize * price
+                # Order Target Percent
                 if possize > 0:
                     # print(f'value of {data._name} is {value}')
                     # print(f'target of {data._name} is {target}')
                     # comminfo = self.broker.getcommissioninfo(data)
-
                     if target > value:
                         size = (target - value)/price
                         direction = 'buy'

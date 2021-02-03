@@ -156,9 +156,12 @@ if __name__ == '__main__':
         #
         # Benchmark backtest
         todate = datetime.now()
+        # todate = datetime(2021, 1, 13)
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
         fromdate = datetime(2020, 12, 1)
+        # fromdate = datetime(2021, 1, 1)
+        # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 16)
         # fromdate = datetime(2020, 1, 1)
@@ -235,7 +238,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved":
+            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "EE" in args.strategy:
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
                             'XLM-USDT',
@@ -264,9 +267,12 @@ if __name__ == '__main__':
                           'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
                           'ALPHA-USDT',
                           'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
-                # tickers = ['BTC-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT']
-                # tickers = ['ETH-USDT']
-                # tickers = ['BTC-USDT']
+                # tickers = ['BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT', 'AAVE-USDT', 'FIL-USDT', 'KSM-USDT',
+                #           'ALPHA-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
+                # 'LINK-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['AAVE-USDT']
                 # tickers = ['DOGE-USDT']
 

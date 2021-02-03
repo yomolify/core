@@ -3,7 +3,7 @@ import sys
 from strategies.base import StrategyBase
 from config import ENV, PRODUCTION, TRADING, DEVELOPMENT
 
-class NewYearlyHighs(StrategyBase):
+class GoWithTheFlow(StrategyBase):
 
     params = (
         ('exectype', bt.Order.Market),
@@ -62,9 +62,9 @@ class NewYearlyHighs(StrategyBase):
 
     def next(self):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
-            if self.i % 20 == 0:
-                self.rebalance_portfolio()
-            self.i += 1
+            # if self.i % 20 == 0:
+            #     self.rebalance_portfolio()
+            # self.i += 1
             available = list(filter(lambda d: len(d) > 500, self.altcoins))
             available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
             for i, d in enumerate(available):
@@ -88,27 +88,18 @@ class NewYearlyHighs(StrategyBase):
                     volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
                     volatility_factor = 1/(volatility*100)
                     closes_above_sma = 0
-                    for lookback in [0, -1, -2, -3, -4]:
-                        if d.close[lookback] > self.inds[ticker]['sma_veryslow'][lookback]:
-                            closes_above_sma += 1
-                    # if closes_above_sma == 5:
-                    #     if d.close[0] > self.inds[ticker]['sma_fast'][0]:
-                    if d.high[0] > self.inds[ticker]['rolling_high'][-1] and d.close[0] > self.inds[ticker]['sma_highs'][0]:
+                    if d.close[0] < d.close[-1]:
                         try:
                             self.orders[ticker] = [self.add_order(data=d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")]
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
-
-
-                    # elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
-                    #     if d.low[0] < self.inds[ticker]['rolling_low'][-1]:
-                    #         if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
-                    #             try:
-                    #                 self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, type="market")]
-                    #             except Exception as e:
-                    #                 self.log("ERROR: {}".format(sys.exc_info()[0]))
-                    #                 self.log("{}".format(e))
+                    elif d.close[0] > d.close[-1]:
+                        try:
+                            self.orders[ticker] = [self.add_order(data=d, target=-((self.p.order_target_percent/100) * volatility_factor), type="market")]
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
             if len(self.to_place_orders) > 0:
                 order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
                 for order_chunk in order_chunks:
