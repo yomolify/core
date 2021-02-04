@@ -28,9 +28,10 @@ class BreakoutWithATwist(StrategyBase):
         self.altcoins = self.datas
         self.inds = {}
         self.orders = dict()
-        self.bitcoin_atr = bt.indicators.AverageTrueRange(self.bitcoin)
-        self.bitcoin_sma = bt.indicators.SimpleMovingAverage(self.bitcoin.close-self.bitcoin_atr,
-                                                            period=self.params.period_sma_bitcoin)
+        self.buy_order = dict()
+        self.sell_order = dict()
+        self.buy_stop_order = dict()
+        self.sell_stop_order = dict()
         if ENV == DEVELOPMENT:
             self.check_for_live_data = False
         else:
@@ -38,10 +39,14 @@ class BreakoutWithATwist(StrategyBase):
 
         for d in self.datas:
             ticker = d._name
+            self.buy_order[ticker] = None
+            self.sell_order[ticker] = None
+            self.buy_stop_order[ticker] = None
+            self.sell_stop_order[ticker] = None
             self.inds[ticker] = {}
             self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=False, subplot=False)
             self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=False, subplot=False)
-            self.inds[ticker]["average_true_range"] = bt.indicators.AverageTrueRange(d)
+            self.inds[ticker]["average_true_range"] = bt.indicators.AverageTrueRange(d, plot=False)
             self.inds[ticker]["sma_veryfast"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_veryfast, plot=False)
             self.inds[ticker]["sma_fast"] = bt.ind.SimpleMovingAverage(d.close,
@@ -57,7 +62,9 @@ class BreakoutWithATwist(StrategyBase):
             self.inds[ticker]["sma_lows"] = bt.ind.SimpleMovingAverage(d.low,
                 period=self.params.period_sma_lows, plot=False)
             self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
-            self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
+            self.inds[ticker]["adx_15"] = bt.ind.ADX(d, period=15, plot=True)
+            self.inds[ticker]["adx_20"] = bt.ind.ADX(d, period=20, plot=True)
+            self.inds[ticker]["sma_adx_20"] = bt.ind.HMA(self.inds[ticker]["adx_20"], period=20, plot=True, subplot=True)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
             self.inds[ticker]["highest_high"] = bt.ind.Highest(
                 period=10, plot=False)
@@ -66,48 +73,39 @@ class BreakoutWithATwist(StrategyBase):
 
     def next(self):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
-            # if self.i % 20 == 0:
-            #     self.rebalance_portfolio()
-            # self.i += 1
             available = list(filter(lambda d: len(d) > 500, self.altcoins))
-            available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
             for i, d in enumerate(available):
                 ticker = d._name
                 current_position = self.get_position(d=d, attribute='size')
                 if current_position > 0:
-                    if d.close[0] < self.inds[ticker]['rolling_low'][-1]:
-                        try:
-                            order = self.add_order(data=d, target=0, type='market')
-                        except Exception as e:
-                            self.log("ERROR: {}".format(sys.exc_info()[0]))
-                            self.log("{}".format(e))
+                    self.cancel(self.sell_order[ticker])
+                    self.cancel(self.buy_order[ticker])
+                    # self.cancel(self.buy_stop_order[ticker])
+                    # self.buy_stop_order[ticker] = self.close(exectype=bt.Order.Stop, price=d.close[-1] - self.inds[ticker]["average_true_range"][-1])
+                    # if d.high[0] < d.high[-1]:
+                    #     self.close()
+                    if self.inds[ticker]["adx_15"][0] > 25 and self.inds[ticker]["sma_adx_20"][-1] > self.inds[ticker]["sma_adx_20"][0]:
+                        self.close()
+                    elif self.inds[ticker]["adx_15"][0] < 20:
+                        self.sell_order[ticker] = self.close(exectype=bt.Order.Stop, price=self.inds[ticker]["lowest_low"][0])
                 elif current_position < 0:
-                    if (self.bitcoin.high[0] > self.bitcoin_sma[0]) or (d.high[0] > self.inds[ticker]['rolling_high'][-1]):
-                        try:
-                            order = self.add_order(data=d, target=0, type="market")
-                        except Exception as e:
-                            self.log("ERROR: {}".format(sys.exc_info()[0]))
-                            self.log("{}".format(e))
+                    self.cancel(self.sell_order[ticker])
+                    self.cancel(self.buy_order[ticker])
+                    if self.inds[ticker]["adx_15"][0] < 20:
+                        self.sell_order[ticker] = self.close(exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0])
                 if current_position == 0:
-                    volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
-                    volatility_factor = 1/(volatility*100)
-                    closes_above_sma = 0
-                    if self.inds[ticker]["adx"][0] < 20:
-                        order = self.buy(exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0])
-                        order = self.sell(exectype=bt.Order.Stop, price=self.inds[ticker]["lowest_low"][0])
-            if len(self.to_place_orders) > 0:
-                order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
-                for order_chunk in order_chunks:
-                    self.place_batch_order(order_chunk)
-    def rebalance_portfolio(self):
-        self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
-        self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
-        # Rebalance any coins in lowest momentum that are in positions
-        for i, d in enumerate(self.rankings[:5]):
-            current_position = self.get_position(d=d, attribute='size')
-            if current_position:
-                try:
-                    order = self.add_order(data=d, target=abs(self.inds[d._name]["roc"][0]), type="market")
-                except Exception as e:
-                    self.log("ERROR: {}".format(sys.exc_info()[0]))
-                    self.log("{}".format(e))
+                    if self.buy_order[ticker]:
+                        self.cancel(self.buy_order[ticker])
+                        self.buy_order[ticker] = None
+                    if self.sell_order[ticker]:
+                        self.cancel(self.sell_order[ticker])
+                        self.sell_order[ticker] = None
+                    if self.buy_stop_order[ticker]:
+                        self.cancel(self.buy_stop_order[ticker])
+                        self.buy_stop_order[ticker] = None
+                    if self.sell_stop_order[ticker]:
+                        self.cancel(self.sell_stop_order[ticker])
+                        self.sell_stop_order[ticker] = None
+                    if self.inds[ticker]["adx_15"][0] < 20:
+                        self.buy_order[ticker] = self.buy(exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0])
+                        self.sell_order[ticker] = self.sell(exectype=bt.Order.Stop, price=self.inds[ticker]["lowest_low"][0])

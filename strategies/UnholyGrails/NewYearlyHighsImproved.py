@@ -50,7 +50,7 @@ class NewYearlyHighsImproved(StrategyBase):
             self.inds[ticker] = {}
             self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=False, subplot=False)
             self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=False, subplot=False)
-            self.inds[ticker]["average_true_range"] = bt.indicators.AverageTrueRange(d, plot=False)
+            self.inds[ticker]["average_true_range"] = bt.indicators.AverageTrueRange(d, plot=False, subplot=False)
             self.inds[ticker]["sma_veryfast"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_veryfast, plot=False)
             self.inds[ticker]["sma_fast"] = bt.ind.SimpleMovingAverage(d.close,
@@ -66,7 +66,7 @@ class NewYearlyHighsImproved(StrategyBase):
             self.inds[ticker]["sma_lows"] = bt.ind.SimpleMovingAverage(d.low,
                 period=self.params.period_sma_lows, plot=False)
             self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
-            self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
+            self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=True)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
             self.inds[ticker]["roc_sma_veryslow"] = bt.ind.HMA(self.inds[ticker]["roc"],
                                                                period=self.params.period_roc_sma_veryslow, plot=False,
@@ -386,6 +386,16 @@ class NewYearlyHighsImproved(StrategyBase):
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
+                    # if d.high[0] > self.inds[ticker]['rolling_high'][-1] and d.close[0] > self.inds[ticker]['sma_highs'][0]:
+                    #     try:
+                    #         self.orders[ticker] = [self.add_order(data=d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")]
+                    #         self.pos[ticker]["sl_price"] = d.close[0] - self.inds[ticker]["average_true_range"][0]
+                    #         self.pos[ticker]["new_sl_price"] = None
+                    #         self.pos[ticker]["profit_percentage"] = 0
+                    #         self.pos[ticker]["reset_stop"] = False
+                    #     except Exception as e:
+                    #         self.log("ERROR: {}".format(sys.exc_info()[0]))
+                    #         self.log("{}".format(e))
                     # elif self.bitcoin.close[0] < self.bitcoin_sma[0]:
                     #     if d.low[0] < self.inds[ticker]['rolling_low'][-1]:
                     #         if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:

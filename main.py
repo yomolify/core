@@ -159,8 +159,8 @@ if __name__ == '__main__':
         # todate = datetime(2021, 1, 13)
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
-        fromdate = datetime(2020, 12, 1)
-        # fromdate = datetime(2021, 1, 1)
+        # fromdate = datetime(2020, 12, 1)
+        fromdate = datetime(2021, 1, 1)
         # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 16)
@@ -181,7 +181,7 @@ if __name__ == '__main__':
         #
         # fromdate = datetime(args.from_year, args.from_month, args.from_date)
         # todate = datetime(args.to_year, args.to_month, args.to_date)
-        leverage = 3
+        leverage = 2
         # 80 and 15 on 1x
         # Single Coin
         if strategy_class == 'NLS1':
@@ -269,8 +269,9 @@ if __name__ == '__main__':
                           'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
                 # tickers = ['BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT', 'AAVE-USDT', 'FIL-USDT', 'KSM-USDT',
                 #           'ALPHA-USDT']
-                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
-                # 'LINK-USDT']
+                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
+                'LINK-USDT']
+                tickers = ['ETH-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['AAVE-USDT']
