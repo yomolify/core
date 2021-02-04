@@ -28,6 +28,7 @@ class StrategyBase(bt.Strategy):
         self.buy_price_close = None
         self.sell_price_close = None
         self.to_place_orders = []
+        self.first_bar_after_entry = dict()
         self.log("Base strategy initialized", send_telegram=True)
         self.log("Trading: {}".format(TRADING))
 
@@ -171,6 +172,7 @@ class StrategyBase(bt.Strategy):
                 else:
                     self.buy_price_close = order.executed.price
                 self.log_order(order, 'buy')
+                self.first_bar_after_entry[ticker] = True
                 if self.long_order and not self.long_stop_order:
                     self.sl_price = self.data0.low[0] * 0.95
                     if 0.92 * self.data0.open[0] > self.sl_price:
@@ -229,10 +231,10 @@ class StrategyBase(bt.Strategy):
 
         #     # Sentinel to None: new orders allowed
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            # if order.isbuy():
-            #     self.log(f'BUY ORDER {order.Status[order.status]}')
-            # elif order.issell():
-            #     self.log(f'SELL ORDER {order.Status[order.status]}')
+            if order.isbuy():
+                self.log(f'BUY ORDER @ {order.price} {order.Status[order.status]}')
+            elif order.issell():
+                self.log(f'SELL ORDER @ {order.price} {order.Status[order.status]}')
             if order.status in [order.Margin, order.Rejected]:
                 self.log_order(order, 'error')
             # self.log('Order Canceled/Margin/Rejected: Status %s - %s' % (order.Status[order.status],

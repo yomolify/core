@@ -15,7 +15,6 @@ class BreakoutWithATwist(StrategyBase):
         ('period_sma_mid', 50),
         ('period_sma_slow', 200),
         ('period_sma_veryslow', 500),
-        ('period_sma_veryslow', 500),
         ('period_sma_highs', 20),
         ('period_sma_lows', 8),
         ('order_target_percent', 5)
@@ -32,6 +31,7 @@ class BreakoutWithATwist(StrategyBase):
         self.sell_order = dict()
         self.buy_stop_order = dict()
         self.sell_stop_order = dict()
+        self.bars_in_position = dict()
         if ENV == DEVELOPMENT:
             self.check_for_live_data = False
         else:
@@ -44,8 +44,10 @@ class BreakoutWithATwist(StrategyBase):
             self.buy_stop_order[ticker] = None
             self.sell_stop_order[ticker] = None
             self.inds[ticker] = {}
-            self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=False, subplot=False)
-            self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=False, subplot=False)
+            self.first_bar_after_entry[ticker] = False
+            self.bars_in_position[ticker] = 0
+            # self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=False, subplot=False)
+            # self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=False, subplot=False)
             self.inds[ticker]["average_true_range"] = bt.indicators.AverageTrueRange(d, plot=False)
             self.inds[ticker]["sma_veryfast"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_veryfast, plot=False)
@@ -55,8 +57,8 @@ class BreakoutWithATwist(StrategyBase):
                 period=self.params.period_sma_mid, plot=False)
             self.inds[ticker]["sma_slow"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_slow, plot=False)
-            self.inds[ticker]["sma_veryslow"] = bt.ind.SimpleMovingAverage(d.close,
-                period=self.params.period_sma_veryslow, plot=False)
+            # self.inds[ticker]["sma_veryslow"] = bt.ind.SimpleMovingAverage(d.close,
+            #     period=self.params.period_sma_veryslow, plot=False)
             self.inds[ticker]["sma_highs"] = bt.ind.SimpleMovingAverage(d.high,
                 period=self.params.period_sma_highs, plot=False)
             self.inds[ticker]["sma_lows"] = bt.ind.SimpleMovingAverage(d.low,
@@ -66,9 +68,9 @@ class BreakoutWithATwist(StrategyBase):
             self.inds[ticker]["adx_20"] = bt.ind.ADX(d, period=20, plot=True)
             self.inds[ticker]["sma_adx_20"] = bt.ind.HMA(self.inds[ticker]["adx_20"], period=20, plot=True, subplot=True)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
-            self.inds[ticker]["highest_high"] = bt.ind.Highest(
+            self.inds[ticker]["highest_high"] = bt.ind.Highest(d.high,
                 period=10, plot=False)
-            self.inds[ticker]["lowest_low"] = bt.ind.Lowest(
+            self.inds[ticker]["lowest_low"] = bt.ind.Lowest(d.low,
                 period=10, plot=False)
 
     def next(self):
@@ -78,22 +80,25 @@ class BreakoutWithATwist(StrategyBase):
                 ticker = d._name
                 current_position = self.get_position(d=d, attribute='size')
                 if current_position > 0:
+                    self.bars_in_position[ticker] += 1
                     self.cancel(self.sell_order[ticker])
                     self.cancel(self.buy_order[ticker])
-                    # self.cancel(self.buy_stop_order[ticker])
-                    # self.buy_stop_order[ticker] = self.close(exectype=bt.Order.Stop, price=d.close[-1] - self.inds[ticker]["average_true_range"][-1])
-                    # if d.high[0] < d.high[-1]:
-                    #     self.close()
+                    if self.bars_in_position[ticker] == 2:
+                        if d.high[0] < d.high[-1] or d.low[0] < d.low[-1]:
+                            self.close()
                     if self.inds[ticker]["adx_15"][0] > 25 and self.inds[ticker]["sma_adx_20"][-1] > self.inds[ticker]["sma_adx_20"][0]:
                         self.close()
-                    elif self.inds[ticker]["adx_15"][0] < 20:
-                        self.sell_order[ticker] = self.close(exectype=bt.Order.Stop, price=self.inds[ticker]["lowest_low"][0])
                 elif current_position < 0:
                     self.cancel(self.sell_order[ticker])
                     self.cancel(self.buy_order[ticker])
+                    self.bars_in_position[ticker] += 1
+                    if self.bars_in_position[ticker] > 1 and self.bars_in_position[ticker] < 4:
+                        if d.high[0] > d.high[-1] or d.low[0] > d.low[-1]:
+                            self.close()
                     if self.inds[ticker]["adx_15"][0] < 20:
                         self.sell_order[ticker] = self.close(exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0])
                 if current_position == 0:
+                    self.bars_in_position[ticker] = 0
                     if self.buy_order[ticker]:
                         self.cancel(self.buy_order[ticker])
                         self.buy_order[ticker] = None
@@ -107,5 +112,7 @@ class BreakoutWithATwist(StrategyBase):
                         self.cancel(self.sell_stop_order[ticker])
                         self.sell_stop_order[ticker] = None
                     if self.inds[ticker]["adx_15"][0] < 20:
+                        self.log(f'Placing buy stop at {self.inds[ticker]["highest_high"][0]}')
+                        self.log(f'Placing sell stop at {self.inds[ticker]["lowest_low"][0]}')
                         self.buy_order[ticker] = self.buy(exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0])
                         self.sell_order[ticker] = self.sell(exectype=bt.Order.Stop, price=self.inds[ticker]["lowest_low"][0])
