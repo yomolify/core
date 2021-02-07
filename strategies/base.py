@@ -231,10 +231,10 @@ class StrategyBase(bt.Strategy):
 
         #     # Sentinel to None: new orders allowed
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            if order.isbuy():
-                self.log(f'BUY ORDER @ {order.price} {order.Status[order.status]}')
-            elif order.issell():
-                self.log(f'SELL ORDER @ {order.price} {order.Status[order.status]}')
+            # if order.isbuy():
+            #     self.log(f'BUY ORDER @ {order.price} {order.Status[order.status]}')
+            # elif order.issell():
+            #     self.log(f'SELL ORDER @ {order.price} {order.Status[order.status]}')
             if order.status in [order.Margin, order.Rejected]:
                 self.log_order(order, 'error')
             # self.log('Order Canceled/Margin/Rejected: Status %s - %s' % (order.Status[order.status],
