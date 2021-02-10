@@ -7,7 +7,7 @@ class PCY(bt.Indicator):
     params = (('period_ema', 6),
               ('period_fast_ema', 10),
               ('period_slow_ema', 20),
-              ('pcy_alpha', 0.7),
+              ('pcy_alpha', 0.9),
               )
     lines = ('pcy', 'delta')
 

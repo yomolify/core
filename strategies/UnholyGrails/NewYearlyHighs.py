@@ -117,11 +117,15 @@ class NewYearlyHighs(StrategyBase):
         self.rankings = list(filter(lambda d: len(d) > 500, self.altcoins))
         self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
         # Rebalance any coins in lowest momentum that are in positions
-        for i, d in enumerate(self.rankings[:5]):
+        for i, d in enumerate(self.rankings[:10]):
             current_position = self.get_position(d=d, attribute='size')
             if current_position:
                 try:
-                    order = self.add_order(data=d, target=abs(self.inds[d._name]["roc"][0]), type="market")
+                    if abs(self.inds[d._name]["roc"][0]) > 0.02:
+                        order = self.add_order(data=d, target=abs(self.inds[d._name]["roc"][0]), type="market")
+                    else:
+                        self.add_order(data=d, target=0, type='market')
+                        self.log(f"Dead {d._name}. ROC: {round(abs(self.inds[d._name]['roc'][0]), 3)}, RSI: {round((self.inds[d._name]['rsi'][0]), 1)} ADX: {round((self.inds[d._name]['rsi'][0]), 1)} RSI*ADX: {round((self.inds[d._name]['rsi'][0])*(self.inds[d._name]['adx'][0]), 0)}")
                 except Exception as e:
                     self.log("ERROR: {}".format(sys.exc_info()[0]))
                     self.log("{}".format(e))

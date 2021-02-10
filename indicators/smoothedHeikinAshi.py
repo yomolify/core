@@ -3,7 +3,7 @@ from backtrader.indicators import EMA
 
 
 class SmoothedHeikinAshi(bt.Indicator):
-    params = (('period_ema', 6),)
+    params = (('period_ema', 5),)
     lines = ('sha_open', 'sha_low', 'sha_high', 'sha_close')
 
     def __init__(self):

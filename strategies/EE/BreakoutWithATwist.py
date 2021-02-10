@@ -48,7 +48,7 @@ class BreakoutWithATwist(StrategyBase):
             self.bars_in_position[ticker] = 0
             # self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=False, subplot=False)
             # self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=False, subplot=False)
-            self.inds[ticker]["average_true_range"] = bt.indicators.AverageTrueRange(d, plot=False)
+            self.inds[ticker]["atr"] = bt.indicators.AverageTrueRange(d, plot=False)
             self.inds[ticker]["sma_veryfast"] = bt.ind.SimpleMovingAverage(d.close,
                 period=self.params.period_sma_veryfast, plot=False)
             self.inds[ticker]["sma_fast"] = bt.ind.SimpleMovingAverage(d.close,
@@ -79,43 +79,46 @@ class BreakoutWithATwist(StrategyBase):
             for i, d in enumerate(available):
                 ticker = d._name
                 current_position = self.get_position(d=d, attribute='size')
-                if current_position > 0:
-                    self.bars_in_position[ticker] += 1
-                    self.cancel(self.sell_order[ticker])
+                # if current_position > 0:
+                #     self.bars_in_position[ticker] += 1
+                #     self.cancel(self.sell_order[ticker])
+                #     self.cancel(self.buy_order[ticker])
+                    # if self.bars_in_position[ticker] == 2:
+                    #     if d.high[0] < d.high[-1] or d.low[0] < d.low[-1]:
+                    #         # [03-01-21 08:00:00]
+                    #         self.log('Close because not higher highs and higher lows')
+                    #         self.close(d)
+                    # if self.inds[ticker]["sma_adx_20"][0] > 25 and self.inds[ticker]["sma_adx_20"][-1] > self.inds[ticker]["sma_adx_20"][0]:
+                    #     self.log('Close because sma adx reversing')
+                    #     self.close()
+                # elif current_position < 0:
+                #     self.cancel(self.sell_order[ticker])
+                #     self.cancel(self.buy_order[ticker])
+                #     self.bars_in_position[ticker] += 1
+                #     if self.bars_in_position[ticker] > 1 and self.bars_in_position[ticker] < 4:
+                #         if d.high[0] > d.high[-1] or d.low[0] > d.low[-1]:
+                #             self.close()
+                #     if self.inds[ticker]["adx_15"][0] < 20:
+                #         self.sell_order[ticker] = self.close(d, exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0])
+                # if current_position == 0:
+                volatility = self.inds[ticker]["atr"][0] / d.close[0]
+                volatility_factor = 1 / (volatility * 100)
+                # volatility_factor = 0.99
+                self.bars_in_position[ticker] = 0
+                if self.buy_order[ticker]:
                     self.cancel(self.buy_order[ticker])
-                    if self.bars_in_position[ticker] == 2:
-                        if d.high[0] < d.high[-1] or d.low[0] < d.low[-1]:
-                            # [03-01-21 08:00:00]
-                            self.log('Close because not higher highs and higher lows')
-                            self.close()
-                    if self.inds[ticker]["sma_adx_20"][0] > 25 and self.inds[ticker]["sma_adx_20"][-1] > self.inds[ticker]["sma_adx_20"][0]:
-                        self.log('Close because sma adx reversing')
-                        self.close()
-                elif current_position < 0:
+                    self.buy_order[ticker] = None
+                if self.sell_order[ticker]:
                     self.cancel(self.sell_order[ticker])
-                    self.cancel(self.buy_order[ticker])
-                    self.bars_in_position[ticker] += 1
-                    if self.bars_in_position[ticker] > 1 and self.bars_in_position[ticker] < 4:
-                        if d.high[0] > d.high[-1] or d.low[0] > d.low[-1]:
-                            self.close()
-                    if self.inds[ticker]["adx_15"][0] < 20:
-                        self.sell_order[ticker] = self.close(exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0])
-                if current_position == 0:
-                    self.bars_in_position[ticker] = 0
-                    if self.buy_order[ticker]:
-                        self.cancel(self.buy_order[ticker])
-                        self.buy_order[ticker] = None
-                    if self.sell_order[ticker]:
-                        self.cancel(self.sell_order[ticker])
-                        self.sell_order[ticker] = None
-                    if self.buy_stop_order[ticker]:
-                        self.cancel(self.buy_stop_order[ticker])
-                        self.buy_stop_order[ticker] = None
-                    if self.sell_stop_order[ticker]:
-                        self.cancel(self.sell_stop_order[ticker])
-                        self.sell_stop_order[ticker] = None
-                    if self.inds[ticker]["adx_15"][0] < 25:
-                        self.log(f'Placing buy stop at {self.inds[ticker]["highest_high"][0]}')
-                        self.log(f'Placing sell stop at {self.inds[ticker]["lowest_low"][0]}')
-                        self.buy_order[ticker] = self.buy(exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0])
-                        self.sell_order[ticker] = self.sell(exectype=bt.Order.Stop, price=self.inds[ticker]["lowest_low"][0])
+                    self.sell_order[ticker] = None
+                if self.buy_stop_order[ticker]:
+                    self.cancel(self.buy_stop_order[ticker])
+                    self.buy_stop_order[ticker] = None
+                if self.sell_stop_order[ticker]:
+                    self.cancel(self.sell_stop_order[ticker])
+                    self.sell_stop_order[ticker] = None
+                if self.inds[ticker]["adx_15"][0] < 20 or self.inds[ticker]["rsi"][0] < 20:
+                    self.log(f'Placing buy stop at {self.inds[ticker]["highest_high"][0]}')
+                    self.log(f'Placing sell stop at {self.inds[ticker]["lowest_low"][0]}')
+                    self.buy_order[ticker] = self.order_target_percent(d, target=(self.p.order_target_percent / 100) * volatility_factor, exectype=bt.Order.Stop, price=self.inds[ticker]["highest_high"][0]+self.inds[ticker]["atr"][0])
+                    self.sell_order[ticker] = self.order_target_percent(d, target=(self.p.order_target_percent / 100) * volatility_factor, exectype=bt.Order.Stop, price=self.inds[ticker]["lowest_low"][0]-self.inds[ticker]["atr"][0])
