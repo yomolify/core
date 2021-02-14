@@ -27,6 +27,9 @@ class StrategyBase(bt.Strategy):
         self.status = "DISCONNECTED"
         self.buy_price_close = None
         self.sell_price_close = None
+        self.executed_size = None
+        self.strategy = None
+        self.entry_bar_height = None
         self.to_place_orders = []
         self.first_bar_after_entry = dict()
         self.log("Base strategy initialized", send_telegram=True)
@@ -169,10 +172,16 @@ class StrategyBase(bt.Strategy):
             if order.isbuy():
                 if ENV == PRODUCTION and TRADING == "LIVE":
                     self.buy_price_close = float(order.ccxt_order['info']['avgPrice'])
+                    self.executed_size = float(order.ccxt_order['info']['executedQty'])
                 else:
                     self.buy_price_close = order.executed.price
+                    self.executed_size = float(order.executed.size)
                 self.log_order(order, 'buy')
                 self.first_bar_after_entry[ticker] = True
+                if self.strategy == "SwingHL":
+                    self.log(f'Long TPS at {self.buy_price_close + self.entry_bar_height[order.data._name]*4} and {self.buy_price_close + self.entry_bar_height[order.data._name]*8}')
+                    self.sell(data=order.data, size=self.executed_size/2, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*4)
+                    self.sell(data=order.data, size=self.executed_size/2, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*8)
                 if self.long_order and not self.long_stop_order:
                     self.sl_price = self.data0.low[0] * 0.95
                     if 0.92 * self.data0.open[0] > self.sl_price:
@@ -201,8 +210,10 @@ class StrategyBase(bt.Strategy):
             elif order.issell():
                 if ENV == PRODUCTION and TRADING == "LIVE":
                     self.sell_price_close = float(order.ccxt_order['info']['avgPrice'])
+                    self.executed_size = float(order.ccxt_order['info']['executedQty'])
                 else:
                     self.sell_price_close = order.executed.price
+                    self.executed_size = float(order.executed.size)
                 self.log_order(order, 'sell')
                 if self.short_order and not self.short_stop_order:
                     self.sl_price = self.highest_high_slow[0]
@@ -256,12 +267,12 @@ class StrategyBase(bt.Strategy):
         self.log(colored('%s OPERATION PROFIT, GROSS %.2f, NET %.2f\n' % (trade.data._name, trade.pnl, trade.pnlcomm),
                          color), True)
 
-    def log_ohlc(self):
+    def log_ohlc(self, d):
         self.log(f'''
-        Open: {self.data0.open[0]}
-        High: {self.data0.high[0]}
-        Low: {self.data0.low[0]}
-        Close: {self.data0.close[0]}''')
+        Open: {d.open[0]}
+        High: {d.high[0]}
+        Low: {d.low[0]}
+        Close: {d.close[0]}''')
 
     # TODO - change order.executed.price to order.ccxt_order['info']['avgPrice'] for PRODUCTION
     def log_order(self, order, direction):
@@ -271,11 +282,6 @@ class StrategyBase(bt.Strategy):
             price = self.sell_price_close
         else:
             price = 0.0
-
-        if ENV == PRODUCTION and TRADING == "LIVE":
-            executed_size = float(order.ccxt_order['info']['executedQty'])
-        else:
-            executed_size = float(order.executed.size)
         color = ('red', 'green')[direction == 'buy']
         if direction == 'error':
             color = 'cyan'
@@ -284,7 +290,7 @@ class StrategyBase(bt.Strategy):
         self.log(f'''
         {action} {ticker}!
         {action} Price: {price}
-        {action} Size: {round(abs(executed_size), 3)}
+        {action} Size: {round(abs(self.executed_size), 3)}
         Open: {order.data.tick_open}
         High: {order.data.tick_high}
         Low: {order.data.tick_low}

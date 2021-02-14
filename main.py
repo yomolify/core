@@ -65,8 +65,8 @@ if ENV == PRODUCTION:  # Live trading with Binance
         params = json.load(f)
     cerebro = bt.Cerebro(quicknotify=True, exactbars=True)
 
-    config = {'apiKey': params["binance"]["apikey"],
-              'secret': params["binance"]["secret"],
+    config = {'apiKey': params["binance-lh"]["apikey"],
+              'secret': params["binance-lh"]["secret"],
               'enableRateLimit': True,
               'options': {
                   'defaultType': 'future',
@@ -159,13 +159,13 @@ if __name__ == '__main__':
         # todate = datetime(2021, 1, 13)
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
-        fromdate = datetime(2020, 12, 1)
+        # fromdate = datetime(2020, 1, 1)
         # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 1, 27)
-        # fromdate = datetime(2020, 12, 1)
-        # fromdate = datetime(2020, 8, 1)
+        fromdate = datetime(2020, 12, 1)
+        fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 16)
-        # fromdate = datetime(2020, 1, 1)
+        # fromdate = datetime(2021, 1, 1)
         #
         # fromdate = datetime(2020, 3, 14)
 
@@ -239,7 +239,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "EE" in args.strategy:
+            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" in args.strategy:
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                 #            'LINK-USDT',
                 #             'XLM-USDT',
@@ -272,8 +272,8 @@ if __name__ == '__main__':
                 #           'ALPHA-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                 # 'LINK-USDT']
-                # tickers = ['ETH-USDT']
-                # tickers = ['LTC-USDT']
+                tickers = ['ETH-USDT']
+                tickers = ['LTC-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['AAVE-USDT']

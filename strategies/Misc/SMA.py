@@ -130,9 +130,9 @@ class SMA(StrategyBase):
                 if position is not None:
                     current_size = self.getposition(d)["size"]
                     entry_price = self.getposition(d)["entry_price"]
-                if current_size:
-                    print(f'{ticker} position: {current_size} @ {entry_price}')
-
+                # if current_size:
+                print(f'{ticker} position: {current_size} @ {entry_price}')
+                self.log_ohlc(d)
                 # self.log('{} Position {}'.format(ticker, current_position))
                 mod = len(self.data)
                 # self.log(f'mod: {mod}')

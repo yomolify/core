@@ -2,6 +2,7 @@ import backtrader as bt
 import sys
 from strategies.base import StrategyBase
 from config import ENV, PRODUCTION, TRADING, DEVELOPMENT
+import datetime as dt
 
 class NewYearlyHighs(StrategyBase):
 
@@ -69,6 +70,8 @@ class NewYearlyHighs(StrategyBase):
             available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
             for i, d in enumerate(available):
                 ticker = d._name
+                if "BTC" in ticker:
+                    print(f"{dt.datetime.now()} ----- Heartbeat Check OK -----")
                 current_position = self.get_position(d=d, attribute='size')
                 if current_position > 0:
                     if d.close[0] < self.inds[ticker]['rolling_low'][-1]:
