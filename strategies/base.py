@@ -178,10 +178,11 @@ class StrategyBase(bt.Strategy):
                     self.executed_size = float(order.executed.size)
                 self.log_order(order, 'buy')
                 self.first_bar_after_entry[ticker] = True
-                if self.strategy == "SwingHL":
-                    self.log(f'Long TPS at {self.buy_price_close + self.entry_bar_height[order.data._name]*4} and {self.buy_price_close + self.entry_bar_height[order.data._name]*8}')
-                    self.sell(data=order.data, size=self.executed_size/2, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*4)
-                    self.sell(data=order.data, size=self.executed_size/2, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*8)
+                # if self.strategy == "SwingHL":
+                #     self.log(f'Long TPS at {self.buy_price_close + self.entry_bar_height[order.data._name]*4} and {self.buy_price_close + self.entry_bar_height[order.data._name]*8}')
+                #     self.sell(data=order.data, size=self.executed_size*0.2, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*4)
+                #     self.sell(data=order.data, size=self.executed_size*0.3, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*6)
+                #     self.sell(data=order.data, size=self.executed_size*0.5, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*8)
                 if self.long_order and not self.long_stop_order:
                     self.sl_price = self.data0.low[0] * 0.95
                     if 0.92 * self.data0.open[0] > self.sl_price:
@@ -282,6 +283,7 @@ class StrategyBase(bt.Strategy):
             price = self.sell_price_close
         else:
             price = 0.0
+            self.executed_size = 0
         color = ('red', 'green')[direction == 'buy']
         if direction == 'error':
             color = 'cyan'

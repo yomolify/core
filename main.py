@@ -163,8 +163,8 @@ if __name__ == '__main__':
         # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 1, 27)
         fromdate = datetime(2020, 12, 1)
-        fromdate = datetime(2020, 8, 1)
-        # fromdate = datetime(2020, 12, 16)
+        # fromdate = datetime(2020, 8, 1)
+        fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 1, 1)
         #
         # fromdate = datetime(2020, 3, 14)
@@ -240,16 +240,16 @@ if __name__ == '__main__':
         else:
             # New Yearly Highs
             if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" in args.strategy:
-                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
-                #            'LINK-USDT',
-                #             'XLM-USDT',
-                #            'ADA-USDT',
-                #            'XMR-USDT', 'DASH-USDT', 'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
-                #            'BAT-USDT',
-                #            'VET-USDT',
-                #            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
-                #            'DOGE-USDT',
-                #            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
+                           'LINK-USDT',
+                            'XLM-USDT',
+                           'ADA-USDT',
+                           'XMR-USDT', 'DASH-USDT', 'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
+                           'BAT-USDT',
+                           'VET-USDT',
+                           'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
+                           'DOGE-USDT',
+                           'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
                 tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                           'BAT-USDT',
                           'BCH-USDT',
@@ -272,8 +272,8 @@ if __name__ == '__main__':
                 #           'ALPHA-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                 # 'LINK-USDT']
-                tickers = ['ETH-USDT']
-                tickers = ['LTC-USDT']
+                # tickers = ['ETH-USDT']
+                # tickers = ['LTC-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['AAVE-USDT']

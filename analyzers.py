@@ -26,29 +26,30 @@ def printTradeAnalysis(analyzer):
     '''
     #Get the results we are interested in
     total_open = analyzer.total.open
-    total_closed = analyzer.total.closed
-    total_won = analyzer.won.total
-    total_lost = analyzer.lost.total
-    win_streak = analyzer.streak.won.longest
-    lose_streak = analyzer.streak.lost.longest
-    pnl_net = round(analyzer.pnl.net.total, 2)
-    win_percent = round((total_won / total_closed) * 100, 2)
-    #Designate the rows
-    h1 = ['Total Open', 'Total Closed', 'Total Won', 'Total Lost']
-    h2 = ['Win Percentage','Win Streak', 'Losing Streak', 'PnL Net']
-    r1 = [total_open, total_closed,total_won,total_lost]
-    r2 = [win_percent, win_streak, lose_streak, pnl_net]
-    #Check which set of headers is the longest.
-    if len(h1) > len(h2):
-        header_length = len(h1)
-    else:
-        header_length = len(h2)
-    #Print the rows
-    print_list = [h1,r1,h2,r2]
-    row_format ="{:<15}" * (header_length + 1)
-    print("Trade Analysis Results:")
-    for row in print_list:
-        print(row_format.format('',*row))
+    if 'closed' in analyzer.total:
+        total_closed = analyzer.total.closed
+        total_won = analyzer.won.total
+        total_lost = analyzer.lost.total
+        win_streak = analyzer.streak.won.longest
+        lose_streak = analyzer.streak.lost.longest
+        pnl_net = round(analyzer.pnl.net.total, 2)
+        win_percent = round((total_won / total_closed) * 100, 2)
+        #Designate the rows
+        h1 = ['Total Open', 'Total Closed', 'Total Won', 'Total Lost']
+        h2 = ['Win Percentage','Win Streak', 'Losing Streak', 'PnL Net']
+        r1 = [total_open, total_closed,total_won,total_lost]
+        r2 = [win_percent, win_streak, lose_streak, pnl_net]
+        #Check which set of headers is the longest.
+        if len(h1) > len(h2):
+            header_length = len(h1)
+        else:
+            header_length = len(h2)
+        #Print the rows
+        print_list = [h1,r1,h2,r2]
+        row_format ="{:<15}" * (header_length + 1)
+        print("Trade Analysis Results:")
+        for row in print_list:
+            print(row_format.format('',*row))
 
 def printSQN(analyzer):
     sqn = round(analyzer.sqn,2)
