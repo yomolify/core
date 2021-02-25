@@ -61,22 +61,22 @@ class NewYearlyHighs(StrategyBase):
             self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
             self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
             self.inds[ticker]["adx_20"] = bt.ind.ADX(d, period=20, plot=False)
-            self.inds[ticker]["sma_adx_20"] = bt.ind.HMA(self.inds[ticker]["adx_20"], period=20, plot=False, subplot=False)
+            self.inds[ticker]["sma_adx_20"] = bt.ind.HMA(self.inds[ticker]["adx_20"], period=20, plot=True, subplot=True)
             self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=True)
-            self.inds[ticker]["sma_roc"] = bt.ind.HMA(self.inds[ticker]["roc"], plot=True)
+            self.inds[ticker]["sma_roc"] = bt.ind.HMA(self.inds[ticker]["roc"], plot=False)
             self.inds[ticker]["super_trend"] = SuperTrend(d, plot=False, subplot=False)
 
     def next(self):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
-            if self.i % 20 == 0:
-                self.rebalance_portfolio()
-            self.i += 1
             available = list(filter(lambda d: len(d) > 500, self.altcoins))
             available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
             for i, d in enumerate(available):
                 ticker = d._name
                 if "BTC" in ticker:
                     print(f"{dt.datetime.now()} ----- Heartbeat Check OK -----")
+                    if self.i % 20 == 0:
+                        self.rebalance_portfolio()
+                    self.i += 1
                 current_position = self.get_position(d=d, attribute='size')
                 if current_position > 0:
                     if d.close[0] < self.inds[ticker]['rolling_low'][-1] or (self.inds[ticker]["sma_adx_20"][0] > 45 and self.inds[ticker]["sma_adx_20"][-1] > self.inds[ticker]["sma_adx_20"][0]):

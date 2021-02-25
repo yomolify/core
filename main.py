@@ -164,8 +164,8 @@ if __name__ == '__main__':
         # fromdate = datetime(2021, 1, 27)
         fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2020, 8, 1)
-        fromdate = datetime(2020, 12, 1)
-        # fromdate = datetime(2021, 1, 1)
+        # fromdate = datetime(2020, 12, 1)
+        fromdate = datetime(2021, 1, 1)
         #
         # fromdate = datetime(2020, 3, 14)
 
@@ -272,7 +272,8 @@ if __name__ == '__main__':
                 #           'ALPHA-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                 # 'LINK-USDT']
-                # tickers = ['ETH-USDT']
+                # tickers = ['LTC-USDT']
+                tickers = ['ETH-USDT']
                 # tickers = ['LTC-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']

@@ -108,6 +108,7 @@ class SwingHL(StrategyBase):
                         # self.order_target_percent(data=d, target=((self.p.order_target_percent / 100) * volatility_factor), exectype=bt.Order.Limit, price=d.close[-7])
                         # self.order_target_percent(data=d, target=((self.p.order_target_percent / 100) * volatility_factor), exectype=bt.Order.Limit, price=d.close[-7]-self.inds[ticker]["atr"][0])
                         # self.order_target_percent(data=d, target=((self.p.order_target_percent / 100) * volatility_factor), exectype=bt.Order.Limit, price=d.close[-7]-2*self.inds[ticker]["atr"][0])
+                        # divide by 15 for eth
                         self.buy(d, size=max_buyable/15, exectype=bt.Order.Limit, price=d.close[-7]-0.1*self.inds[ticker]["atr"][0])
                         self.buy(d, size=max_buyable/15, exectype=bt.Order.Limit, price=d.close[-7]-self.inds[ticker]["atr"][0])
                         self.buy(d, size=max_buyable/15, exectype=bt.Order.Limit, price=d.close[-7]-2*self.inds[ticker]["atr"][0])
