@@ -178,11 +178,14 @@ class StrategyBase(bt.Strategy):
                     self.executed_size = float(order.executed.size)
                 self.log_order(order, 'buy')
                 self.first_bar_after_entry[ticker] = True
-                # if self.strategy == "SwingHL":
-                #     self.log(f'Long TPS at {self.buy_price_close + self.entry_bar_height[order.data._name]*4} and {self.buy_price_close + self.entry_bar_height[order.data._name]*8}')
-                #     self.sell(data=order.data, size=self.executed_size*0.2, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*4)
-                #     self.sell(data=order.data, size=self.executed_size*0.3, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*6)
-                #     self.sell(data=order.data, size=self.executed_size*0.5, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*8)
+                if self.strategy == "SwingHL":
+                    self.log(f'Long TPS at {self.buy_price_close + self.entry_bar_height[order.data._name]*4} and {self.buy_price_close + self.entry_bar_height[order.data._name]*8}')
+                    self.sell(data=order.data, size=self.executed_size*0.2, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*4)
+                    self.sell(data=order.data, size=self.executed_size*0.3, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*6)
+                    self.sell(data=order.data, size=self.executed_size*0.5, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*8)
+                # if self.strategy == "NewYearlyHighs":
+                #     self.log(f'Long Stop at {self.buy_price_close - 2*self.entry_bar_height[order.data._name]}')
+                #     self.long_stop_order[order.data._name] = self.sell(data=order.data, size=self.executed_size, exectype=bt.Order.Stop, price=self.buy_price_close - 2*self.entry_bar_height[order.data._name])
                 if self.long_order and not self.long_stop_order:
                     self.sl_price = self.data0.low[0] * 0.95
                     if 0.92 * self.data0.open[0] > self.sl_price:
@@ -216,6 +219,10 @@ class StrategyBase(bt.Strategy):
                     self.sell_price_close = order.executed.price
                     self.executed_size = float(order.executed.size)
                 self.log_order(order, 'sell')
+                if self.strategy == "NewYearlyHighs":
+                    if self.long_stop_order[ticker]:
+                        self.cancel(self.long_stop_order[ticker])
+                        self.long_stop_order[ticker] = None
                 if self.short_order and not self.short_stop_order:
                     self.sl_price = self.highest_high_slow[0]
                     if 1.04 * self.data0.open[0] < self.sl_price:
