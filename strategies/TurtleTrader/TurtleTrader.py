@@ -47,10 +47,10 @@ class TurtleTrader(StrategyBase):
         for i, d in enumerate(available):
             ticker = d._name
             current_position = self.getposition(d).size
-            self.log('{} Position {}'.format(ticker, current_position))
+            # self.log('{} Position {}'.format(ticker, current_position))
             if current_position > 0:
                 # LONG EXIT S1 & S2
-                if (d.low[0] < self.indicators[ticker]['s1_long_exit'][-1]) or (d.low[0] < self.indicators[ticker]['s2_long_exit'][-1]):
+                if (d.close[0] < self.indicators[ticker]['s1_long_exit'][-1]) or (d.close[0] < self.indicators[ticker]['s2_long_exit'][-1]):
                     order = self.order_target_percent(data=d, target=0)
                     self.orders[ticker].append(order)
             elif current_position < 0:
@@ -60,7 +60,7 @@ class TurtleTrader(StrategyBase):
                     self.orders[ticker].append(order)
             if current_position == 0:
                 # LONG ENTRY S1 & S2
-                if (d.high[0] > self.indicators[ticker]['s1_long_entry'][-1]) or (d.high[0] > self.indicators[ticker]['s2_long_entry'][-1]):
+                if (d.close[0] > self.indicators[ticker]['s1_long_entry'][-1]) or (d.high[0] > self.indicators[ticker]['s2_long_entry'][-1]):
                     percent_risk = self.broker.get_value() * self.p.percent_risk
                     atr = self.indicators[ticker]['average_true_range'][0]
                     size = percent_risk / (2 * atr)
@@ -69,7 +69,7 @@ class TurtleTrader(StrategyBase):
                     # self.orders[ticker] = [self.order_target_percent(data=d, target=self.p.order_target_percent)]
                     self.orders[ticker] = [self.order_target_value(data=d, target=dollar_value)]
                     # self.orders[ticker] = [self.order_target_percent(data=d, target=target_percent)]
-                    self.log('{} Buy initiated {}'.format(ticker, self.orders[ticker][0]))
+                    # self.log('{} Buy initiated {}'.format(ticker, self.orders[ticker][0]))
                 # SHORT ENTRY S1 & S2
                 elif (d.low[0] < self.indicators[ticker]['s1_short_entry'][-1]) or (d.low[0] < self.indicators[ticker]['s2_short_entry'][-1]):
                     percent_risk = self.broker.get_value() * self.p.percent_risk
@@ -80,4 +80,4 @@ class TurtleTrader(StrategyBase):
                     # self.orders[ticker] = [self.order_target_percent(data=d, target=-self.p.order_target_percent)]
                     self.orders[ticker] = [self.order_target_value(data=d, target=-dollar_value)]
                     # self.orders[ticker] = [self.order_target_percent(data=d, target=-target_percent)]
-                    self.log('{} Sell initiated {}'.format(ticker, self.orders[ticker][0]))
+                    # self.log('{} Sell initiated {}'.format(ticker, self.orders[ticker][0]))

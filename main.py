@@ -65,8 +65,8 @@ if ENV == PRODUCTION:  # Live trading with Binance
         params = json.load(f)
     cerebro = bt.Cerebro(quicknotify=True, exactbars=True)
 
-    config = {'apiKey': params["binance-lh"]["apikey"],
-              'secret': params["binance-lh"]["secret"],
+    config = {'apiKey': params["binance"]["apikey"],
+              'secret': params["binance"]["secret"],
               'enableRateLimit': True,
               'options': {
                   'defaultType': 'future',
@@ -132,8 +132,6 @@ if __name__ == '__main__':
             #            'ALPHA/USDT',
             #            'CTK/USDT', 'BEL/USDT', 'CVC/USDT', 'DEFI/USDT', 'SKL/USDT', 'GRT/USDT', '1INCH/USDT']
             # new coins
-            # AKRO / USDT
-            # DOTECO / USDT
             # CHZ / USDT
             # SAND / USDT
             # ANKR / USDT
@@ -165,9 +163,10 @@ if __name__ == '__main__':
         fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 1)
+        fromdate = datetime(2021, 2, 1)
         fromdate = datetime(2021, 1, 1)
         #
-        # fromdate = datetime(2020, 3, 14)
+        # todate = datetime(2021, 3, 14)
 
         # Recent
         # fromdate = datetime(2020, 11, 14)
@@ -239,7 +238,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" in args.strategy:
+            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" or "TurtleTrader" in args.strategy:
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
                             'XLM-USDT',
@@ -268,17 +267,18 @@ if __name__ == '__main__':
                           'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
                           'ALPHA-USDT',
                           'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
-                # tickers = ['BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT', 'AAVE-USDT', 'FIL-USDT', 'KSM-USDT',
+                # tickers = ['BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT', 'FIL-USDT', 'KSM-USDT',
                 #           'ALPHA-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                 # 'LINK-USDT']
-                # tickers = ['LTC-USDT']
+                # tickers = ['MKR-USDT']
+                # tickers = ['ETH-USDT']
                 # tickers = ['BNB-USDT']
                 # tickers = ['LTC-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['AAVE-USDT']
-                # tickers = ['DOGE-USDT']
+                # tickers = ['FIL-USDT']
 
                 # tickers = ['LTC-USDT']
                 # tickers = ['DOT-USDT']
