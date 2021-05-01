@@ -271,7 +271,8 @@ if __name__ == '__main__':
                 #           'ALPHA-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                 # 'LINK-USDT']
-                # tickers = ['MKR-USDT']
+                tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
+                    #
                 # tickers = ['ETH-USDT']
                 # tickers = ['BNB-USDT']
                 # tickers = ['LTC-USDT']

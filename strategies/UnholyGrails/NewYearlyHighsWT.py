@@ -5,7 +5,7 @@ from config import ENV, PRODUCTION, TRADING, DEVELOPMENT
 import datetime as dt
 from indicators.SuperTrend import SuperTrend
 
-class NewYearlyHighs(StrategyBase):
+class NewYearlyHighsWT(StrategyBase):
 
     params = (
         ('exectype', bt.Order.Market),
@@ -31,8 +31,10 @@ class NewYearlyHighs(StrategyBase):
         self.bitcoin = self.datas[0]
         self.altcoins = self.datas
         self.inds = {}
+        self.pos = {}
         self.just_sold = {}
         self.blocked_for = {}
+        self.stop_order = dict()
         self.orders = dict()
         self.entry_bar_height = {}
         self.entry_type = {}
@@ -53,6 +55,9 @@ class NewYearlyHighs(StrategyBase):
             self.entry_bar_height[ticker] = None
             self.entry_type[ticker] = None
             self.long_stop_order[ticker] = None
+            self.pos[ticker] = {}
+            self.just_sold[ticker] = False
+            self.blocked_for[ticker] = 0
             self.inds[ticker] = {}
             self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=False, subplot=False)
             self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=False, subplot=False)
@@ -74,31 +79,14 @@ class NewYearlyHighs(StrategyBase):
             self.inds[ticker]["rsi"] = bt.ind.RSI(d, plot=False)
             self.inds[ticker]["adx"] = bt.ind.ADX(d, plot=False)
             self.inds[ticker]["adx_20"] = bt.ind.ADX(d, period=20, plot=False)
-            self.inds[ticker]["sma_adx_20"] = bt.ind.HMA(self.inds[ticker]["adx_20"], period=20, plot=True, subplot=True)
-            self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=True)
+            self.inds[ticker]["sma_adx_20"] = bt.ind.HMA(self.inds[ticker]["adx_20"], period=20, plot=False, subplot=False)
+            self.inds[ticker]["roc"] = bt.ind.ROC(d, plot=False)
             self.inds[ticker]["sma_roc"] = bt.ind.HMA(self.inds[ticker]["roc"], plot=False)
             self.inds[ticker]["super_trend"] = SuperTrend(d, plot=True, subplot=False)
             self.inds[ticker]["vol_sma"] = bt.ind.HullMovingAverage(d.volume,
                                                                     period=self.params.period_vol_sma,
-                                                                    plot=True, subplot=True)
+                                                                    plot=False, subplot=False)
 
-    # def next_open(self):
-    #     if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
-    #         available = list(filter(lambda d: len(d) > 500, self.altcoins))
-    #         available.sort(reverse=True, key=lambda d: (self.inds[d._name]["rsi"][0]) * (self.inds[d._name]["adx"][0]) * (self.inds[d._name]["roc"][0]))
-    #         for i, d in enumerate(available):
-    #             ticker = d._name
-    #             if "BTC" in ticker:
-    #                 print(f"{dt.datetime.now()} ----- Heartbeat Check OK -----")
-    #                 # if self.i % 20 == 0:
-    #                 #     self.rebalance_portfolio()
-    #                 # self.i += 1
-    #             current_position = self.get_position(d=d, attribute='size')
-    #             if current_position > 0:
-    #                 if self.long_stop_order[ticker]:
-    #                     self.cancel(self.long_stop_order[ticker])
-    #                     self.long_stop_order[ticker] = None
-    #                     self.long_stop_order[ticker] = self.sell(data=d, size=current_position, exectype=bt.Order.Stop, price=self.inds[ticker]["super_trend"][0])
 
     def next(self):
         if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
@@ -108,6 +96,81 @@ class NewYearlyHighs(StrategyBase):
             for i, d in enumerate(available):
                 ticker = d._name
                 current_position = self.get_position(d=d, attribute='size')
+
+                self.pos[ticker]["size"] = self.get_position(d=d, attribute='size')
+                self.pos[ticker]["price"] = self.get_position(d=d, attribute='price')
+                if current_position > 0:
+                    # StopWin
+                    self.pos[ticker]["previous_profit_percentage"] = self.pos[ticker]["profit_percentage"]
+                    self.pos[ticker]["profit"] = d.close[0] - self.pos[ticker]["price"]
+                    self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker][
+                        "price"]) * 100
+                    # if self.pos[ticker]["profit_percentage"] > 205:
+                    #     self.pos[ticker]["new_sl_price"] = 2.9 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 195:
+                    # #     self.pos[ticker]["new_sl_price"] = 2.8 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 185:
+                    #     self.pos[ticker]["new_sl_price"] = 2.7 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 175:
+                    # #     self.pos[ticker]["new_sl_price"] = 2.6 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 165:
+                    #     self.pos[ticker]["new_sl_price"] = 2.5 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 155:
+                    # #     self.pos[ticker]["new_sl_price"] = 2.4 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 145:
+                    #     self.pos[ticker]["new_sl_price"] = 2.3 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 135:
+                    # #     self.pos[ticker]["new_sl_price"] = 2.2 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 125:
+                    #     self.pos[ticker]["new_sl_price"] = 2.1 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 115:
+                    # #     self.pos[ticker]["new_sl_price"] = 2 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 105:
+                    #     self.pos[ticker]["new_sl_price"] = 1.9 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 95:
+                    # #     self.pos[ticker]["new_sl_price"] = 1.8 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 85:
+                    #     self.pos[ticker]["new_sl_price"] = 1.7 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 75:
+                    # #     self.pos[ticker]["new_sl_price"] = 1.6 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 65:
+                    #     self.pos[ticker]["new_sl_price"] = 1.5 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 55:
+                    # #     self.pos[ticker]["new_sl_price"] = 1.4 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 45:
+                    #     self.pos[ticker]["new_sl_price"] = 1.3 * self.pos[ticker]["price"]
+                    # # elif self.pos[ticker]["profit_percentage"] > 35:
+                    # #     self.pos[ticker]["new_sl_price"] = 1.2 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > 25:
+                    #     self.pos[ticker]["new_sl_price"] = 1.1 * self.pos[ticker]["price"]
+                    if self.pos[ticker]["profit_percentage"] > 10:
+                        self.pos[ticker]["new_sl_price"] = d.low[0] - 1.1*self.inds[ticker]["average_true_range"][0]
+                    # elif self.pos[ticker]["profit_percentage"] > 15:
+                    #     self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] < 5:
+                    # self.log(f'{ticker} Long profit > 15%, updating stop win to 10%')
+                    # self.pos[ticker]["new_sl_price"] = self.pos[ticker]["sl_price"]
+                    # elif self.pos[ticker]["profit_percentage"] < 5:
+                    #     if self.pos[ticker]["new_sl_price"] is None:
+                    #         # self.stop_order[ticker] = self.close(data=d, price=0.8*d.close[0],
+                    #         #                                      exectype=bt.Order.StopTrail,
+                    #         #                                      trailamount=d.close[0] / 10)
+                    #         self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["sl_price"],
+                    #                                              exectype=bt.Order.Stop
+                    #                                              )
+                    #         self.pos[ticker]["new_sl_price"] = self.pos[ticker]["sl_price"]
+                    if self.pos[ticker]["reset_stop"] is True or self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and self.pos[ticker]["new_sl_price"] > self.pos[ticker]["sl_price"]:
+                        self.log(
+                            f'{ticker} Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
+                        self.pos[ticker]["sl_price"] = self.pos[ticker]["new_sl_price"]
+                        if ticker in self.stop_order:
+                            self.cancel(self.stop_order[ticker])
+                        self.stop_order[ticker] = None
+                        self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
+                        self.pos[ticker]["reset_stop"] = False
+                        # self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.StopTrail, trailpercent=0.1)
+                        # self.stop_order[ticker] = self.sell(data=d, size=current_position/2, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
+
                 if current_position > 0:
                     if self.entry_type[ticker] is None:
                         if d.close[0] > self.inds[ticker]["super_trend"][0]:
@@ -115,7 +178,7 @@ class NewYearlyHighs(StrategyBase):
                         else:
                             self.entry_type[ticker] = "RSI"
                     if self.entry_type[ticker] == "SuperTrend":
-                        if d.close[0] < self.inds[ticker]["super_trend"][0] or (d.close[0] < self.inds[ticker]['rolling_low'][-1] or (self.inds[ticker]["sma_adx_20"][0] > 43 and self.inds[ticker]["sma_adx_20"][-1] > self.inds[ticker]["sma_adx_20"][0])):
+                        if d.close[0] < self.inds[ticker]["super_trend"][0] or (d.close[0] < self.inds[ticker]['rolling_low'][-1]):
                             try:
                                 order = self.add_order(data=d, target=0, type='market')
                                 self.log(f'Trend fin, closing long {ticker}')
@@ -126,6 +189,8 @@ class NewYearlyHighs(StrategyBase):
                                 self.log("ERROR: {}".format(sys.exc_info()[0]))
                                 self.log("{}".format(e))
                     if self.entry_type[ticker] == "RSI":
+                        if d.close[0] < self.pos[ticker]["price"] - 3*self.inds[ticker]["average_true_range"][0]:
+                            self.orders[ticker] = [self.buy(data=d, size=self.pos[ticker]["size"]/2, type="market")]
                         if d.close[0] > self.inds[ticker]["super_trend"][0]:
                             self.entry_type[ticker] = "SuperTrend"
                 elif current_position < 0:
@@ -138,15 +203,26 @@ class NewYearlyHighs(StrategyBase):
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
-                if current_position == 0 and ticker not in self.delayed_tickers:
+                if self.just_sold[ticker]:
+                    if self.blocked_for[ticker] > 0:
+                        self.blocked_for[ticker] = self.blocked_for[ticker]-1
+                    else:
+                        self.blocked_for[ticker] = 0
+                        self.just_sold[ticker] = False
+                if current_position == 0 and ticker not in self.delayed_tickers and (not self.just_sold[ticker]):
+                    print(self.just_sold[ticker])
                     # if self.long_stop_order[ticker]:
                     #     self.cancel(self.long_stop_order[ticker])
                     volatility = self.inds[ticker]["average_true_range"][0]/d.close[0]
                     volatility_factor = 1/(volatility*100)
-                    if d.close[0] > self.inds[ticker]["sma_slow"] and d.close[0] > self.inds[ticker]["super_trend"][0]:
+                    if d.close[0] > self.inds[ticker]["super_trend"][0]:
                         self.entry_type[ticker] = "SuperTrend"
                         try:
                             self.orders[ticker] = [self.add_order(data=d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")]
+                            self.pos[ticker]["sl_price"] = d.close[0] - 3*self.inds[ticker]["average_true_range"][0]
+                            self.pos[ticker]["new_sl_price"] = None
+                            self.pos[ticker]["profit_percentage"] = 0
+                            self.pos[ticker]["reset_stop"] = False
                             self.log(f'Longing ST {ticker}')
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
@@ -157,6 +233,10 @@ class NewYearlyHighs(StrategyBase):
                         self.entry_type[ticker] = "RSI"
                         try:
                             self.orders[ticker] = [self.add_order(data=d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")]
+                            self.pos[ticker]["sl_price"] = d.close[0] - 3*self.inds[ticker]["average_true_range"][0]
+                            self.pos[ticker]["new_sl_price"] = None
+                            self.pos[ticker]["profit_percentage"] = 0
+                            self.pos[ticker]["reset_stop"] = False
                             self.log(f'Longing RSI {ticker}')
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
@@ -168,10 +248,10 @@ class NewYearlyHighs(StrategyBase):
                     #     except Exception as e:
                     #         self.log("ERROR: {}".format(sys.exc_info()[0]))
                     #         self.log("{}".format(e))
-            print(f"{dt.datetime.now()} ----- Heartbeat Check OK -----")
-            if self.i % 20 == 0:
-                self.rebalance_portfolio()
-                self.delayed_tickers = []
+            # print(f"{dt.datetime.now()} ----- Heartbeat Check OK -----")
+            # if self.i % 20 == 0:
+            #     self.rebalance_portfolio()
+            #     self.delayed_tickers = []
             self.i += 1
             if len(self.to_place_orders) > 0:
                 order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
