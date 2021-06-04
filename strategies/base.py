@@ -183,6 +183,9 @@ class StrategyBase(bt.Strategy):
                     self.sell(data=order.data, size=self.executed_size*0.2, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*4)
                     self.sell(data=order.data, size=self.executed_size*0.3, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*6)
                     self.sell(data=order.data, size=self.executed_size*0.5, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*8)
+                # For 5 Min CandlestickPatterns
+                # if self.strategy == "NewYearlyHighs":
+                #     self.stop_order[ticker] = self.close(data=order.data, size=self.executed_size, exectype=bt.Order.Stop, price=self.pos[ticker]["sl_price"])
                 # if self.strategy == "NewYearlyHighs":
                 #     self.log(f'Long Stop at {self.buy_price_close - 2*self.entry_bar_height[order.data._name]}')
                 #     self.long_stop_order[order.data._name] = self.sell(data=order.data, size=self.executed_size, exectype=bt.Order.Stop, price=self.buy_price_close - 2*self.entry_bar_height[order.data._name])
@@ -223,12 +226,6 @@ class StrategyBase(bt.Strategy):
                     self.sell_price_close = order.executed.price
                     self.executed_size = float(order.executed.size)
                 self.log_order(order, 'sell')
-                if self.strategy == "NewYearlyHighs":
-                    self.just_sold[ticker] = True
-                    self.blocked_for[ticker] = 20
-                    if self.long_stop_order[ticker]:
-                        self.cancel(self.long_stop_order[ticker])
-                        self.long_stop_order[ticker] = None
                 if self.short_order and not self.short_stop_order:
                     self.sl_price = self.highest_high_slow[0]
                     if 1.04 * self.data0.open[0] < self.sl_price:

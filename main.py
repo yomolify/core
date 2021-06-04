@@ -154,7 +154,8 @@ if __name__ == '__main__':
         #
         # Benchmark backtest
         todate = datetime.now()
-        # todate = datetime(2021, 1, 13)
+        # todate = datetime(2021, 4, 13)
+        todate = datetime(2021, 4, 5)
         # todate = datetime(2020, 3, 19)
         # fromdate = datetime(2019, 11, 1)
         # fromdate = datetime(2020, 1, 1)
@@ -163,8 +164,8 @@ if __name__ == '__main__':
         fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 1)
-        fromdate = datetime(2021, 2, 1)
-        fromdate = datetime(2021, 1, 1)
+        # fromdate = datetime(2021, 2, 1)
+        fromdate = datetime(2021, 4, 1)
         #
         # todate = datetime(2021, 3, 14)
 
@@ -181,10 +182,10 @@ if __name__ == '__main__':
         #
         # fromdate = datetime(args.from_year, args.from_month, args.from_date)
         # todate = datetime(args.to_year, args.to_month, args.to_date)
-        leverage = 3
+        leverage = 1
         # 80 and 15 on 1x
         # Single Coin
-        if strategy_class == 'NLS1':
+        if strategy_class == 'xNLS1':
             leverage = 1
             # data = bt.feeds.MarketStore(
             #     symbol=f'binance_BTC-USDT',
@@ -238,7 +239,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" or "TurtleTrader" in args.strategy:
+            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" or "TurtleTrader" or 'CrossSectional' in args.strategy:
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
                             'XLM-USDT',
@@ -271,12 +272,12 @@ if __name__ == '__main__':
                 #           'ALPHA-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                 # 'LINK-USDT']
-                tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
+                # tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
                     #
                 # tickers = ['ETH-USDT']
-                # tickers = ['BNB-USDT']
+                tickers = ['BNB-USDT']
                 # tickers = ['LTC-USDT']
-                # tickers = ['BTC-USDT', 'ETH-USDT']
+                # tickers = ['BTC-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['AAVE-USDT']
                 # tickers = ['FIL-USDT']
@@ -325,16 +326,16 @@ if __name__ == '__main__':
                 cerebro.broker.setcash(10000.0)
 
             # CSMR Jan to Oct 2020
-            if strategy_class == 'CrossSectional':
-                tickers = ['ETH-USDT', 'BCH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT',
-                           'ETC-USDT', 'LINK-USDT', 'XLM-USDT', 'ADA-USDT', 'XMR-USDT', 'DASH-USDT', 'ZEC-USDT',
-                           'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT', 'BAT-USDT', 'VET-USDT',
-                           'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT',
-                           'KNC-USDT', 'ZRX-USDT', 'COMP-USDT', 'OMG-USDT', 'DOGE-USDT', 'SXP-USDT', 'KAVA-USDT',
-                           'BAND-USDT', 'RLC-USDT', 'WAVES-USDT', 'MKR-USDT', 'SNX-USDT', 'DOT-USDT', 'YFI-USDT',
-                           'BAL-USDT', 'CRV-USDT', 'TRB-USDT', 'YFII-USDT', 'RUNE-USDT', 'SUSHI-USDT', 'SRM-USDT',
-                           'BZRX-USDT', 'EGLD-USDT', 'SOL-USDT', 'ICX-USDT', 'STORJ-USDT', 'BLZ-USDT', 'UNI-USDT',
-                           'AVAX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+            # if strategy_class == 'CrossSectional' or 'CrossSectionalImproved':
+            #     tickers = ['ETH-USDT', 'BCH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT',
+            #                'ETC-USDT', 'LINK-USDT', 'XLM-USDT', 'ADA-USDT', 'XMR-USDT', 'DASH-USDT', 'ZEC-USDT',
+            #                'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT', 'BAT-USDT', 'VET-USDT',
+            #                'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT',
+            #                'KNC-USDT', 'ZRX-USDT', 'COMP-USDT', 'OMG-USDT', 'DOGE-USDT', 'SXP-USDT', 'KAVA-USDT',
+            #                'BAND-USDT', 'RLC-USDT', 'WAVES-USDT', 'MKR-USDT', 'SNX-USDT', 'DOT-USDT', 'YFI-USDT',
+            #                'BAL-USDT', 'CRV-USDT', 'TRB-USDT', 'YFII-USDT', 'RUNE-USDT', 'SUSHI-USDT', 'SRM-USDT',
+            #                'BZRX-USDT', 'EGLD-USDT', 'SOL-USDT', 'ICX-USDT', 'STORJ-USDT', 'BLZ-USDT', 'UNI-USDT',
+            #                'AVAX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
             if strategy_class == 'BTCEMA':
                 tickers = ['ETH-BTC', 'LTC-BTC', 'BNB-BTC', 'XRP-BTC', 'BCH-BTC', 'LINK-BTC', 'DOT-BTC', 'ADA-BTC', 'XLM-BTC', 'XMR-BTC', 'TRX-BTC', 'XTZ-BTC', 'XEM-BTC', 'NEO-BTC', 'DASH-BTC', 'ATOM-BTC', 'VET-BTC', 'WAVES-BTC', 'IOTA-BTC', 'ALGO-BTC', 'ETC-BTC', 'THETA-BTC', 'ZIL-BTC', 'MKR-BTC', 'OMG-BTC']
 
@@ -425,8 +426,8 @@ if __name__ == '__main__':
                     symbol=f'binancefutures_{ticker}',
                     # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
-                    # query_timeframe='5Min',
-                    query_timeframe='1H',
+                    query_timeframe='5Min',
+                    # query_timeframe='1H',
                     fromdate=fromdate,
                     todate=todate,
                 )
