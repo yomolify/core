@@ -155,8 +155,8 @@ if __name__ == '__main__':
         # Benchmark backtest
         todate = datetime.now()
         # todate = datetime(2021, 4, 13)
-        todate = datetime(2021, 4, 5)
-        # todate = datetime(2020, 3, 19)
+        # todate = datetime(2021, 4, 5)
+        todate = datetime(2021, 5, 13)
         # fromdate = datetime(2019, 11, 1)
         # fromdate = datetime(2020, 1, 1)
         # fromdate = datetime(2020, 12, 1)
@@ -166,6 +166,7 @@ if __name__ == '__main__':
         # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 2, 1)
         fromdate = datetime(2021, 4, 1)
+        fromdate = datetime(2021, 1, 3)
         #
         # todate = datetime(2021, 3, 14)
 
@@ -239,7 +240,7 @@ if __name__ == '__main__':
         # Altcoin Universe
         else:
             # New Yearly Highs
-            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" or "TurtleTrader" or 'CrossSectional' in args.strategy:
+            if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" or "TurtleTrader" or 'CrossSectional' or 'VWAP' or 'Trend' in args.strategy:
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
                             'XLM-USDT',
@@ -250,24 +251,24 @@ if __name__ == '__main__':
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
-                tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
-                          'BAT-USDT',
-                          'BCH-USDT',
-                          'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
-                          'DOT-USDT', 'EGLD-USDT', 'ENJ-USDT', 'EOS-USDT', 'ETC-USDT', 'ETH-USDT', 'FLM-USDT', 'FTM-USDT',
-                          'HNT-USDT', 'ICX-USDT', 'IOST-USDT', 'IOTA-USDT', 'KAVA-USDT', 'KNC-USDT', 'LINK-USDT',
-                          'LTC-USDT',
-                          'MKR-USDT', 'NEO-USDT', 'OMG-USDT', 'ONT-USDT', 'QTUM-USDT', 'REN-USDT', 'RLC-USDT', 'RUNE-USDT',
-                          'SNX-USDT',
-                          'SOL-USDT', 'SRM-USDT', 'STORJ-USDT', 'SUSHI-USDT', 'SXP-USDT', 'THETA-USDT', 'TRB-USDT',
-                          'TRX-USDT',
-                          'UNI-USDT', 'VET-USDT', 'WAVES-USDT', 'XLM-USDT', 'XMR-USDT', 'XRP-USDT', 'XTZ-USDT',
-                          'YFII-USDT',
-                          'YFI-USDT', 'ZEC-USDT', 'ZIL-USDT', 'ZRX-USDT',
-                          'TOMO-USDT', 'RSR-USDT', 'NEAR-USDT', 'MATIC-USDT',
-                          'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
-                          'ALPHA-USDT',
-                          'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
+                # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
+                #           'BAT-USDT',
+                #           'BCH-USDT',
+                #           'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
+                #           'DOT-USDT', 'EGLD-USDT', 'ENJ-USDT', 'EOS-USDT', 'ETC-USDT', 'ETH-USDT', 'FLM-USDT', 'FTM-USDT',
+                #           'HNT-USDT', 'ICX-USDT', 'IOST-USDT', 'IOTA-USDT', 'KAVA-USDT', 'KNC-USDT', 'LINK-USDT',
+                #           'LTC-USDT',
+                #           'MKR-USDT', 'NEO-USDT', 'OMG-USDT', 'ONT-USDT', 'QTUM-USDT', 'REN-USDT', 'RLC-USDT', 'RUNE-USDT',
+                #           'SNX-USDT',
+                #           'SOL-USDT', 'SRM-USDT', 'STORJ-USDT', 'SUSHI-USDT', 'SXP-USDT', 'THETA-USDT', 'TRB-USDT',
+                #           'TRX-USDT',
+                #           'UNI-USDT', 'VET-USDT', 'WAVES-USDT', 'XLM-USDT', 'XMR-USDT', 'XRP-USDT', 'XTZ-USDT',
+                #           'YFII-USDT',
+                #           'YFI-USDT', 'ZEC-USDT', 'ZIL-USDT', 'ZRX-USDT',
+                #           'TOMO-USDT', 'RSR-USDT', 'NEAR-USDT', 'MATIC-USDT',
+                #           'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
+                #           'ALPHA-USDT',
+                #           'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
                 # tickers = ['BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT', 'FIL-USDT', 'KSM-USDT',
                 #           'ALPHA-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
@@ -275,9 +276,9 @@ if __name__ == '__main__':
                 # tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
                     #
                 # tickers = ['ETH-USDT']
-                tickers = ['BNB-USDT']
+                # tickers = ['BNB-USDT']
                 # tickers = ['LTC-USDT']
-                # tickers = ['BTC-USDT']
+                # tickers = ['AAVE-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['AAVE-USDT']
                 # tickers = ['FIL-USDT']
@@ -426,8 +427,8 @@ if __name__ == '__main__':
                     symbol=f'binancefutures_{ticker}',
                     # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
-                    query_timeframe='5Min',
-                    # query_timeframe='1H',
+                    # query_timeframe='5Min',
+                    query_timeframe='1H',
                     fromdate=fromdate,
                     todate=todate,
                 )
