@@ -100,20 +100,20 @@ class Rebalancing(StrategyBase):
 
         # remove those no longer top ranked
         # do this first to issue sell orders and free cash
-        for d in (d for d in posdata if d not in rtop or d.close[0]):
-            self.log('Exit {} - Rank {:.2f}'.format(d._name, rbot[d][0]))
+        for d in (d for d in posdata if d not in rtop):
+            # self.log('Exit {} - Rank {:.2f}'.format(d._name, rbot[d][0]))
             self.order_target_percent(d, target=0.0)
 
         # rebalance those already top ranked and still there
         for d in (d for d in posdata if d in rtop):
-            self.log('Rebal {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
+            # self.log('Rebal {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
             self.order_target_percent(d, target=self.perctarget)
             del rtop[d]  # remove it, to simplify next iteration
 
         # issue a target order for the newly top ranked stocks
         # do this last, as this will generate buy orders consuming cash
         for d in rtop:
-            self.log('Enter {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
+            # self.log('Enter {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
             self.order_target_percent(d, target=self.perctarget)
 
     # def notify_order(self, order):
