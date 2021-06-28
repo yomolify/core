@@ -67,7 +67,7 @@ class HMA(StrategyBase):
                            self.inds[d._name]["roc"][0]))
             for i, d in enumerate(available):
                 ticker = d._name
-                current_position = self.get_position(d)
+                current_position = self.get_position(d, attribute='size')
                 if current_position > 0:
                     if self.inds[ticker]['sma_mid'][0] < self.inds[ticker]['sma_slow'][0]:
                         try:

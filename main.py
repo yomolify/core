@@ -156,17 +156,18 @@ if __name__ == '__main__':
         todate = datetime.now()
         # todate = datetime(2021, 4, 13)
         # todate = datetime(2021, 4, 5)
-        todate = datetime(2021, 5, 13)
+        todate = datetime(2021, 6, 20)
         # fromdate = datetime(2019, 11, 1)
         # fromdate = datetime(2020, 1, 1)
         # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 1, 27)
-        fromdate = datetime(2020, 12, 1)
+        fromdate = datetime(2021, 1, 1)
+        # fromdate = datetime(2021, 5, 1)
         # fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 2, 1)
-        fromdate = datetime(2021, 4, 1)
-        fromdate = datetime(2021, 1, 3)
+        # fromdate = datetime(2021, 1, 1)
+        # fromdate = datetime(2021, 1, 1)
         #
         # todate = datetime(2021, 3, 14)
 
@@ -269,6 +270,23 @@ if __name__ == '__main__':
                 #           'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
                 #           'ALPHA-USDT',
                 #           'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
+                # All Spot USDT pairs
+                # Stables + LVTs
+                # 'TUSD-USDT','PAX-USDT''USDC-USDT', , 'BUSD-USDT' 'BTCUP-USDT', 'BTCDOWN-USDT', 'ETHUP-USDT', 'ETHDOWN-USDT',, 'ADAUP-USDT', 'ADADOWN-USDT', 'LINKUP-USDT', 'LINKDOWN-USDT, 'BNBUP-USDT', 'BNBDOWN-USDT',
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'BNB-USDT', 'NEO-USDT', 'LTC-USDT', 'QTUM-USDT', 'ADA-USDT', 'XRP-USDT',
+                #            'EOS-USDT', 'IOTA-USDT', 'XLM-USDT', 'ONT-USDT', 'TRX-USDT', 'ETC-USDT', 'ICX-USDT', 'NULS-USDT',
+                #            'VET-USDT', 'BCH-USDT', 'LINK-USDT', 'WAVES-USDT', 'BTT-USDT', 'ONG-USDT', 'HOT-USDT', 'ZIL-USDT',
+                #            'ZRX-USDT', 'FET-USDT', 'BAT-USDT', 'XMR-USDT', 'ZEC-USDT', 'IOST-USDT', 'CELR-USDT', 'DASH-USDT',
+                #            'NANO-USDT', 'OMG-USDT', 'THETA-USDT', 'ENJ-USDT', 'MITH-USDT', 'MATIC-USDT', 'ATOM-USDT', 'TFUEL-USDT',
+                #            'ONE-USDT', 'FTM-USDT', 'ALGO-USDT', 'GTO-USDT', 'DOGE-USDT', 'DUSK-USDT', 'ANKR-USDT', 'WIN-USDT',
+                #            'COS-USDT', 'COCOS-USDT', 'MTL-USDT', 'TOMO-USDT', 'PERL-USDT', 'DENT-USDT', 'MFT-USDT', 'KEY-USDT',
+                #            'DOCK-USDT', 'WAN-USDT', 'FUN-USDT', 'CVC-USDT', 'CHZ-USDT', 'BAND-USDT', 'BEAM-USDT', 'XTZ-USDT', 'REN-USDT',
+                #            'RVN-USDT', 'HBAR-USDT', 'NKN-USDT', 'STX-USDT', 'KAVA-USDT', 'ARPA-USDT', 'IOTX-USDT', 'RLC-USDT',
+                #            'CTXC-USDT', 'TROY-USDT', 'VITE-USDT', 'FTT-USDT', 'EUR-USDT', 'OGN-USDT', 'DREP-USDT', 'TCT-USDT',
+                #            'WRX-USDT', 'BTS-USDT', 'LSK-USDT', 'BNT-USDT', 'LTO-USDT', 'AION-USDT', 'MBL-USDT', 'COTI-USDT', 'STPT-USDT',
+                #            'WTC-USDT', 'DATA-USDT', 'SOL-USDT', 'CTSI-USDT', 'HIVE-USDT', 'CHR-USDT',  'GXS-USDT', 'ARDR-USDT',
+                #            'MDT-USDT', 'STMX-USDT', 'KNC-USDT', 'REP-USDT', 'LRC-USDT', 'PNT-USDT', 'COMP-USDT', 'SC-USDT', 'ZEN-USDT', 'SNX-USDT']
+                           # 'VTHO-USDT', 'DGB-USDT', 'GBP-USDT', 'SXP-USDT', 'MKR-USDT', 'DCR-USDT', 'STORJ-USDT', 'XTZUP-USDT', 'XTZDOWN-USDT', 'MANA-USDT', 'AUD-USDT', 'YFI-USDT', 'BAL-USDT', 'BLZ-USDT', 'IRIS-USDT', 'KMD-USDT', 'JST-USDT', 'SRM-USDT', 'ANT-USDT', 'CRV-USDT', 'SAND-USDT', 'OCEAN-USDT', 'NMR-USDT', 'DOT-USDT', 'LUNA-USDT', 'RSR-USDT', 'PAXG-USDT', 'WNXM-USDT', 'TRB-USDT', 'BZRX-USDT', 'SUSHI-USDT', 'YFII-USDT', 'KSM-USDT', 'EGLD-USDT', 'DIA-USDT', 'RUNE-USDT', 'FIO-USDT', 'UMA-USDT', 'EOSUP-USDT', 'EOSDOWN-USDT', 'TRXUP-USDT', 'TRXDOWN-USDT', 'XRPUP-USDT', 'XRPDOWN-USDT', 'DOTUP-USDT', 'DOTDOWN-USDT', 'BEL-USDT', 'WING-USDT', 'LTCUP-USDT', 'LTCDOWN-USDT', 'UNI-USDT', 'NBS-USDT', 'OXT-USDT', 'AVAX-USDT', 'HNT-USDT', 'FLM-USDT', 'UNIUP-USDT', 'UNIDOWN-USDT', 'ORN-USDT', 'UTK-USDT', 'XVS-USDT', 'ALPHA-USDT', 'AAVE-USDT', 'NEAR-USDT', 'SXPUP-USDT', 'SXPDOWN-USDT', 'FIL-USDT', 'FILUP-USDT', 'FILDOWN-USDT', 'YFIUP-USDT', 'YFIDOWN-USDT', 'INJ-USDT', 'AUDIO-USDT', 'CTK-USDT', 'BCHUP-USDT', 'BCHDOWN-USDT', 'AKRO-USDT', 'AXS-USDT', 'HARD-USDT', 'DNT-USDT', 'STRAX-USDT', 'UNFI-USDT', 'ROSE-USDT', 'AVA-USDT', 'XEM-USDT', 'AAVEUP-USDT', 'AAVEDOWN-USDT', 'SKL-USDT', 'SUSD-USDT', 'SUSHIUP-USDT', 'SUSHIDOWN-USDT', 'XLMUP-USDT', 'XLMDOWN-USDT', 'GRT-USDT', 'JUV-USDT', 'PSG-USDT', '1INCH-USDT', 'REEF-USDT', 'OG-USDT', 'ATM-USDT', 'ASR-USDT', 'CELO-USDT', 'RIF-USDT', 'BTCST-USDT', 'TRU-USDT', 'CKB-USDT', 'TWT-USDT', 'FIRO-USDT', 'LIT-USDT', 'SFP-USDT', 'DODO-USDT', 'CAKE-USDT', 'ACM-USDT', 'BADGER-USDT', 'FIS-USDT', 'OM-USDT', 'POND-USDT', 'DEGO-USDT', 'ALICE-USDT', 'LINA-USDT', 'PERP-USDT', 'RAMP-USDT', 'SUPER-USDT', 'CFX-USDT', 'EPS-USDT', 'AUTO-USDT', 'TKO-USDT', 'PUNDIX-USDT', 'TLM-USDT', '1INCHUP-USDT', '1INCHDOWN-USDT', 'BTG-USDT', 'MIR-USDT', 'BAR-USDT', 'FORTH-USDT', 'BAKE-USDT', 'BURGER-USDT', 'SLP-USDT', 'SHIB-USDT', 'ICP-USDT', 'AR-USDT', 'POLS-USDT', 'MDX-USDT', 'MASK-USDT', 'LPT-USDT', 'NU-USDT', 'XVG-USDT', 'ATA-USDT', 'GTC-USDT', 'TORN-USDT']
                 # tickers = ['BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT', 'FIL-USDT', 'KSM-USDT',
                 #           'ALPHA-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
@@ -279,7 +297,7 @@ if __name__ == '__main__':
                 # tickers = ['BNB-USDT']
                 # tickers = ['LTC-USDT']
                 # tickers = ['AAVE-USDT']
-                # tickers = ['BTC-USDT', 'ETH-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
                 # tickers = ['AAVE-USDT']
                 # tickers = ['FIL-USDT']
 
@@ -427,6 +445,7 @@ if __name__ == '__main__':
                     symbol=f'binancefutures_{ticker}',
                     # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
+                    # query_timeframe='5Min',
                     # query_timeframe='5Min',
                     query_timeframe='1H',
                     fromdate=fromdate,
