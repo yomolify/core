@@ -4,18 +4,18 @@ from strategies.base import StrategyBase
 import backtrader as bt
 from backtrader.indicators import MovingAverageSimple
 
-from indicators.Momentum import Momentum
+# from indicators.Momentum import Momentum
 
 import backtrader as bt
 import numpy as np
 import pandas as pd
-from scipy import stats
+# from scipy import stats
 
 class Rebalancing(StrategyBase):
     params = dict(
         exectype=bt.Order.Market,
         selcperc=0.10,  # percentage of stocks to select from the universe
-        rperiod=1,  # period for the returns calculation, default 1 period
+        rperiod=5,  # period for the returns calculation, default 1 period
         vperiod=36,  # lookback period for volatility - default 36 periods
         mperiod=12,  # lookback period for strategy - default 12 periods
         reserve=0.05  # 5% reserve capital
@@ -91,7 +91,6 @@ class Rebalancing(StrategyBase):
 
         # put top ranked in dict with data as key to test for presence
         rtop = dict(ranks[:self.selnum])
-
         # For logging purposes of stocks leaving the portfolio
         rbot = dict(ranks[self.selnum:])
 
@@ -101,19 +100,19 @@ class Rebalancing(StrategyBase):
         # remove those no longer top ranked
         # do this first to issue sell orders and free cash
         for d in (d for d in posdata if d not in rtop):
-            # self.log('Exit {} - Rank {:.2f}'.format(d._name, rbot[d][0]))
+            self.log('Exit {} - Rank {:.2f}'.format(d._name, rbot[d][0]))
             self.order_target_percent(d, target=0.0)
 
         # rebalance those already top ranked and still there
         for d in (d for d in posdata if d in rtop):
-            # self.log('Rebal {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
+            self.log('Rebal {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
             self.order_target_percent(d, target=self.perctarget)
             del rtop[d]  # remove it, to simplify next iteration
 
         # issue a target order for the newly top ranked stocks
         # do this last, as this will generate buy orders consuming cash
         for d in rtop:
-            # self.log('Enter {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
+            self.log('Enter {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
             self.order_target_percent(d, target=self.perctarget)
 
     # def notify_order(self, order):

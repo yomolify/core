@@ -26,7 +26,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b1ad3e0-fb50-4008-9095-ca36909bef0b" name="Default Changelist" comment="Stay in top10 Trending (Trend)">
+      <change beforePath="$PROJECT_DIR$/.idea/core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/strategies/Momentum/Rebalancing.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/Momentum/Rebalancing.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -1756,6 +1759,7 @@
       <workItem from="1623602241844" duration="13635000" />
       <workItem from="1623853303045" duration="25321000" />
       <workItem from="1624915208212" duration="352000" />
+      <workItem from="1624916073973" duration="500000" />
     </task>
     <task id="LOCAL-00001" summary="+++ 200 bitcoin sma and rebalance interval = 20">
       <created>1605377976543</created>
@@ -2024,10 +2028,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="0" y="0" width="1792" height="1120" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1623884389805" />
-    <state x="595" y="189" key="#xdebugger.evaluate" timestamp="1623880525719">
+    <state x="595" y="189" key="#xdebugger.evaluate" timestamp="1624916525248">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="595" y="189" key="#xdebugger.evaluate/0.0.1792.1120@0.0.1792.1120" timestamp="1623880525719" />
+    <state x="595" y="189" key="#xdebugger.evaluate/0.0.1792.1120@0.0.1792.1120" timestamp="1624916525248" />
     <state width="1448" height="646" key="DebuggerActiveHint" timestamp="1623880492359">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -2036,38 +2040,38 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="98" y="99" width="1592" height="920" key="DiffContextDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1619229285247" />
-    <state width="737" height="1006" key="GridCell.Tab.0.bottom" timestamp="1624915557791">
+    <state width="829" height="1006" key="GridCell.Tab.0.bottom" timestamp="1624916462748">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="737" height="1006" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1624915557791" />
-    <state width="737" height="1006" key="GridCell.Tab.0.center" timestamp="1624915557790">
+    <state width="829" height="1006" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1624916462748" />
+    <state width="829" height="1006" key="GridCell.Tab.0.center" timestamp="1624916462744">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="737" height="1006" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1624915557790" />
-    <state width="737" height="1006" key="GridCell.Tab.0.left" timestamp="1624915557789">
+    <state width="829" height="1006" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1624916462744" />
+    <state width="829" height="1006" key="GridCell.Tab.0.left" timestamp="1624916462742">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="737" height="1006" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1624915557789" />
-    <state width="737" height="1006" key="GridCell.Tab.0.right" timestamp="1624915557790">
+    <state width="829" height="1006" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1624916462742" />
+    <state width="829" height="1006" key="GridCell.Tab.0.right" timestamp="1624916462747">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="737" height="1006" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1624915557790" />
-    <state width="829" height="1006" key="GridCell.Tab.1.bottom" timestamp="1623880541502">
+    <state width="829" height="1006" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1624916462747" />
+    <state width="829" height="1006" key="GridCell.Tab.1.bottom" timestamp="1624916477140">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="829" height="1006" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1623880541502" />
-    <state width="829" height="1006" key="GridCell.Tab.1.center" timestamp="1623880541502">
+    <state width="829" height="1006" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1624916477140" />
+    <state width="829" height="1006" key="GridCell.Tab.1.center" timestamp="1624916477139">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="829" height="1006" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1623880541502" />
-    <state width="829" height="1006" key="GridCell.Tab.1.left" timestamp="1623880541501">
+    <state width="829" height="1006" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1624916477139" />
+    <state width="829" height="1006" key="GridCell.Tab.1.left" timestamp="1624916477139">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="829" height="1006" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1623880541501" />
-    <state width="829" height="1006" key="GridCell.Tab.1.right" timestamp="1623880541502">
+    <state width="829" height="1006" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1624916477139" />
+    <state width="829" height="1006" key="GridCell.Tab.1.right" timestamp="1624916477140">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="829" height="1006" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1623880541502" />
+    <state width="829" height="1006" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1624916477140" />
     <state x="496" y="281" key="Vcs.Push.Dialog.v2" timestamp="1622844800847">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -2084,10 +2088,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="594" y="301" width="835" height="518" key="find.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1617887502080" />
-    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup" timestamp="1624899401584">
+    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup" timestamp="1624916105366">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1624899401584" />
+    <state x="561" y="251" width="670" height="158" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1624916105366" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2221,7 +2225,7 @@
     <SUITE FILE_PATH="coverage/core$BTCUSD_All_Time_NLS1.coverage" NAME="BTCUSD All Time NLS1 Coverage Results" MODIFIED="1623858466566" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$NewYearlyHighsBTC_2020.coverage" NAME="NewYearlyHighsBTC 2020 Coverage Results" MODIFIED="1604386795506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$BTCEMA.coverage" NAME="BTCEMA Coverage Results" MODIFIED="1623858454992" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/core$Rebalancing.coverage" NAME="Rebalancing Coverage Results" MODIFIED="1624915561539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/core$Rebalancing.coverage" NAME="Rebalancing Coverage Results" MODIFIED="1624916462310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Live_Trading_NewYearlyHighsTEST.coverage" NAME="Live Trading NewYearlyHighsTEST Coverage Results" MODIFIED="1604418984603" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$Live_Trading_Misc_SMA.coverage" NAME="Live Trading Misc.SMA Coverage Results" MODIFIED="1617887738711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/core$CrossSectional_2020.coverage" NAME="CrossSectional 2020 Coverage Results" MODIFIED="1605196090510" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
