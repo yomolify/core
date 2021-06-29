@@ -28,7 +28,7 @@ class CandlestickPatterns(StrategyBase):
     def __init__(self):
         StrategyBase.__init__(self)
         self.i = 0
-        self.strategy = "NewYearlyHighs"
+        self.strategy = "CandleStickPatterns"
         self.bitcoin = self.datas[0]
         self.altcoins = self.datas
         self.inds = {}

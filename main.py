@@ -153,16 +153,16 @@ if __name__ == '__main__':
         # datapath = '../fetch-historical-data'
         #
         # Benchmark backtest
-        todate = datetime.now()
-        # todate = datetime(2021, 4, 13)
-        # todate = datetime(2021, 4, 5)
+        # todate = datetime.now()
         todate = datetime(2021, 6, 20)
+        # todate = datetime(2021, 4, 5)
+        # todate = datetime(2021, 6, 20)
         # fromdate = datetime(2019, 11, 1)
         # fromdate = datetime(2020, 1, 1)
         fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 1, 27)
-        fromdate = datetime(2021, 6, 1)
-        # fromdate = datetime(2021, 5, 1)
+        # fromdate = datetime(2021, 6, 15)
+        fromdate = datetime(2021, 6, 10)
         # fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 2, 1)
@@ -244,14 +244,25 @@ if __name__ == '__main__':
             if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" or "TurtleTrader" or 'CrossSectional' or 'VWAP' or 'Trend' in args.strategy:
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
-                            'XLM-USDT',
+                           'XLM-USDT',
                            'ADA-USDT',
-                           'XMR-USDT', 'DASH-USDT', 'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
+                           'XMR-USDT', 'DASH-USDT',
+                           'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
                            'BAT-USDT',
                            'VET-USDT',
                            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                            'DOGE-USDT',
                            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
+                #            'LINK-USDT',
+                #             'XLM-USDT',
+                #            'ADA-USDT',
+                #            'XMR-USDT', 'DASH-USDT', 'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
+                #            'BAT-USDT',
+                #            'VET-USDT',
+                #            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
+                #            'DOGE-USDT',
+                #            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #           'BAT-USDT',
                 #           'BCH-USDT',
@@ -365,7 +376,7 @@ if __name__ == '__main__':
             # tickers = ['ETH-BTC']
 
             # Pair Trading
-            # tickers = ['BTC-USDT', 'ETH-USDT']
+            tickers = ['BTC-USDT', 'ETH-USDT']
             # tickers = ['YFI-USDT', 'YFII-USDT']
             # tickers = ['ADA-USDT', 'XLM-USDT']
             # ALT index
@@ -421,22 +432,22 @@ if __name__ == '__main__':
 
             # 'BCHABCUSDT', 'BCCUSDT','BUSDUSDT', 'USDCUSDT', 'USDSUSDT', 'TUSDUSDT',
 
-            # for ticker in tickers:
-            #     data = bt.feeds.MarketStore(
-            #         symbol=f'binancefutures_{ticker}',
-            #         # symbol=f'binance_{ticker}',
-            #         name=f'{ticker}',
-            #         # query_timeframe='1Min',
-            #         # query_timeframe='1H',
-            #         query_timeframe='5Min',
-            #         # timeframe=bt.TimeFrame.Minutes,
-            #         fromdate=fromdate,
-            #         todate=todate,
-            #         # compression=1,
-            #         # compression=60,
-            #     )
-            #
-            #     cerebro.adddata(data, name=f'5min_{ticker}')
+            for ticker in tickers:
+                data = bt.feeds.MarketStore(
+                    symbol=f'binancefutures_{ticker}',
+                    # symbol=f'binance_{ticker}',
+                    name=f'{ticker}',
+                    # query_timeframe='1Min',
+                    # query_timeframe='1H',
+                    query_timeframe='5Min',
+                    # timeframe=bt.TimeFrame.Minutes,
+                    fromdate=fromdate,
+                    todate=todate,
+                    # compression=1,
+                    # compression=60,
+                )
+
+                cerebro.adddata(data, name=f'5m_{ticker}')
                 # cerebro.resampledata(data,
                 #                                           timeframe=bt.TimeFrame.Minutes,
                 #                                           compression=60, name=f'hourly_{ticker}')
@@ -454,7 +465,7 @@ if __name__ == '__main__':
                 # cerebro.resampledata(data,
                 #                                           timeframe=bt.TimeFrame.Minutes,
                 #                                           compression=480)
-                cerebro.adddata(data, name=f'{ticker}')
+                cerebro.adddata(data, name=f'1H_{ticker}')
 
             # add btc dominance data to cerebro
             # btc_dom = bt.feeds.GenericCSVData(

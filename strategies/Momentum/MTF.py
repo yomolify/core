@@ -11,10 +11,10 @@ import numpy as np
 import pandas as pd
 # from scipy import stats
 
-class Rebalancing(StrategyBase):
+class MTF(StrategyBase):
     params = dict(
         exectype=bt.Order.Market,
-        selcperc=0.10,  # percentage of stocks to select from the universe
+        selcperc=0.50,  # percentage of stocks to select from the universe
         rperiod=5,  # period for the returns calculation, default 1 period
         vperiod=36,  # lookback period for volatility - default 36 periods
         mperiod=24,  # lookback period for strategy - default 12 periods
@@ -56,7 +56,7 @@ class Rebalancing(StrategyBase):
 
         for d in self.datas:
             self.inds[d] = {}
-            self.inds[d]["sma200"] = bt.indicators.SMA(d.close, period=200, plot=False, subplot=False)
+            self.inds[d]["sma20"] = bt.indicators.SMA(d.close, period=20, plot=True, subplot=False)
 
         # calculate 1st the amount of stocks that will be selected
         self.selnum = int(len(self.datas) * self.p.selcperc)
@@ -99,12 +99,12 @@ class Rebalancing(StrategyBase):
 
         # remove those no longer top ranked
         # do this first to issue sell orders and free cash
-        for d in (d for d in posdata if d not in rtop):
+        for d in (d for d in posdata if d not in rtop and '5m' in d._name):
             self.log('Exit {} - Rank {:.2f}'.format(d._name, rbot[d][0]))
             self.order_target_percent(d, target=0.0)
 
         # rebalance those already top ranked and still there
-        for d in (d for d in posdata if d in rtop):
+        for d in (d for d in posdata if d in rtop and '5m' in d._name):
             self.log('Rebal {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
             self.order_target_percent(d, target=self.perctarget)
             del rtop[d]  # remove it, to simplify next iteration

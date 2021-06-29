@@ -11,11 +11,11 @@ import numpy as np
 import pandas as pd
 # from scipy import stats
 
-class Rebalancing(StrategyBase):
+class BuyHot(StrategyBase):
     params = dict(
         exectype=bt.Order.Market,
         selcperc=0.10,  # percentage of stocks to select from the universe
-        rperiod=5,  # period for the returns calculation, default 1 period
+        rperiod=2,  # period for the returns calculation, default 1 period
         vperiod=36,  # lookback period for volatility - default 36 periods
         mperiod=24,  # lookback period for strategy - default 12 periods
         reserve=0.05  # 5% reserve capital
@@ -56,7 +56,8 @@ class Rebalancing(StrategyBase):
 
         for d in self.datas:
             self.inds[d] = {}
-            self.inds[d]["sma200"] = bt.indicators.SMA(d.close, period=200, plot=False, subplot=False)
+            # self.inds[d]["sma200"] = bt.indicators.SMA(d.close, period=200, plot=False, subplot=False)
+            # self.inds[d]["pct_change"] = bt.indicators.PctChange(d.close, period=5, plot=False, subplot=False)
 
         # calculate 1st the amount of stocks that will be selected
         self.selnum = int(len(self.datas) * self.p.selcperc)
@@ -69,12 +70,14 @@ class Rebalancing(StrategyBase):
 
         # returns, volatilities and strategy
         rs = [bt.ind.PctChange(d, period=self.p.rperiod) for d in self.datas]
-        vs = [bt.ind.StdDev(ret, period=self.p.vperiod) for ret in rs]
-        ms = [bt.ind.ROC(d, period=self.p.mperiod) for d in self.datas]
+        # vs = [bt.ind.StdDev(ret, period=self.p.vperiod) for ret in rs]
+        # ms = [bt.ind.ROC(d, period=self.p.mperiod) for d in self.datas]
 
         # simple rank formula: (strategy * net payout) / volatility
         # the highest ranked: low vol, large strategy, large payout
-        self.ranks = {d: 5 * m / v for d, v, m in zip(self.datas, vs, ms)}
+        # self.ranks = {d: 5 * m / v for d, v, m in zip(self.datas, vs, ms)}
+        # self.ranks = {d: 5 * 1 / v for d, v in zip(self.datas, vs)}
+        self.ranks = {d: r for d, r in zip(self.datas, rs)}
 
         self.started = False
 
@@ -99,8 +102,8 @@ class Rebalancing(StrategyBase):
 
         # remove those no longer top ranked
         # do this first to issue sell orders and free cash
-        for d in (d for d in posdata if d not in rtop):
-            self.log('Exit {} - Rank {:.2f}'.format(d._name, rbot[d][0]))
+        for d in (d for d in posdata if d not in rtop or rtop[d][0] < 0.04):
+            # self.log('Exit {} - Rank {:.2f}'.format(d._name, rbot[d][0]))
             self.order_target_percent(d, target=0.0)
 
         # rebalance those already top ranked and still there
@@ -112,8 +115,9 @@ class Rebalancing(StrategyBase):
         # issue a target order for the newly top ranked stocks
         # do this last, as this will generate buy orders consuming cash
         for d in rtop:
-            self.log('Enter {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
-            self.order_target_percent(d, target=self.perctarget)
+            if rtop[d][0] > 0.04:
+                self.log('Enter {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
+                self.order_target_percent(d, target=self.perctarget)
 
     # def notify_order(self, order):
     #     if order.alive():
