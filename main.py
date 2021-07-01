@@ -155,14 +155,29 @@ if __name__ == '__main__':
         # Benchmark backtest
         # todate = datetime.now()
         todate = datetime(2021, 6, 20)
+        fromdate = datetime(2021, 6, 10)
+
+        todate = datetime(2021, 6, 10)
+        fromdate = datetime(2021, 6, 1)
+
+        todate = datetime(2021, 5, 10)
+        fromdate = datetime(2021, 5, 1)
+
+        todate = datetime(2021, 6, 1)
+        fromdate = datetime(2021, 4, 1)
+
+        todate = datetime(2021, 7, 1)
+        fromdate = datetime(2021, 1, 1)
+
+        todate = datetime(2021, 7, 1)
+        fromdate = datetime(2021, 6, 1)
         # todate = datetime(2021, 4, 5)
         # todate = datetime(2021, 6, 20)
         # fromdate = datetime(2019, 11, 1)
         # fromdate = datetime(2020, 1, 1)
-        fromdate = datetime(2020, 12, 1)
+        # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 1, 27)
         # fromdate = datetime(2021, 6, 15)
-        fromdate = datetime(2021, 6, 10)
         # fromdate = datetime(2020, 8, 1)
         # fromdate = datetime(2020, 12, 1)
         # fromdate = datetime(2021, 2, 1)
@@ -305,7 +320,7 @@ if __name__ == '__main__':
                 # tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
                     #
                 # tickers = ['ETH-USDT']
-                # tickers = ['BNB-USDT']
+                tickers = ['BNB-USDT']
                 # tickers = ['LTC-USDT']
                 # tickers = ['AAVE-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
@@ -376,7 +391,8 @@ if __name__ == '__main__':
             # tickers = ['ETH-BTC']
 
             # Pair Trading
-            tickers = ['BTC-USDT', 'ETH-USDT']
+            # tickers = ['BTC-USDT']
+            # tickers = ['BTC-USDT', 'ETH-USDT']
             # tickers = ['YFI-USDT', 'YFII-USDT']
             # tickers = ['ADA-USDT', 'XLM-USDT']
             # ALT index
@@ -501,7 +517,7 @@ if __name__ == '__main__':
         # 1060 21 - 10
         # 3224 16
         cerebro.addsizer(FullMoney)
-        cerebro.broker.setcommission(commission=0.00036, leverage=leverage)
+        cerebro.broker.setcommission(commission=0.0004, leverage=leverage)
         # cerebro.broker.setcommission(commission=0.00075, leverage=leverage)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)

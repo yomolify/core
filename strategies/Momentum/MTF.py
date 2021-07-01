@@ -5,6 +5,7 @@ import backtrader as bt
 from backtrader.indicators import MovingAverageSimple
 
 # from indicators.Momentum import Momentum
+from indicators.SuperTrend import SuperTrend
 
 import backtrader as bt
 import numpy as np
@@ -17,12 +18,17 @@ class MTF(StrategyBase):
         selcperc=0.50,  # percentage of stocks to select from the universe
         rperiod=5,  # period for the returns calculation, default 1 period
         vperiod=36,  # lookback period for volatility - default 36 periods
-        mperiod=24,  # lookback period for strategy - default 12 periods
+        mperiod=5,  # lookback period for strategy - default 12 periods
         reserve=0.05  # 5% reserve capital
     )
 
     def __init__(self):
         self.dataclose = self.datas[0].close
+
+        length = len(self.datas)
+        middle_index = length // 2
+        self.datas_5m = self.datas[:middle_index]
+        self.datas_1h = self.datas[middle_index:]
 
         self.order = None
         self.buyprice = None
@@ -55,79 +61,61 @@ class MTF(StrategyBase):
         self.inds = {}
 
         for d in self.datas:
-            self.inds[d] = {}
-            self.inds[d]["sma20"] = bt.indicators.SMA(d.close, period=20, plot=True, subplot=False)
+            ticker = d._name
+            ticker = ticker[3:]
+            self.inds[ticker] = {}
+        for d in self.datas_5m:
+            ticker = d._name
+            ticker = ticker[3:]
+            self.inds[ticker]["sma20_5m"] = bt.indicators.SMA(d.close, period=20, plot=True, subplot=False)
+            self.inds[ticker]["sma50_5m"] = bt.indicators.SMA(d.close, period=50, plot=True, subplot=False)
+            self.inds[ticker]["sma100_5m"] = bt.indicators.SMA(d.close, period=100, plot=True, subplot=False)
+            self.inds[ticker]["roc"] = bt.indicators.ROC(d.close, period=10, plot=True, subplot=True)
+            self.inds[ticker]["roc_std"] = bt.indicators.StdDev(self.inds[ticker]["roc"], period=10, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma10"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=10, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma50"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=50, plot=True, subplot=True)
+            self.inds[ticker]["st_5m"] = SuperTrend(d, plot=True)
+        for d in self.datas_1h:
+            ticker = d._name
+            ticker = ticker[3:]
+            self.inds[ticker]["sma5_1h"] = bt.indicators.SMA(d.close, period=5, plot=True, subplot=False)
+            self.inds[ticker]["sma20_1h"] = bt.indicators.EMA(d.close, period=20, plot=True, subplot=False)
+            self.inds[ticker]["sma50_1h"] = bt.indicators.SMA(d.close, period=50, plot=True, subplot=False)
+            self.inds[ticker]["st_1h"] = SuperTrend(d, plot=True)
+
 
         # calculate 1st the amount of stocks that will be selected
-        self.selnum = int(len(self.datas) * self.p.selcperc)
+        # self.selnum = int(len(self.datas) * self.p.selcperc)
 
         # allocation per stock
         # reserve kept to make sure orders are not rejected due to
         # margin. Prices are calculated when known (close), but orders can only
         # be executed next day (opening price). Price can gap upwards
-        self.perctarget = (1.0 - self.p.reserve) % self.selnum
+        # self.perctarget = (1.0 - self.p.reserve) % self.selnum
 
         # returns, volatilities and strategy
-        rs = [bt.ind.PctChange(d, period=self.p.rperiod) for d in self.datas]
-        vs = [bt.ind.StdDev(ret, period=self.p.vperiod) for ret in rs]
-        ms = [bt.ind.ROC(d, period=self.p.mperiod) for d in self.datas]
+        # rs = [bt.ind.PctChange(d, period=self.p.rperiod) for d in self.datas]
+        # vs = [bt.ind.StdDev(ret, period=self.p.vperiod) for ret in rs]
+        # ms = [bt.ind.ROC(d, period=self.p.mperiod) for d in self.datas]
 
         # simple rank formula: (strategy * net payout) / volatility
         # the highest ranked: low vol, large strategy, large payout
-        self.ranks = {d: 5 * m / v for d, v, m in zip(self.datas, vs, ms)}
-
-        self.started = False
-
+        # self.ranks = {d: 5 * m / v for d, v, m in zip(self.datas_5m, vs, ms)}
 
     def next(self):
+        for d in self.datas_5m:
+            ticker = d._name
+            ticker = ticker[3:]
+            # if not self.broker.getposition(d):
+            if d.close[0] > self.inds[ticker]["sma5_1h"] > self.inds[ticker]["sma20_1h"] and d.close[0] > self.inds[ticker]["sma20_5m"]:
+                self.order_target_percent(d, target=0.5)
+            elif d.close[0] < self.inds[ticker]["sma5_1h"] < self.inds[ticker]["sma20_1h"] and d.close[0] < self.inds[ticker]["sma20_5m"]:
+                self.order_target_percent(d, target=-0.5)
+            # current_position = self.get_position(d=d, attribute='size')
+            # if current_position > 0:
+            #     if d.close[0] < self.inds[ticker]["sma20_1h"]:
+            #         self.order_target_percent(d, target=0)
+            # elif current_position < 0:
+            #     if d.close[0] > self.inds[ticker]["sma20_1h"]:
+            #         self.order_target_percent(d, target=0)
 
-        self.started = True
-        # sort data and current rank
-        ranks = sorted(
-            self.ranks.items(),  # get the (d, rank), pair
-            key=lambda x: x[1][0],  # use rank (elem 1) and current time "0"
-            reverse=True  # highest ranked 1st ... please
-        )
-
-        # put top ranked in dict with data as key to test for presence
-        rtop = dict(ranks[:self.selnum])
-        # For logging purposes of stocks leaving the portfolio
-        rbot = dict(ranks[self.selnum:])
-
-        # prepare quick lookup list of stocks currently holding a position
-        posdata = [d for d, pos in self.getpositions().items() if pos]
-
-        # remove those no longer top ranked
-        # do this first to issue sell orders and free cash
-        for d in (d for d in posdata if d not in rtop and '5m' in d._name):
-            self.log('Exit {} - Rank {:.2f}'.format(d._name, rbot[d][0]))
-            self.order_target_percent(d, target=0.0)
-
-        # rebalance those already top ranked and still there
-        for d in (d for d in posdata if d in rtop and '5m' in d._name):
-            self.log('Rebal {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
-            self.order_target_percent(d, target=self.perctarget)
-            del rtop[d]  # remove it, to simplify next iteration
-
-        # issue a target order for the newly top ranked stocks
-        # do this last, as this will generate buy orders consuming cash
-        for d in rtop:
-            self.log('Enter {} - Rank {:.2f}'.format(d._name, rtop[d][0]))
-            self.order_target_percent(d, target=self.perctarget)
-
-    # def notify_order(self, order):
-    #     if order.alive():
-    #         return
-    #
-    #     otypetxt = 'Buy ' if order.isbuy() else 'Sell'
-    #     if order.status == order.Completed:
-    #         self.log(
-    #             '{} Order Completed - Size: {} @Price: {} Value: {:.2f} Comm: {:.2f}'.format(
-    #                 otypetxt, order.executed.size, order.executed.price,
-    #                 order.executed.value, order.executed.comm
-    #             ))
-        # else:
-        #     self.log('{} Order rejected'.format(otypetxt))
-
-    # def log(self, arg):
-    #     print(f'{self.datetime.date(), arg}')
