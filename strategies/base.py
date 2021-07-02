@@ -186,6 +186,11 @@ class StrategyBase(bt.Strategy):
                 # For 5 Min CandlestickPatterns
                 if self.strategy == "NewYearlyHighs":
                     self.stop_orders[ticker].append(self.close(data=order.data, size=self.executed_size, exectype=bt.Order.Stop, price=self.pos[ticker]["sl_price"]))
+                # if self.strategy == "MTF":
+                #     self.log('Buy executed, placing stop')
+                #     if self.stop_order:
+                #         self.cancel(self.stop_order)
+                #     self.stop_order = self.close(data=order.data, size=self.executed_size, exectype=bt.Order.StopTrail, trailpercent=0.02)
                 # if self.strategy == "NewYearlyHighs":
                 #     self.log(f'Long Stop at {self.buy_price_close - 2*self.entry_bar_height[order.data._name]}')
                 #     self.long_stop_order[order.data._name] = self.sell(data=order.data, size=self.executed_size, exectype=bt.Order.Stop, price=self.buy_price_close - 2*self.entry_bar_height[order.data._name])
@@ -233,6 +238,11 @@ class StrategyBase(bt.Strategy):
                     self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price,
                                                             exectype=bt.Order.Stop)
                     self.log(f'Placing Short Stop @ {self.sl_price}')
+                # if self.strategy == "MTF":
+                #     self.log('Sell executed, placing stop')
+                #     if self.stop_order:
+                #         self.cancel(self.stop_order)
+                #     self.stop_order = self.close(data=order.data, size=self.executed_size, exectype=bt.Order.StopTrail, trailpercent=0.02)
                 # if ENV == PRODUCTION:
                 #     print('order.__dict__')
                 #     print(order.__dict__)

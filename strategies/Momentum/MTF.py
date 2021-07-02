@@ -19,11 +19,13 @@ class MTF(StrategyBase):
         rperiod=5,  # period for the returns calculation, default 1 period
         vperiod=36,  # lookback period for volatility - default 36 periods
         mperiod=5,  # lookback period for strategy - default 12 periods
-        reserve=0.05  # 5% reserve capital
+        reserve=0.05,  # 5% reserve capital
+        order_target_percent=0.25
     )
 
     def __init__(self):
         self.dataclose = self.datas[0].close
+        self.strategy = "MTF"
 
         length = len(self.datas)
         middle_index = length // 2
@@ -53,12 +55,12 @@ class MTF(StrategyBase):
         self.buy_price_close = None
         self.sell_price_close = None
         self.executed_size = None
-        self.strategy = None
         self.entry_bar_height = None
         self.to_place_orders = []
         self.first_bar_after_entry = dict()
         # self.inds = collections.defaultdict(dict)
         self.inds = {}
+        self.unique = 0
 
         for d in self.datas:
             ticker = d._name
@@ -67,17 +69,33 @@ class MTF(StrategyBase):
         for d in self.datas_5m:
             ticker = d._name
             ticker = ticker[3:]
+            self.inds[ticker]["rsi_5m"] = bt.indicators.RSI(d, plot=True, subplot=True)
+            self.inds[ticker]["adx_5m"] = bt.indicators.ADX(d, plot=True, subplot=True)
+            self.inds[ticker]["atr_5m"] = bt.indicators.ATR(d, plot=True, subplot=True)
+            self.inds[ticker]["hh_5m"] = bt.indicators.Highest(d.high, plot=True, subplot=True)
+            self.inds[ticker]["ll_5m"] = bt.indicators.Lowest(d.low, plot=True, subplot=True)
             self.inds[ticker]["sma20_5m"] = bt.indicators.SMA(d.close, period=20, plot=True, subplot=False)
             self.inds[ticker]["sma50_5m"] = bt.indicators.SMA(d.close, period=50, plot=True, subplot=False)
             self.inds[ticker]["sma100_5m"] = bt.indicators.SMA(d.close, period=100, plot=True, subplot=False)
             self.inds[ticker]["roc"] = bt.indicators.ROC(d.close, period=10, plot=True, subplot=True)
             self.inds[ticker]["roc_std"] = bt.indicators.StdDev(self.inds[ticker]["roc"], period=10, plot=True, subplot=True)
             self.inds[ticker]["roc_std_sma10"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=10, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma20"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=20, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma20"].plotinfo.plotmaster = self.inds[ticker]["roc_std_sma10"]
             self.inds[ticker]["roc_std_sma50"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=50, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma50"].plotinfo.plotmaster = self.inds[ticker]["roc_std_sma10"]
+            self.inds[ticker]["roc_std_sma200"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=200, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma200"].plotinfo.plotmaster = self.inds[ticker]["roc_std_sma10"]
+
             self.inds[ticker]["st_5m"] = SuperTrend(d, plot=True)
         for d in self.datas_1h:
             ticker = d._name
             ticker = ticker[3:]
+            self.inds[ticker]["rsi_1h"] = bt.indicators.RSI(d, plot=True, subplot=True)
+            self.inds[ticker]["adx_1h"] = bt.indicators.ADX(d, plot=True, subplot=True)
+            self.inds[ticker]["hh_1h"] = bt.indicators.Highest(d.high, plot=True, subplot=True)
+            self.inds[ticker]["ll_1h"] = bt.indicators.Lowest(d.low, plot=True, subplot=True)
+            self.inds[ticker]["atr_1h"] = bt.indicators.ATR(d, plot=True, subplot=True)
             self.inds[ticker]["sma5_1h"] = bt.indicators.SMA(d.close, period=5, plot=True, subplot=False)
             self.inds[ticker]["sma20_1h"] = bt.indicators.EMA(d.close, period=20, plot=True, subplot=False)
             self.inds[ticker]["sma50_1h"] = bt.indicators.SMA(d.close, period=50, plot=True, subplot=False)
@@ -103,18 +121,43 @@ class MTF(StrategyBase):
         # self.ranks = {d: 5 * m / v for d, v, m in zip(self.datas_5m, vs, ms)}
 
     def next(self):
+        self.datas_5m.sort(reverse=True, key=lambda d: (self.inds[d._name[3:]]["rsi_5m"][0]) * (self.inds[d._name[3:]]["adx_5m"][0]) * (self.inds[d._name[3:]]["roc"][0]))
         for d in self.datas_5m:
             ticker = d._name
             ticker = ticker[3:]
-            # if not self.broker.getposition(d):
-            if d.close[0] > self.inds[ticker]["sma5_1h"] > self.inds[ticker]["sma20_1h"] and d.close[0] > self.inds[ticker]["sma20_5m"]:
-                self.order_target_percent(d, target=0.5)
-            elif d.close[0] < self.inds[ticker]["sma5_1h"] < self.inds[ticker]["sma20_1h"] and d.close[0] < self.inds[ticker]["sma20_5m"]:
-                self.order_target_percent(d, target=-0.5)
-            # current_position = self.get_position(d=d, attribute='size')
+            current_position = self.get_position(d=d, attribute='size')
             # if current_position > 0:
-            #     if d.close[0] < self.inds[ticker]["sma20_1h"]:
-            #         self.order_target_percent(d, target=0)
+            #     if self.stop_order:
+            #         self.cancel(self.stop_order)
+                # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["ll_5m"][0])
+            # elif current_position < 0:
+                # if self.inds[ticker]["roc_std_sma10"][-1] > self.inds[ticker]["roc_std_sma20"][-1] and self.inds[ticker]["roc_std_sma10"][0] < self.inds[ticker]["roc_std_sma20"][0]:
+                #     self.order_target_percent(d, target=0)
+                # if self.stop_order:
+                #     self.cancel(self.stop_order)
+                # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["hh_5m"][-1])
+
+
+
+            # if self.stop_order:
+            #     self.cancel(self.stop_order)
+            if d.close[0] > self.inds[ticker]["sma5_1h"] > self.inds[ticker]["sma20_1h"] and d.close[0] > self.inds[ticker]["sma20_5m"]:
+                volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
+                volatility_factor = 1 / (volatility * 100)
+                self.order_target_percent(d, target=((self.p.order_target_percent/100) * volatility_factor))
+                # self.order_target_percent(d, target=0.25)
+            elif d.close[0] < self.inds[ticker]["sma5_1h"] < self.inds[ticker]["sma20_1h"] and d.close[0] < self.inds[ticker]["sma20_5m"]:
+                volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
+                volatility_factor = 1 / (volatility * 100)
+                self.order_target_percent(d, target=-((self.p.order_target_percent / 100) * volatility_factor))
+                # self.order_target_percent(d, target=-0.25)
+            # else:
+            #     self.unique = self.unique + 1
+            #     self.log('unique case')
+
+                # if self.unique > 10:
+                #     self.order_target_percent(d, target=0)
+                #     self.unique = 0
             # elif current_position < 0:
             #     if d.close[0] > self.inds[ticker]["sma20_1h"]:
             #         self.order_target_percent(d, target=0)

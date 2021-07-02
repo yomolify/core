@@ -165,12 +165,17 @@ if __name__ == '__main__':
 
         todate = datetime(2021, 6, 1)
         fromdate = datetime(2021, 4, 1)
-
+        #
         todate = datetime(2021, 7, 1)
         fromdate = datetime(2021, 1, 1)
 
-        todate = datetime(2021, 7, 1)
-        fromdate = datetime(2021, 6, 1)
+        # TODO - Catch the extreme bottom
+        # todate = datetime(2021, 6, 24)
+        # fromdate = datetime(2021, 6, 17)
+        #
+        # todate = datetime(2021, 6, 27)
+        # fromdate = datetime(2021, 6, 1)
+
         # todate = datetime(2021, 4, 5)
         # todate = datetime(2021, 6, 20)
         # fromdate = datetime(2019, 11, 1)
@@ -319,17 +324,24 @@ if __name__ == '__main__':
                 # 'LINK-USDT']
                 # tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
                     #
+                # tickers = ['BTC-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['ETH-USDT']
-                tickers = ['BNB-USDT']
+                # tickers = ['BNB-USDT']
                 # tickers = ['LTC-USDT']
                 # tickers = ['AAVE-USDT']
-                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
                 # tickers = ['AAVE-USDT']
                 # tickers = ['FIL-USDT']
-
-                # tickers = ['LTC-USDT']
+                # tickers = ['ETC-USDT']
+                # tickers = ['LINK-USDT']
+                # tickers = ['SOL-USDT']
+                # tickers = ['BAT-USDT']
                 # tickers = ['DOT-USDT']
-                # tickers = ['BTC-USDT']
+
+
+
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
+
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #            'BAT-USDT',
                 #            'BCH-USDT',
