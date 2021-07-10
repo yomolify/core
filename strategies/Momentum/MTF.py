@@ -20,7 +20,7 @@ class MTF(StrategyBase):
         vperiod=36,  # lookback period for volatility - default 36 periods
         mperiod=5,  # lookback period for strategy - default 12 periods
         reserve=0.05,  # 5% reserve capital
-        order_target_percent=0.25
+        order_target_percent=2
     )
 
     def __init__(self):
@@ -91,15 +91,15 @@ class MTF(StrategyBase):
         for d in self.datas_1h:
             ticker = d._name
             ticker = ticker[3:]
-            self.inds[ticker]["rsi_1h"] = bt.indicators.RSI(d, plot=True, subplot=True)
-            self.inds[ticker]["adx_1h"] = bt.indicators.ADX(d, plot=True, subplot=True)
-            self.inds[ticker]["hh_1h"] = bt.indicators.Highest(d.high, plot=True, subplot=True)
-            self.inds[ticker]["ll_1h"] = bt.indicators.Lowest(d.low, plot=True, subplot=True)
-            self.inds[ticker]["atr_1h"] = bt.indicators.ATR(d, plot=True, subplot=True)
+            # self.inds[ticker]["rsi_1h"] = bt.indicators.RSI(d, plot=True, subplot=True)
+            # self.inds[ticker]["adx_1h"] = bt.indicators.ADX(d, plot=True, subplot=True)
+            # self.inds[ticker]["hh_1h"] = bt.indicators.Highest(d.high, plot=True, subplot=True)
+            # self.inds[ticker]["ll_1h"] = bt.indicators.Lowest(d.low, plot=True, subplot=True)
+            # self.inds[ticker]["atr_1h"] = bt.indicators.ATR(d, plot=True, subplot=True)
             self.inds[ticker]["sma5_1h"] = bt.indicators.SMA(d.close, period=5, plot=True, subplot=False)
             self.inds[ticker]["sma20_1h"] = bt.indicators.EMA(d.close, period=20, plot=True, subplot=False)
-            self.inds[ticker]["sma50_1h"] = bt.indicators.SMA(d.close, period=50, plot=True, subplot=False)
-            self.inds[ticker]["st_1h"] = SuperTrend(d, plot=True)
+            # self.inds[ticker]["sma50_1h"] = bt.indicators.SMA(d.close, period=50, plot=True, subplot=False)
+            # self.inds[ticker]["st_1h"] = SuperTrend(d, plot=True)
 
 
         # calculate 1st the amount of stocks that will be selected
@@ -121,7 +121,7 @@ class MTF(StrategyBase):
         # self.ranks = {d: 5 * m / v for d, v, m in zip(self.datas_5m, vs, ms)}
 
     def next(self):
-        self.datas_5m.sort(reverse=True, key=lambda d: (self.inds[d._name[3:]]["rsi_5m"][0]) * (self.inds[d._name[3:]]["adx_5m"][0]) * (self.inds[d._name[3:]]["roc"][0]))
+        self.datas_5m.sort(reverse=True, key=lambda d: (self.inds[d._name[3:]]["adx_5m"][0]) * (self.inds[d._name[3:]]["roc"][0]))
         for d in self.datas_5m:
             ticker = d._name
             ticker = ticker[3:]
@@ -144,13 +144,17 @@ class MTF(StrategyBase):
             if d.close[0] > self.inds[ticker]["sma5_1h"] > self.inds[ticker]["sma20_1h"] and d.close[0] > self.inds[ticker]["sma20_5m"]:
                 volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
                 volatility_factor = 1 / (volatility * 100)
-                self.order_target_percent(d, target=((self.p.order_target_percent/100) * volatility_factor))
+                self.add_order(d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")
                 # self.order_target_percent(d, target=0.25)
             elif d.close[0] < self.inds[ticker]["sma5_1h"] < self.inds[ticker]["sma20_1h"] and d.close[0] < self.inds[ticker]["sma20_5m"]:
                 volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
                 volatility_factor = 1 / (volatility * 100)
-                self.order_target_percent(d, target=-((self.p.order_target_percent / 100) * volatility_factor))
-                # self.order_target_percent(d, target=-0.25)
+                self.add_order(d, target=-((self.p.order_target_percent / 100) * volatility_factor), type="market")
+
+            if len(self.to_place_orders) > 0:
+                order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
+                for order_chunk in order_chunks:
+                    self.place_batch_order(order_chunk)
             # else:
             #     self.unique = self.unique + 1
             #     self.log('unique case')

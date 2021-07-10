@@ -166,15 +166,16 @@ if __name__ == '__main__':
         todate = datetime(2021, 6, 1)
         fromdate = datetime(2021, 4, 1)
         #
-        todate = datetime(2021, 7, 1)
+        todate = datetime(2021, 7, 3)
         fromdate = datetime(2021, 1, 1)
 
         # TODO - Catch the extreme bottom
         # todate = datetime(2021, 6, 24)
         # fromdate = datetime(2021, 6, 17)
         #
-        # todate = datetime(2021, 6, 27)
-        # fromdate = datetime(2021, 6, 1)
+        todate = datetime(2021, 7, 3)
+        fromdate = datetime(2021, 6, 1)
+        todate = datetime.now()
 
         # todate = datetime(2021, 4, 5)
         # todate = datetime(2021, 6, 20)
@@ -262,6 +263,7 @@ if __name__ == '__main__':
         else:
             # New Yearly Highs
             if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" or "TurtleTrader" or 'CrossSectional' or 'VWAP' or 'Trend' in args.strategy:
+                # MTF 187% & 13% for 5/1 to 7/3
                 tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                            'LINK-USDT',
                            'XLM-USDT',
@@ -283,24 +285,25 @@ if __name__ == '__main__':
                 #            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                 #            'DOGE-USDT',
                 #            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
-                # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
-                #           'BAT-USDT',
-                #           'BCH-USDT',
-                #           'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
-                #           'DOT-USDT', 'EGLD-USDT', 'ENJ-USDT', 'EOS-USDT', 'ETC-USDT', 'ETH-USDT', 'FLM-USDT', 'FTM-USDT',
-                #           'HNT-USDT', 'ICX-USDT', 'IOST-USDT', 'IOTA-USDT', 'KAVA-USDT', 'KNC-USDT', 'LINK-USDT',
-                #           'LTC-USDT',
-                #           'MKR-USDT', 'NEO-USDT', 'OMG-USDT', 'ONT-USDT', 'QTUM-USDT', 'REN-USDT', 'RLC-USDT', 'RUNE-USDT',
-                #           'SNX-USDT',
-                #           'SOL-USDT', 'SRM-USDT', 'STORJ-USDT', 'SUSHI-USDT', 'SXP-USDT', 'THETA-USDT', 'TRB-USDT',
-                #           'TRX-USDT',
-                #           'UNI-USDT', 'VET-USDT', 'WAVES-USDT', 'XLM-USDT', 'XMR-USDT', 'XRP-USDT', 'XTZ-USDT',
-                #           'YFII-USDT',
-                #           'YFI-USDT', 'ZEC-USDT', 'ZIL-USDT', 'ZRX-USDT',
-                #           'TOMO-USDT', 'RSR-USDT', 'NEAR-USDT', 'MATIC-USDT',
-                #           'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
-                #           'ALPHA-USDT',
-                #           'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
+                # MTF 525% & 25% for 5/1 to 7/3
+                tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
+                          'BAT-USDT',
+                          'BCH-USDT',
+                          'BLZ-USDT', 'BNB-USDT', 'BZRX-USDT', 'COMP-USDT', 'CRV-USDT', 'DASH-USDT', 'DOGE-USDT',
+                          'DOT-USDT', 'EGLD-USDT', 'ENJ-USDT', 'EOS-USDT', 'ETC-USDT', 'ETH-USDT', 'FLM-USDT', 'FTM-USDT',
+                          'HNT-USDT', 'ICX-USDT', 'IOST-USDT', 'IOTA-USDT', 'KAVA-USDT', 'KNC-USDT', 'LINK-USDT',
+                          'LTC-USDT',
+                          'MKR-USDT', 'NEO-USDT', 'OMG-USDT', 'ONT-USDT', 'QTUM-USDT', 'REN-USDT', 'RLC-USDT', 'RUNE-USDT',
+                          'SNX-USDT',
+                          'SOL-USDT', 'SRM-USDT', 'STORJ-USDT', 'SUSHI-USDT', 'SXP-USDT', 'THETA-USDT', 'TRB-USDT',
+                          'TRX-USDT',
+                          'UNI-USDT', 'VET-USDT', 'WAVES-USDT', 'XLM-USDT', 'XMR-USDT', 'XRP-USDT', 'XTZ-USDT',
+                          'YFII-USDT',
+                          'YFI-USDT', 'ZEC-USDT', 'ZIL-USDT', 'ZRX-USDT',
+                          'TOMO-USDT', 'RSR-USDT', 'NEAR-USDT', 'MATIC-USDT',
+                          'AAVE-USDT', 'FIL-USDT', 'KSM-USDT', 'LRC-USDT', 'OCEAN-USDT', 'AXS-USDT', 'ZEN-USDT',
+                          'ALPHA-USDT',
+                          'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
                 # All Spot USDT pairs
                 # Stables + LVTs
                 # 'TUSD-USDT','PAX-USDT''USDC-USDT', , 'BUSD-USDT' 'BTCUP-USDT', 'BTCDOWN-USDT', 'ETHUP-USDT', 'ETHDOWN-USDT',, 'ADAUP-USDT', 'ADADOWN-USDT', 'LINKUP-USDT', 'LINKDOWN-USDT, 'BNBUP-USDT', 'BNBDOWN-USDT',
@@ -340,7 +343,7 @@ if __name__ == '__main__':
 
 
 
-                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
+                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
 
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #            'BAT-USDT',
