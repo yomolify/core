@@ -138,7 +138,6 @@ class MTF(StrategyBase):
                 # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["hh_5m"][-1])
 
 
-
             # if self.stop_order:
             #     self.cancel(self.stop_order)
             if d.close[0] > self.inds[ticker]["sma5_1h"] > self.inds[ticker]["sma20_1h"] and d.close[0] > self.inds[ticker]["sma20_5m"]:
