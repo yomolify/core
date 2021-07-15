@@ -26,6 +26,7 @@ from config import BINANCE, ENV, PRODUCTION, BASE, QUOTE, DEBUG, TRADING
 
 if ENV == PRODUCTION:
     from ccxtbt import CCXTStore
+    from backtrader_binance import BinanceStore
 
 import backtrader as bt
 import backtrader_addons as bta
@@ -140,6 +141,7 @@ if __name__ == '__main__':
             # hist_start_date = datetime.utcnow() - timedelta(hours=501)
             hist_start_date = datetime.utcnow() - timedelta(minutes=1)
             for ticker in tickers:
+                # Original
                 data = store.getdata(dataname=ticker, name=ticker,
                                      timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
                                      compression=1, ohlcv_limit=50, drop_newest=True)  # , historical=True)
@@ -147,6 +149,17 @@ if __name__ == '__main__':
                 #                      fromdate=hist_start_date,
                 #                      tf='1Min')
 
+                # Using backtrader-binance
+                store = BinanceStore(
+                    api_key='7leSzp8xkXUzLqJHiYpoz0aiY0iXsUWKp3mk4WWyA8gorADSuEKBeGXo2HQgVA2K',
+                    api_secret='neuxdUFrNaP6nE38ZSHHdpPtgvCldk3oeCGCfDzjVH0AJne6NKgukITUrLWCKBPD',
+                    coin_refer=f'{ticker[:-5]}',
+                    coin_target='USDT',
+                    testnet=False)
+                from_date = datetime.utcnow() - timedelta(minutes=5 * 16)
+                data = store.getdata(
+                    timeframe_in_minutes=5,
+                    start_date=from_date)
                 cerebro.adddata(data)
         cerebro.run()
     else:  # Backtesting with CSV file
@@ -174,7 +187,7 @@ if __name__ == '__main__':
         # fromdate = datetime(2021, 6, 17)
         #
         todate = datetime(2021, 7, 3)
-        fromdate = datetime(2021, 6, 1)
+        fromdate = datetime(2021, 4, 1)
         todate = datetime.now()
 
         # todate = datetime(2021, 4, 5)
@@ -343,7 +356,7 @@ if __name__ == '__main__':
 
 
 
-                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT']
 
                 # tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                 #            'BAT-USDT',

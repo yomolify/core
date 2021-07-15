@@ -61,4 +61,4 @@ while True:
         print("ERROR: {}".format(sys.exc_info()[0]))
         print("{}".format(e))
     # time.sleep(1746)
-    time.sleep(299)
+    time.sleep(2)

@@ -123,15 +123,15 @@ class SMA(StrategyBase):
                 # print("in next")
                 print(dt.datetime.now())
                 ticker = d._name
-                current_size = 0
+                current_position = 0
                 entry_price = 0
                 # print(ticker)
                 position = self.getposition(d)
                 if position is not None:
-                    current_size = self.getposition(d)["size"]
+                    current_position = self.getposition(d)["size"]
                     entry_price = self.getposition(d)["entry_price"]
-                # if current_size:
-                print(f'{ticker} position: {current_size} @ {entry_price}')
+                # if current_position:
+                print(f'{ticker} position: {current_position} @ {entry_price}')
                 self.log_ohlc(d)
                 # self.log('{} Position {}'.format(ticker, current_position))
                 mod = len(self.data)
@@ -222,12 +222,14 @@ class SMA(StrategyBase):
                 #     self.log(f'Close Short {qty} {ticker} @ {price} for {quote} USDT')
 
                 # Batch orders
-                # print(f'adding order for {ticker}')
-                # if current_position:
-                    # self.add_order(data=d, target=0, type="market")
-                # if not current_position:
-                #     self.add_order(data=d, target=((
-                #                                        self.p.order_target_percent) * volatility_factor) / 3,
-                #                    type="market")
-            # if len(self.to_place_orders) > 0:
-            #     self.created_orders = self.place_batch_order(self.to_place_orders)
+                print(f'adding order for {ticker}')
+                if current_position:
+                    self.add_order(data=d, target=0, type="market")
+                if not current_position:
+                    self.add_order(data=d, target=((
+                                                       self.p.order_target_percent) * volatility_factor) / 3,
+                                   type="market")
+            if len(self.to_place_orders) > 0:
+                order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
+                for order_chunk in order_chunks:
+                    self.place_batch_order(order_chunk)

@@ -74,17 +74,17 @@ class MTF(StrategyBase):
             self.inds[ticker]["atr_5m"] = bt.indicators.ATR(d, plot=True, subplot=True)
             self.inds[ticker]["hh_5m"] = bt.indicators.Highest(d.high, plot=True, subplot=True)
             self.inds[ticker]["ll_5m"] = bt.indicators.Lowest(d.low, plot=True, subplot=True)
-            self.inds[ticker]["sma20_5m"] = bt.indicators.SMA(d.close, period=20, plot=True, subplot=False)
-            self.inds[ticker]["sma50_5m"] = bt.indicators.SMA(d.close, period=50, plot=True, subplot=False)
-            self.inds[ticker]["sma100_5m"] = bt.indicators.SMA(d.close, period=100, plot=True, subplot=False)
+            self.inds[ticker]["sma20_5m"] = bt.indicators.EMA(d.close, period=20, plot=True, subplot=False)
+            self.inds[ticker]["sma50_5m"] = bt.indicators.EMA(d.close, period=50, plot=True, subplot=False)
+            self.inds[ticker]["sma100_5m"] = bt.indicators.EMA(d.close, period=100, plot=True, subplot=False)
             self.inds[ticker]["roc"] = bt.indicators.ROC(d.close, period=10, plot=True, subplot=True)
             self.inds[ticker]["roc_std"] = bt.indicators.StdDev(self.inds[ticker]["roc"], period=10, plot=True, subplot=True)
-            self.inds[ticker]["roc_std_sma10"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=10, plot=True, subplot=True)
-            self.inds[ticker]["roc_std_sma20"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=20, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma10"] = bt.indicators.EMA(self.inds[ticker]["roc_std"], period=10, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma20"] = bt.indicators.EMA(self.inds[ticker]["roc_std"], period=20, plot=True, subplot=True)
             self.inds[ticker]["roc_std_sma20"].plotinfo.plotmaster = self.inds[ticker]["roc_std_sma10"]
-            self.inds[ticker]["roc_std_sma50"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=50, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma50"] = bt.indicators.EMA(self.inds[ticker]["roc_std"], period=50, plot=True, subplot=True)
             self.inds[ticker]["roc_std_sma50"].plotinfo.plotmaster = self.inds[ticker]["roc_std_sma10"]
-            self.inds[ticker]["roc_std_sma200"] = bt.indicators.SMA(self.inds[ticker]["roc_std"], period=200, plot=True, subplot=True)
+            self.inds[ticker]["roc_std_sma200"] = bt.indicators.EMA(self.inds[ticker]["roc_std"], period=200, plot=True, subplot=True)
             self.inds[ticker]["roc_std_sma200"].plotinfo.plotmaster = self.inds[ticker]["roc_std_sma10"]
 
             self.inds[ticker]["st_5m"] = SuperTrend(d, plot=True)
@@ -96,9 +96,9 @@ class MTF(StrategyBase):
             # self.inds[ticker]["hh_1h"] = bt.indicators.Highest(d.high, plot=True, subplot=True)
             # self.inds[ticker]["ll_1h"] = bt.indicators.Lowest(d.low, plot=True, subplot=True)
             # self.inds[ticker]["atr_1h"] = bt.indicators.ATR(d, plot=True, subplot=True)
-            self.inds[ticker]["sma5_1h"] = bt.indicators.SMA(d.close, period=5, plot=True, subplot=False)
+            self.inds[ticker]["sma5_1h"] = bt.indicators.EMA(d.close, period=5, plot=True, subplot=False)
             self.inds[ticker]["sma20_1h"] = bt.indicators.EMA(d.close, period=20, plot=True, subplot=False)
-            # self.inds[ticker]["sma50_1h"] = bt.indicators.SMA(d.close, period=50, plot=True, subplot=False)
+            # self.inds[ticker]["sma50_1h"] = bt.indicators.EMA(d.close, period=50, plot=True, subplot=False)
             # self.inds[ticker]["st_1h"] = SuperTrend(d, plot=True)
 
 
