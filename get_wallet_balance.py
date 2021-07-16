@@ -32,6 +32,7 @@ async def cache_wallet(positions, assets):
 
     positions = msgpack.unpackb(positions)
     assets = msgpack.unpackb(assets)
+    # pprint.pprint(assets)
     positions_keys = list(positions[0].keys())
     positions_local = dict()
     for position in positions:

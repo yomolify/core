@@ -142,9 +142,9 @@ if __name__ == '__main__':
             hist_start_date = datetime.utcnow() - timedelta(minutes=1)
             for ticker in tickers:
                 # Original
-                data = store.getdata(dataname=ticker, name=ticker,
-                                     timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-                                     compression=1, ohlcv_limit=50, drop_newest=True)  # , historical=True)
+                # data = store.getdata(dataname=ticker, name=ticker,
+                #                      timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                #                      compression=1, ohlcv_limit=50, drop_newest=True)  # , historical=True)
                 # data = store.getdata(dataname=ticker, name=ticker,
                 #                      fromdate=hist_start_date,
                 #                      tf='1Min')

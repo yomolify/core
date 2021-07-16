@@ -3,6 +3,7 @@ from strategies.base import StrategyBase
 
 import backtrader as bt
 from backtrader.indicators import MovingAverageSimple
+from config import ENV, PRODUCTION, TRADING, DEVELOPMENT
 
 # from indicators.Momentum import Momentum
 from indicators.SuperTrend import SuperTrend
@@ -61,6 +62,11 @@ class MTF(StrategyBase):
         # self.inds = collections.defaultdict(dict)
         self.inds = {}
         self.unique = 0
+
+        if ENV == DEVELOPMENT:
+            self.check_for_live_data = False
+        else:
+            self.check_for_live_data = True
 
         for d in self.datas:
             ticker = d._name
@@ -121,47 +127,49 @@ class MTF(StrategyBase):
         # self.ranks = {d: 5 * m / v for d, v, m in zip(self.datas_5m, vs, ms)}
 
     def next(self):
-        self.datas_5m.sort(reverse=True, key=lambda d: (self.inds[d._name[3:]]["adx_5m"][0]) * (self.inds[d._name[3:]]["roc"][0]))
-        for d in self.datas_5m:
-            ticker = d._name
-            ticker = ticker[3:]
-            current_position = self.get_position(d=d, attribute='size')
-            # if current_position > 0:
-            #     if self.stop_order:
-            #         self.cancel(self.stop_order)
-                # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["ll_5m"][0])
-            # elif current_position < 0:
-                # if self.inds[ticker]["roc_std_sma10"][-1] > self.inds[ticker]["roc_std_sma20"][-1] and self.inds[ticker]["roc_std_sma10"][0] < self.inds[ticker]["roc_std_sma20"][0]:
-                #     self.order_target_percent(d, target=0)
+        if (self.check_for_live_data and self.status == "LIVE") or not self.check_for_live_data:
+            self.datas_5m.sort(reverse=True, key=lambda d: (self.inds[d._name[3:]]["rsi_5m"][0] * self.inds[d._name[3:]]["adx_5m"][0]) * (self.inds[d._name[3:]]["roc"][0]))
+            for d in self.datas_5m:
+                ticker = d._name
+                ticker = ticker[3:]
+                current_position = self.get_position(d=d, attribute='size')
+                # if current_position > 0:
+                #     if self.stop_order:
+                #         self.cancel(self.stop_order)
+                    # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["ll_5m"][0])
+                # elif current_position < 0:
+                    # if self.inds[ticker]["roc_std_sma10"][-1] > self.inds[ticker]["roc_std_sma20"][-1] and self.inds[ticker]["roc_std_sma10"][0] < self.inds[ticker]["roc_std_sma20"][0]:
+                    #     self.order_target_percent(d, target=0)
+                    # if self.stop_order:
+                    #     self.cancel(self.stop_order)
+                    # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["hh_5m"][-1])
+
+
                 # if self.stop_order:
                 #     self.cancel(self.stop_order)
-                # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["hh_5m"][-1])
+                if d.close[0] > self.inds[ticker]["sma5_1h"] > self.inds[ticker]["sma20_1h"] and d.close[0] > self.inds[ticker]["sma20_5m"]:
+                    volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
+                    volatility_factor = 1 / (volatility * 100)
+                    self.add_order(d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")
+                    # self.order_target_percent(d, target=0.25)
+                elif d.close[0] < self.inds[ticker]["sma5_1h"] < self.inds[ticker]["sma20_1h"] and d.close[0] < self.inds[ticker]["sma20_5m"]:
+                    volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
+                    volatility_factor = 1 / (volatility * 100)
+                    self.add_order(d, target=-((self.p.order_target_percent / 100) * volatility_factor), type="market")
 
+                if len(self.to_place_orders) > 0:
+                    print(self.to_place_orders)
+                    order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
+                    for order_chunk in order_chunks:
+                        self.place_batch_order(order_chunk)
+                # else:
+                #     self.unique = self.unique + 1
+                #     self.log('unique case')
 
-            # if self.stop_order:
-            #     self.cancel(self.stop_order)
-            if d.close[0] > self.inds[ticker]["sma5_1h"] > self.inds[ticker]["sma20_1h"] and d.close[0] > self.inds[ticker]["sma20_5m"]:
-                volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
-                volatility_factor = 1 / (volatility * 100)
-                self.add_order(d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")
-                # self.order_target_percent(d, target=0.25)
-            elif d.close[0] < self.inds[ticker]["sma5_1h"] < self.inds[ticker]["sma20_1h"] and d.close[0] < self.inds[ticker]["sma20_5m"]:
-                volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
-                volatility_factor = 1 / (volatility * 100)
-                self.add_order(d, target=-((self.p.order_target_percent / 100) * volatility_factor), type="market")
-
-            if len(self.to_place_orders) > 0:
-                order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
-                for order_chunk in order_chunks:
-                    self.place_batch_order(order_chunk)
-            # else:
-            #     self.unique = self.unique + 1
-            #     self.log('unique case')
-
-                # if self.unique > 10:
-                #     self.order_target_percent(d, target=0)
-                #     self.unique = 0
-            # elif current_position < 0:
-            #     if d.close[0] > self.inds[ticker]["sma20_1h"]:
-            #         self.order_target_percent(d, target=0)
+                    # if self.unique > 10:
+                    #     self.order_target_percent(d, target=0)
+                    #     self.unique = 0
+                # elif current_position < 0:
+                #     if d.close[0] > self.inds[ticker]["sma20_1h"]:
+                #         self.order_target_percent(d, target=0)
 
