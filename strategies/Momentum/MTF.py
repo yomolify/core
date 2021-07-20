@@ -82,7 +82,9 @@ class MTF(StrategyBase):
             self.inds[ticker]["ll_5m"] = bt.indicators.Lowest(d.low, plot=True, subplot=True)
             self.inds[ticker]["sma20_5m"] = bt.indicators.EMA(d.close, period=20, plot=True, subplot=False)
             self.inds[ticker]["sma50_5m"] = bt.indicators.EMA(d.close, period=50, plot=True, subplot=False)
+            self.inds[ticker]["sma60_5m"] = bt.indicators.EMA(d.close, period=60, plot=True, subplot=False)
             self.inds[ticker]["sma100_5m"] = bt.indicators.EMA(d.close, period=100, plot=True, subplot=False)
+            self.inds[ticker]["sma240_5m"] = bt.indicators.EMA(d.close, period=240, plot=True, subplot=False)
             self.inds[ticker]["roc"] = bt.indicators.ROC(d.close, period=10, plot=True, subplot=True)
             self.inds[ticker]["roc_std"] = bt.indicators.StdDev(self.inds[ticker]["roc"], period=10, plot=True, subplot=True)
             self.inds[ticker]["roc_std_sma10"] = bt.indicators.EMA(self.inds[ticker]["roc_std"], period=10, plot=True, subplot=True)
@@ -147,12 +149,16 @@ class MTF(StrategyBase):
 
                 # if self.stop_order:
                 #     self.cancel(self.stop_order)
-                if d.close[0] > self.inds[ticker]["sma5_1h"] > self.inds[ticker]["sma20_1h"] and d.close[0] > self.inds[ticker]["sma20_5m"]:
+                # self.log(f'{ticker} {self.inds[ticker]["sma240_5m"][0]} {self.inds[ticker]["sma20_1h"][0]}')
+
+                # if d.close[0] > self.inds[ticker]["sma5_1h"][0] > self.inds[ticker]["sma20_1h"][0] and d.close[0] > self.inds[ticker]["sma20_5m"][0]:
+                if d.close[0] > self.inds[ticker]["sma60_5m"][0] > self.inds[ticker]["sma240_5m"][0] and d.close[0] > self.inds[ticker]["sma20_5m"][0]:
                     volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
                     volatility_factor = 1 / (volatility * 100)
                     self.add_order(d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")
                     # self.order_target_percent(d, target=0.25)
-                elif d.close[0] < self.inds[ticker]["sma5_1h"] < self.inds[ticker]["sma20_1h"] and d.close[0] < self.inds[ticker]["sma20_5m"]:
+                # elif d.close[0] < self.inds[ticker]["sma5_1h"][0] < self.inds[ticker]["sma20_1h"][0] and d.close[0] < self.inds[ticker]["sma20_5m"][0]:
+                elif d.close[0] < self.inds[ticker]["sma60_5m"][0] < self.inds[ticker]["sma240_5m"][0] and d.close[0] < self.inds[ticker]["sma20_5m"][0]:
                     volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
                     volatility_factor = 1 / (volatility * 100)
                     self.add_order(d, target=-((self.p.order_target_percent / 100) * volatility_factor), type="market")

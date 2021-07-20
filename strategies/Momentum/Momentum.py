@@ -77,22 +77,22 @@ class Momentum(StrategyBase):
         elif kwargs['action'] == 'portfolio':
             self.rebalance_portfolio()
 
-    def notify_order(self, order):
-        if order.alive():
-            return
-
-        otypetxt = 'Buy' if order.isbuy() else 'Sell'
-        if order.status == order.Completed:
-            self.log(
-                '{} Order Completed - Symbol: {} Size: {} @Price: {} Value: {:.2f} Comm: {:.2f}'.format(
-                    otypetxt, order.info['symbol'], order.executed.size, order.executed.price,
-                    order.executed.value, order.executed.comm
-                ))
-        else:
-            self.log('{} Order rejected'.format(otypetxt))
-
-    def log(self, arg):
-        print(f'{self.datetime.date(), arg}')
+    # def notify_order(self, order):
+    #     if order.alive():
+    #         return
+    #
+    #     otypetxt = 'Buy' if order.isbuy() else 'Sell'
+    #     if order.status == order.Completed:
+    #         self.log(
+    #             '{} Order Completed - Symbol: {} Size: {} @Price: {} Value: {:.2f} Comm: {:.2f}'.format(
+    #                 otypetxt, order.info['symbol'], order.executed.size, order.executed.price,
+    #                 order.executed.value, order.executed.comm
+    #             ))
+    #     else:
+    #         self.log('{} Order rejected'.format(otypetxt))
+    #
+    # def log(self, arg):
+    #     print(f'{self.datetime.date(), arg}')
 
     def rebalance_portfolio(self):
         # only look at data that we can have indicators for

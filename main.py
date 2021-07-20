@@ -188,6 +188,7 @@ if __name__ == '__main__':
         #
         todate = datetime(2021, 7, 3)
         fromdate = datetime(2021, 4, 1)
+        fromdate = datetime(2021, 7, 1)
         todate = datetime.now()
 
         # todate = datetime(2021, 4, 5)
@@ -298,7 +299,6 @@ if __name__ == '__main__':
                 #            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
                 #            'DOGE-USDT',
                 #            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
-                # MTF 525% & 25% for 5/1 to 7/3
                 tickers = ['BTC-USDT', 'ADA-USDT', 'ALGO-USDT', 'ATOM-USDT', 'AVAX-USDT', 'BAL-USDT', 'BAND-USDT',
                           'BAT-USDT',
                           'BCH-USDT',
@@ -495,21 +495,21 @@ if __name__ == '__main__':
                 # cerebro.resampledata(data,
                 #                                           timeframe=bt.TimeFrame.Minutes,
                 #                                           compression=60, name=f'hourly_{ticker}')
-            for ticker in tickers:
-                data = bt.feeds.MarketStore(
-                    symbol=f'binancefutures_{ticker}',
-                    # symbol=f'binance_{ticker}',
-                    name=f'{ticker}',
-                    # query_timeframe='5Min',
-                    # query_timeframe='5Min',
-                    query_timeframe='1H',
-                    fromdate=fromdate,
-                    todate=todate,
-                )
-                # cerebro.resampledata(data,
-                #                                           timeframe=bt.TimeFrame.Minutes,
-                #                                           compression=480)
-                cerebro.adddata(data, name=f'1H_{ticker}')
+            # for ticker in tickers:
+            #     data = bt.feeds.MarketStore(
+            #         symbol=f'binancefutures_{ticker}',
+            #         # symbol=f'binance_{ticker}',
+            #         name=f'{ticker}',
+            #         # query_timeframe='5Min',
+            #         # query_timeframe='5Min',
+            #         query_timeframe='1H',
+            #         fromdate=fromdate,
+            #         todate=todate,
+            #     )
+            #     # cerebro.resampledata(data,
+            #     #                                           timeframe=bt.TimeFrame.Minutes,
+            #     #                                           compression=480)
+            #     cerebro.adddata(data, name=f'1H_{ticker}')
 
             # add btc dominance data to cerebro
             # btc_dom = bt.feeds.GenericCSVData(
@@ -559,7 +559,7 @@ if __name__ == '__main__':
 
         addAnalyzers(cerebro)
 
-        stats = cerebro.run(maxcpus=16)
+        stats = cerebro.run(maxcpus=16, runOnce=False)
         stat = stats[0].analyzers
 
         print(args.strategy)
