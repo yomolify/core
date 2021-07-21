@@ -34,7 +34,7 @@ class SuperTrend(bt.Indicator):
     """
     Super Trend indicator
     """
-    params = (('period', 7), ('multiplier', 3))
+    params = (('period', 10), ('multiplier', 3))
     lines = ('super_trend',)
     plotinfo = dict(subplot=False)
 

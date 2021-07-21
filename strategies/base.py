@@ -186,6 +186,12 @@ class StrategyBase(bt.Strategy):
                 # For 5 Min CandlestickPatterns
                 if self.strategy == "NewYearlyHighs":
                     self.stop_orders[ticker].append(self.close(data=order.data, size=self.executed_size, exectype=bt.Order.Stop, price=self.pos[ticker]["sl_price"]))
+                # if self.strategy == "ST":
+                #     self.log('Buy executed, placing stop')
+                #     if order.data._name[3:] in self.stop_order:
+                #         self.stop_order[order.data._name[3:]]
+                #     self.stop_order[order.data._name[3:]] = self.close(data=order.data, price=self.pos[ticker[3:]]["sl_price"], exectype=bt.Order.Stop)
+
                 # if self.strategy == "MTF":
                 #     self.log('Buy executed, placing stop')
                 #     if self.stop_order:
@@ -238,6 +244,12 @@ class StrategyBase(bt.Strategy):
                     self.short_stop_order = self.exec_trade(direction="close", price=self.sl_price,
                                                             exectype=bt.Order.Stop)
                     self.log(f'Placing Short Stop @ {self.sl_price}')
+                # if self.strategy == "ST":
+                #     self.log('Sell executed, placing stop')
+                #     if order.data._name[3:] in self.stop_order:
+                #         self.stop_order[order.data._name[3:]]
+                #     self.stop_order[order.data._name[3:]] = self.close(data=order.data, price=self.pos[ticker[3:]]["sl_price"], exectype=bt.Order.Stop)
+
                 # if self.strategy == "MTF":
                 #     self.log('Sell executed, placing stop')
                 #     if self.stop_order:
