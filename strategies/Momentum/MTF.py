@@ -62,6 +62,9 @@ class MTF(StrategyBase):
         # self.inds = collections.defaultdict(dict)
         self.inds = {}
         self.unique = 0
+        self.pos = {}
+        # self.orders = dict()
+        self.stop_order = dict()
 
         if ENV == DEVELOPMENT:
             self.check_for_live_data = False
@@ -72,6 +75,7 @@ class MTF(StrategyBase):
             ticker = d._name
             ticker = ticker[3:]
             self.inds[ticker] = {}
+            self.pos[ticker] = {}
         for d in self.datas_5m:
             ticker = d._name
             ticker = ticker[3:]
@@ -138,30 +142,79 @@ class MTF(StrategyBase):
                 # if current_position > 0:
                 #     if self.stop_order:
                 #         self.cancel(self.stop_order)
-                    # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["ll_5m"][0])
+                #     self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["ll_5m"][0])
                 # elif current_position < 0:
-                    # if self.inds[ticker]["roc_std_sma10"][-1] > self.inds[ticker]["roc_std_sma20"][-1] and self.inds[ticker]["roc_std_sma10"][0] < self.inds[ticker]["roc_std_sma20"][0]:
-                    #     self.order_target_percent(d, target=0)
-                    # if self.stop_order:
-                    #     self.cancel(self.stop_order)
-                    # self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["hh_5m"][-1])
+                #     if self.inds[ticker]["roc_std_sma10"][-1] > self.inds[ticker]["roc_std_sma20"][-1] and self.inds[ticker]["roc_std_sma10"][0] < self.inds[ticker]["roc_std_sma20"][0]:
+                #         self.order_target_percent(d, target=0)
+                #     if self.stop_order:
+                #         self.cancel(self.stop_order)
+                #     self.stop_order = self.close(d, exectype=bt.Order.StopTrail, trailamount=self.inds[ticker]["hh_5m"][-1])
 
+                self.pos[ticker]["size"] = self.get_position(d=d, attribute='size')
+                self.pos[ticker]["price"] = self.get_position(d=d, attribute='price')
+                # if current_position > 0:
+                #     # StopWin
+                #     self.pos[ticker]["profit"] = d.close[0] - self.pos[ticker]["price"]
+                #     self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker][
+                #         "price"]) * 100
+                #     if self.pos[ticker]["profit_percentage"] > 95:
+                #         # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                #         self.pos[ticker]["new_sl_price"] = 1.8 * self.pos[ticker]["price"]
+                #     elif self.pos[ticker]["profit_percentage"] > 85:
+                #         self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                #         self.pos[ticker]["new_sl_price"] = 1.7 * self.pos[ticker]["price"]
+                #     elif self.pos[ticker]["profit_percentage"] > 75:
+                #         # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                #         self.pos[ticker]["new_sl_price"] = 1.6 * self.pos[ticker]["price"]
+                #     elif self.pos[ticker]["profit_percentage"] > 65:
+                #         # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                #         self.pos[ticker]["new_sl_price"] = 1.5 * self.pos[ticker]["price"]
+                #     elif self.pos[ticker]["profit_percentage"] > 55:
+                #         # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                #         self.pos[ticker]["new_sl_price"] = 1.4 * self.pos[ticker]["price"]
+                #     elif self.pos[ticker]["profit_percentage"] > 45:
+                #         # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                #         self.pos[ticker]["new_sl_price"] = 1.3 * self.pos[ticker]["price"]
+                #     elif self.pos[ticker]["profit_percentage"] > 35:
+                #         # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                #         self.pos[ticker]["new_sl_price"] = 1.2 * self.pos[ticker]["price"]
+                #     elif self.pos[ticker]["profit_percentage"] > 25:
+                #         # self.log(f'{ticker} Long profit > 25%, updating stop win to 20%')
+                #         self.pos[ticker]["new_sl_price"] = 1.1 * self.pos[ticker]["price"]
+                #     elif self.pos[ticker]["profit_percentage"] > 15:
+                #         # self.log(f'{ticker} Long profit > 15%, updating stop win to 10%')
+                #         self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
+                #     # elif self.pos[ticker]["profit_percentage"] > 5:
+                #     #     self.log(f'{ticker} Long profit > 5%, updating stop win to 0%')
+                #     #     self.pos[ticker]["new_sl_price"] = 0.95 * self.pos[ticker]["price"]
+                #     if self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and self.pos[ticker]["new_sl_price"] > self.pos[ticker]["sl_price"]:
+                #         self.log(
+                #             f'{ticker} Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
+                #         self.pos[ticker]["sl_price"] = self.pos[ticker]["new_sl_price"]
+                #         if ticker in self.stop_order:
+                #             self.cancel(self.stop_order[ticker])
+                #             self.stop_order[ticker] = None
+                #         self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
 
                 # if self.stop_order:
                 #     self.cancel(self.stop_order)
                 # self.log(f'{ticker} {self.inds[ticker]["sma240_5m"][0]} {self.inds[ticker]["sma20_1h"][0]}')
 
                 # if d.close[0] > self.inds[ticker]["sma5_1h"][0] > self.inds[ticker]["sma20_1h"][0] and d.close[0] > self.inds[ticker]["sma20_5m"][0]:
-                if d.close[0] > self.inds[ticker]["sma60_5m"][0] > self.inds[ticker]["sma240_5m"][0] and d.close[0] > self.inds[ticker]["sma20_5m"][0]:
-                    volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
+                if d.high[0] > self.inds[ticker]["sma60_5m"][0] > self.inds[ticker]["sma240_5m"][0] and d.high[0] > self.inds[ticker]["sma20_5m"][0]:
+                    volatility = self.inds[ticker]["atr_5m"][0] / d.high[0]
                     volatility_factor = 1 / (volatility * 100)
                     self.add_order(d, target=((self.p.order_target_percent/100) * volatility_factor), type="market")
+                    self.pos[ticker]["sl_price"] = 0.1 * d.close[0]
+                    self.pos[ticker]["new_sl_price"] = None
                     # self.order_target_percent(d, target=0.25)
-                # elif d.close[0] < self.inds[ticker]["sma5_1h"][0] < self.inds[ticker]["sma20_1h"][0] and d.close[0] < self.inds[ticker]["sma20_5m"][0]:
-                elif d.close[0] < self.inds[ticker]["sma60_5m"][0] < self.inds[ticker]["sma240_5m"][0] and d.close[0] < self.inds[ticker]["sma20_5m"][0]:
-                    volatility = self.inds[ticker]["atr_5m"][0] / d.close[0]
+                # elif d.high[0] < self.inds[ticker]["sma5_1h"][0] < self.inds[ticker]["sma20_1h"][0] and d.high[0] < self.inds[ticker]["sma20_5m"][0]:
+                elif d.high[0] < self.inds[ticker]["sma60_5m"][0] < self.inds[ticker]["sma240_5m"][0] and d.high[0] < self.inds[ticker]["sma20_5m"][0]:
+                    volatility = self.inds[ticker]["atr_5m"][0] / d.high[0]
                     volatility_factor = 1 / (volatility * 100)
                     self.add_order(d, target=-((self.p.order_target_percent / 100) * volatility_factor), type="market")
+                    self.pos[ticker]["sl_price"] = 10 * d.close[0]
+                    self.pos[ticker]["new_sl_price"] = None
 
                 if len(self.to_place_orders) > 0:
                     print(self.to_place_orders)
@@ -176,6 +229,6 @@ class MTF(StrategyBase):
                     #     self.order_target_percent(d, target=0)
                     #     self.unique = 0
                 # elif current_position < 0:
-                #     if d.close[0] > self.inds[ticker]["sma20_1h"]:
+                #     if d.high[0] > self.inds[ticker]["sma20_1h"]:
                 #         self.order_target_percent(d, target=0)
 

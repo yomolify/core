@@ -187,8 +187,9 @@ if __name__ == '__main__':
         # fromdate = datetime(2021, 6, 17)
         #
         todate = datetime(2021, 7, 3)
-        fromdate = datetime(2021, 4, 1)
+        # fromdate = datetime(2021, 4, 1)
         fromdate = datetime(2021, 7, 1)
+        fromdate = datetime(2021, 7, 20)
         todate = datetime.now()
 
         # todate = datetime(2021, 4, 5)
@@ -341,7 +342,7 @@ if __name__ == '__main__':
                 # tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
                     #
                 # tickers = ['BTC-USDT']
-                # tickers = ['BTC-USDT', 'ETH-USDT']
+                tickers = ['BTC-USDT', 'ETH-USDT']
                 # tickers = ['ETH-USDT']
                 # tickers = ['BNB-USDT']
                 # tickers = ['LTC-USDT']
@@ -483,7 +484,7 @@ if __name__ == '__main__':
                     name=f'{ticker}',
                     # query_timeframe='1Min',
                     # query_timeframe='1H',
-                    query_timeframe='5Min',
+                    query_timeframe='1Min',
                     # timeframe=bt.TimeFrame.Minutes,
                     fromdate=fromdate,
                     todate=todate,
@@ -491,7 +492,27 @@ if __name__ == '__main__':
                     # compression=60,
                 )
 
-                cerebro.adddata(data, name=f'5m_{ticker}')
+                # cerebro.adddata(data, name=f'5m_{ticker}')
+                cerebro.resampledata(data,
+                                                          timeframe=bt.TimeFrame.Minutes,
+                                                          compression=3)
+
+            # for ticker in tickers:
+            #     data = bt.feeds.MarketStore(
+            #         symbol=f'binancefutures_{ticker}',
+            #         # symbol=f'binance_{ticker}',
+            #         name=f'{ticker}',
+            #         # query_timeframe='1Min',
+            #         # query_timeframe='1H',
+            #         query_timeframe='5Min',
+            #         # timeframe=bt.TimeFrame.Minutes,
+            #         fromdate=fromdate,
+            #         todate=todate,
+            #         # compression=1,
+            #         # compression=60,
+            #     )
+            #
+            #     cerebro.adddata(data, name=f'5m_{ticker}')
                 # cerebro.resampledata(data,
                 #                                           timeframe=bt.TimeFrame.Minutes,
                 #                                           compression=60, name=f'hourly_{ticker}')
