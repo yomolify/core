@@ -84,20 +84,23 @@ class ST(StrategyBase):
             ticker = d._name
             ticker = ticker[3:]
             self.inds[ticker]["rsi_5m"] = bt.indicators.RSI(d, plot=False, subplot=False)
-            self.inds[ticker]["adx_5m"] = bt.indicators.ADX(d, plot=False, subplot=False)
+            self.inds[ticker]["adx_5m"] = bt.indicators.ADX(d, plot=True, subplot=True)
             self.inds[ticker]["atr_5m"] = bt.indicators.ATR(d, plot=False, subplot=False)
             self.inds[ticker]["volatility_5m"] = 1 / ((self.inds[ticker]["atr_5m"] / d.high) * 100)
+            self.inds[ticker]["volsma_slow_5m"] = bt.indicators.EMA(d.close, period=20, plot=False, subplot=False)
+            self.inds[ticker]["volsma_fast_5m"] = bt.indicators.EMA(d.close, period=50, plot=False, subplot=False)
             self.inds[ticker]["hh_5m"] = bt.indicators.Highest(d.high, period=50, plot=False, subplot=False)
             self.inds[ticker]["hh_fast_5m"] = bt.indicators.Highest(d.high, period=10, plot=False, subplot=False)
             self.inds[ticker]["hh_fastest_5m"] = bt.indicators.Highest(d.high, period=2, plot=False, subplot=False)
             self.inds[ticker]["ll_5m"] = bt.indicators.Lowest(d.low, period=50, plot=False, subplot=False)
             self.inds[ticker]["ll_fast_5m"] = bt.indicators.Lowest(d.low, period=10, plot=False, subplot=False)
             self.inds[ticker]["ll_fastest_5m"] = bt.indicators.Lowest(d.low, period=2, plot=False, subplot=False)
+            self.inds[ticker]["sma5_5m"] = bt.indicators.EMA(d.close, period=5, plot=False, subplot=False)
             self.inds[ticker]["sma20_5m"] = bt.indicators.EMA(d.close, period=20, plot=False, subplot=False)
             self.inds[ticker]["sma50_5m"] = bt.indicators.EMA(d.close, period=50, plot=False, subplot=False)
             self.inds[ticker]["sma60_5m"] = bt.indicators.EMA(d.close, period=60, plot=False, subplot=False)
             self.inds[ticker]["sma100_5m"] = bt.indicators.EMA(d.close, period=100, plot=False, subplot=False)
-            self.inds[ticker]["sma240_5m"] = bt.indicators.EMA(d.close, period=240, plot=True, subplot=False)
+            self.inds[ticker]["sma240_5m"] = bt.indicators.SMA(d.close, period=240, plot=True, subplot=False)
             self.inds[ticker]["roc"] = bt.indicators.ROC(d.close, period=10, plot=False, subplot=False)
             # self.inds[ticker]["roc_std"] = bt.indicators.StdDev(self.inds[ticker]["roc"], period=10, plot=False, subplot=False)
             # self.inds[ticker]["roc_std_sma10"] = bt.indicators.EMA(self.inds[ticker]["roc_std"], period=10, plot=False, subplot=False)
@@ -195,6 +198,8 @@ class ST(StrategyBase):
                     elif self.pos[ticker]["profit_percentage"] > 5:
                         # self.log(f'{ticker} Long profit > 5%, updating stop win to 0%')
                         self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] < 5:
+                    #     self.buy(d, size=abs(self.pos[ticker]["size"])/2)
                     # if self.pos[ticker]["profit_percentage"] < 5:
                         # self.log(f'{ticker} Long profit > 5%, updating stop win to 0%')
                         # self.close(d)
@@ -245,6 +250,8 @@ class ST(StrategyBase):
                         self.pos[ticker]["new_sl_price"] = self.inds[ticker]["hh_fast_5m"][0]
                     elif self.pos[ticker]["profit_percentage"] > 5:
                         self.pos[ticker]["new_sl_price"] = self.inds[ticker]["hh_5m"][0]
+                    # elif self.pos[ticker]["profit_percentage"] < 5:
+                    #     self.sell(d, size=abs(self.pos[ticker]["size"])/2)
                     if self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and self.pos[ticker]["new_sl_price"] < self.pos[ticker]["sl_price"]:
                         self.log(
                             f'{ticker} Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')

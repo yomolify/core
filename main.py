@@ -187,9 +187,9 @@ if __name__ == '__main__':
         # fromdate = datetime(2021, 6, 17)
         #
         todate = datetime(2021, 7, 3)
-        fromdate = datetime(2021, 4, 1)
+        # fromdate = datetime(2021, 4, 1)
         # fromdate = datetime(2021, 7, 1)
-        # fromdate = datetime(2021, 7, 15)
+        fromdate = datetime(2021, 6, 26)
         todate = datetime.now()
 
         # todate = datetime(2021, 4, 5)
@@ -279,17 +279,17 @@ if __name__ == '__main__':
             # New Yearly Highs
             if strategy_class == 'GCSImproved' or 'NewYearlyHighs' or 'NewYearlyHighsStops' or "HMA" or "SHA" or "NLS1" or "GoldenCrossStops" or "LS" or "LS5Min" or "NewYearlyHighsImproved" or "SwingHL" or "EE" or "TurtleTrader" or 'CrossSectional' or 'VWAP' or 'Trend' or 'MTF' or 'ST' in args.strategy:
                 # MTF 187% & 13% for 5/1 to 7/3
-                tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
-                           'LINK-USDT',
-                           'XLM-USDT',
-                           'ADA-USDT',
-                           'XMR-USDT', 'DASH-USDT',
-                           'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
-                           'BAT-USDT',
-                           'VET-USDT',
-                           'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
-                           'DOGE-USDT',
-                           'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
+                #            'LINK-USDT',
+                #            'XLM-USDT',
+                #            'ADA-USDT',
+                #            'XMR-USDT', 'DASH-USDT',
+                #            'ZEC-USDT', 'XTZ-USDT', 'BNB-USDT', 'ATOM-USDT', 'ONT-USDT', 'IOTA-USDT',
+                #            'BAT-USDT',
+                #            'VET-USDT',
+                #            'NEO-USDT', 'QTUM-USDT', 'IOST-USDT', 'THETA-USDT', 'ALGO-USDT', 'ZIL-USDT', 'ZRX-USDT', 'OMG-USDT',
+                #            'DOGE-USDT',
+                #            'BAND-USDT', 'WAVES-USDT', 'ICX-USDT', 'FTM-USDT', 'ENJ-USDT', 'TOMO-USDT', 'REN-USDT']
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT',
                 #            'LINK-USDT',
                 #             'XLM-USDT',
@@ -337,7 +337,7 @@ if __name__ == '__main__':
                            # 'VTHO-USDT', 'DGB-USDT', 'GBP-USDT', 'SXP-USDT', 'MKR-USDT', 'DCR-USDT', 'STORJ-USDT', 'XTZUP-USDT', 'XTZDOWN-USDT', 'MANA-USDT', 'AUD-USDT', 'YFI-USDT', 'BAL-USDT', 'BLZ-USDT', 'IRIS-USDT', 'KMD-USDT', 'JST-USDT', 'SRM-USDT', 'ANT-USDT', 'CRV-USDT', 'SAND-USDT', 'OCEAN-USDT', 'NMR-USDT', 'DOT-USDT', 'LUNA-USDT', 'RSR-USDT', 'PAXG-USDT', 'WNXM-USDT', 'TRB-USDT', 'BZRX-USDT', 'SUSHI-USDT', 'YFII-USDT', 'KSM-USDT', 'EGLD-USDT', 'DIA-USDT', 'RUNE-USDT', 'FIO-USDT', 'UMA-USDT', 'EOSUP-USDT', 'EOSDOWN-USDT', 'TRXUP-USDT', 'TRXDOWN-USDT', 'XRPUP-USDT', 'XRPDOWN-USDT', 'DOTUP-USDT', 'DOTDOWN-USDT', 'BEL-USDT', 'WING-USDT', 'LTCUP-USDT', 'LTCDOWN-USDT', 'UNI-USDT', 'NBS-USDT', 'OXT-USDT', 'AVAX-USDT', 'HNT-USDT', 'FLM-USDT', 'UNIUP-USDT', 'UNIDOWN-USDT', 'ORN-USDT', 'UTK-USDT', 'XVS-USDT', 'ALPHA-USDT', 'AAVE-USDT', 'NEAR-USDT', 'SXPUP-USDT', 'SXPDOWN-USDT', 'FIL-USDT', 'FILUP-USDT', 'FILDOWN-USDT', 'YFIUP-USDT', 'YFIDOWN-USDT', 'INJ-USDT', 'AUDIO-USDT', 'CTK-USDT', 'BCHUP-USDT', 'BCHDOWN-USDT', 'AKRO-USDT', 'AXS-USDT', 'HARD-USDT', 'DNT-USDT', 'STRAX-USDT', 'UNFI-USDT', 'ROSE-USDT', 'AVA-USDT', 'XEM-USDT', 'AAVEUP-USDT', 'AAVEDOWN-USDT', 'SKL-USDT', 'SUSD-USDT', 'SUSHIUP-USDT', 'SUSHIDOWN-USDT', 'XLMUP-USDT', 'XLMDOWN-USDT', 'GRT-USDT', 'JUV-USDT', 'PSG-USDT', '1INCH-USDT', 'REEF-USDT', 'OG-USDT', 'ATM-USDT', 'ASR-USDT', 'CELO-USDT', 'RIF-USDT', 'BTCST-USDT', 'TRU-USDT', 'CKB-USDT', 'TWT-USDT', 'FIRO-USDT', 'LIT-USDT', 'SFP-USDT', 'DODO-USDT', 'CAKE-USDT', 'ACM-USDT', 'BADGER-USDT', 'FIS-USDT', 'OM-USDT', 'POND-USDT', 'DEGO-USDT', 'ALICE-USDT', 'LINA-USDT', 'PERP-USDT', 'RAMP-USDT', 'SUPER-USDT', 'CFX-USDT', 'EPS-USDT', 'AUTO-USDT', 'TKO-USDT', 'PUNDIX-USDT', 'TLM-USDT', '1INCHUP-USDT', '1INCHDOWN-USDT', 'BTG-USDT', 'MIR-USDT', 'BAR-USDT', 'FORTH-USDT', 'BAKE-USDT', 'BURGER-USDT', 'SLP-USDT', 'SHIB-USDT', 'ICP-USDT', 'AR-USDT', 'POLS-USDT', 'MDX-USDT', 'MASK-USDT', 'LPT-USDT', 'NU-USDT', 'XVG-USDT', 'ATA-USDT', 'GTC-USDT', 'TORN-USDT']
                 # tickers = ['BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT', 'FIL-USDT', 'KSM-USDT',
                 #           'ALPHA-USDT']
-                # tickers = ['BTC-USDT', 'ETH-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT']
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'BNB-USDT', 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT']
                 # tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
                     #
                 # tickers = ['BTC-USDT']
