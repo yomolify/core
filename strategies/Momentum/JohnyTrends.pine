@@ -1,0 +1,136 @@
+//
+
+@version
+
+=4
+study(title="Johny's Trend's", overlay=true)
+
+Act_ADX = input(true, "ADX PATTERNS")
+ADX_len = input(16, title="ADX LENGTH", type=input.integer, minval=1)
+th = input(17, title="ADX THRESHOLD", type=input.integer, minval=0)
+
+calcADX(_len) = >
+up = change(high)
+down = -change(low)
+plusDM = na(up) ? na: (up > down and up > 0 ? up: 0)
+minusDM = na(down) ? na: (down > up and down > 0 ? down: 0)
+truerange = rma(tr, _len)
+_plus = fixnan(100 * rma(plusDM, _len) / truerange)
+_minus = fixnan(100 * rma(minusDM, _len) / truerange)
+sum = _plus + _minus
+_adx = 100 * rma(abs(_plus - _minus) / (sum == 0 ? 1: sum), _len)
+[_plus, _minus, _adx]
+
+[DIPlus, DIMinus, ADX] = calcADX(ADX_len)
+
+macol = DIPlus > DIMinus and ADX > th ? color.white: DIPlus < DIMinus and ADX > th ? color.black: color.orange
+barcolor(color=Act_ADX ? macol: na, title = "ADX")
+
+st_mult = input(2, title='Trend Multiplier', minval=0, maxval=100, step=0.01)
+st_period = input(10, title='Trend Period', minval=1)
+hilow = ((high - low) * 100)
+openclose = ((close - open) * 100)
+vol = (obv / hilow)
+spreadvol = (openclose * vol)
+VPT = spreadvol + cum(spreadvol)
+window_len = 28
+
+v_len = 14
+price_spread = stdev(high - low, window_len)
+
+vx = spreadvol + cum(spreadvol)
+smooth = ema(vx, v_len)
+v_spread = stdev(vx - smooth, window_len)
+shadow = (vx - smooth) / v_spread * price_spread
+
+out = shadow > 0 ? high + shadow: low + shadow
+
+up_lev = out - (st_mult * atr(st_period))
+dn_lev = out + (st_mult * atr(st_period))
+
+Volatility = 100 * sum(100 * atr(1) / low, 1) / 100
+factor = input(title="Volatility Factor", defval=0.5, minval=0.1, maxval=5, step=0.1, type=input.float)
+perc = (Volatility * 0.01) * factor
+
+hb = 0.00, hb := nz(hb[1])
+hl = 0.000, hl := nz(hl[1])
+
+lb = 0.00, lb := nz(lb[1])
+l1 = 0.000, l1 := nz(l1[1])
+
+c = 0
+c := nz(c[1]) + 1
+
+trend = 0, trend := nz(trend[1]), n = dn_lev, x = up_lev
+
+if barstate.isfirst
+    c := 0
+    lb := n
+    hb := x
+    l1 := out
+    hl := out
+    hl
+if c == 1
+    if x >= hb[1]
+        hb := x
+        hl := out
+        trend := 1
+        trend
+    else
+        lb := n
+        l1 := out
+        trend := -1
+        trend
+
+if c > 1
+
+    if trend[1] > 0
+        hl := max(hl[1], out)
+        if x >= hb[1]
+            hb := x
+            hb
+        else
+
+            if n < hb[1] - hb[1] * perc
+                lb := n
+                l1 := out
+
+                trend := -1
+                trend
+    else
+
+        l1 := min(l1[1], out)
+
+        if n <= lb[1]
+            lb := n
+            lb
+        else
+
+            if x > lb[1] + lb[1] * perc
+                hb := x
+                hl := out
+
+                trend := 1
+                trend
+
+v = trend == 1 ? hb: trend == -1 ? lb: na
+
+long = trend == 1 and trend[1] == -1
+short = trend == -1 and trend[1] == 1
+
+last_long = 0.0
+last_short = 0.0
+last_long := long ? time: nz(last_long[1])
+last_short := short ? time: nz(last_short[1])
+
+buy = crossover(last_long, last_short)
+sell = crossover(last_short, last_long)
+
+// Plotshape
+plotshape(buy, title="buy", text="Buy", color=color.green, style=shape.cross, location=location.belowbar, size=size.small, textcolor=color.black, transp=0) // plot
+for buy icon
+    plotshape(sell, title="sell", text="Sell", color=color.red, style=shape.xcross, location=location.abovebar, size=size.small, textcolor=color.black, transp=0)
+
+// Alerts
+alertcondition(buy, title='buy', message='Buy')
+alertcondition(sell, title='sell', message='Sell')
