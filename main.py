@@ -190,7 +190,7 @@ if __name__ == '__main__':
         # fromdate = datetime(2021, 6, 1)
         # fromdate = datetime(2021, 7, 1)
 
-        leverage = 2
+        leverage = 1
 
         # fromdate = datetime(2021, 6, 26)
 
