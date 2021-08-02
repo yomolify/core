@@ -111,9 +111,12 @@ if __name__ == '__main__':
             cerebro.broker.setcash(10000.0)
         cerebro.addsizer(FullMoney)
         cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-        cerebro.broker.setcommission(leverage=3)
-        if strategy_class == 'NewYearlyHighs' or strategy_class == 'SMA' or strategy_class == 'TestSMA':
-            tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT']
+        cerebro.broker.setcommission(leverage=2)
+        if strategy_class == 'NewYearlyHighs' or strategy_class == 'SMA' or strategy_class == 'TestSMA' or strategy_class == 'ST':
+            tickers = [ 'XRP/USDT', 'EOS/USDT', 'LTC/USDT', 'TRX/USDT', 'ETC/USDT', 'LINK/USDT'
+                    , 'DOT/USDT', 'DOGE/USDT', 'AXS/USDT', 'AAVE/USDT', 'MATIC/USDT', 'BTC/USDT', 'ETH/USDT', 'BNB/USDT']
+            # tickers = ['BTC/USDT', 'XRP/USDT']
+
             # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT',
             #            'BAT/USDT',
             #            'BCH/USDT',
@@ -139,27 +142,27 @@ if __name__ == '__main__':
             # LUNA / USD
             # AKRO/USDT
             # hist_start_date = datetime.utcnow() - timedelta(hours=501)
-            hist_start_date = datetime.utcnow() - timedelta(minutes=1)
+            hist_start_date = datetime.utcnow() - timedelta(minutes=241)
             for ticker in tickers:
                 # Original
-                # data = store.getdata(dataname=ticker, name=ticker,
-                #                      timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-                #                      compression=1, ohlcv_limit=50, drop_newest=True)  # , historical=True)
+                data = store.getdata(dataname=ticker, name=ticker,
+                                     timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                                     compression=5, ohlcv_limit=241, drop_newest=True)  # , historical=True)
                 # data = store.getdata(dataname=ticker, name=ticker,
                 #                      fromdate=hist_start_date,
                 #                      tf='1Min')
 
                 # Using backtrader-binance
-                store = BinanceStore(
-                    api_key='7leSzp8xkXUzLqJHiYpoz0aiY0iXsUWKp3mk4WWyA8gorADSuEKBeGXo2HQgVA2K',
-                    api_secret='neuxdUFrNaP6nE38ZSHHdpPtgvCldk3oeCGCfDzjVH0AJne6NKgukITUrLWCKBPD',
-                    coin_refer=f'{ticker[:-5]}',
-                    coin_target='USDT',
-                    testnet=False)
-                from_date = datetime.utcnow() - timedelta(minutes=5 * 16)
-                data = store.getdata(
-                    timeframe_in_minutes=5,
-                    start_date=from_date)
+                # store = BinanceStore(
+                #     api_key='7leSzp8xkXUzLqJHiYpoz0aiY0iXsUWKp3mk4WWyA8gorADSuEKBeGXo2HQgVA2K',
+                #     api_secret='neuxdUFrNaP6nE38ZSHHdpPtgvCldk3oeCGCfDzjVH0AJne6NKgukITUrLWCKBPD',
+                #     coin_refer=f'{ticker[:-5]}',
+                #     coin_target='USDT',
+                #     testnet=False)
+                # from_date = datetime.utcnow() - timedelta(minutes=1 * 20)
+                # data = store.getdata(
+                #     timeframe_in_minutes=1,
+                #     start_date=from_date)
                 cerebro.adddata(data)
         cerebro.run()
     else:  # Backtesting with CSV file
@@ -179,7 +182,7 @@ if __name__ == '__main__':
         todate = datetime(2021, 6, 1)
         fromdate = datetime(2021, 4, 1)
         #
-        todate = datetime(2021, 7, 3)
+        todate = datetime(2021, 7, 23)
         fromdate = datetime(2021, 1, 1)
 
         # TODO - Catch the extreme bottom
@@ -190,14 +193,14 @@ if __name__ == '__main__':
         # fromdate = datetime(2021, 6, 1)
         # fromdate = datetime(2021, 7, 1)
 
-        leverage = 1
+        leverage = 2
 
         # fromdate = datetime(2021, 6, 26)
 
         # fromdate = datetime(2021, 5, 1)
         # todate = datetime(2021, 2, 1)
         # fromdate = datetime(2021, 1, 1)
-        todate = datetime.now()
+        # todate = datetime.now()
 
         # fromdate = datetime(2021, 2, 20)
         # todate = datetime(2021, 3, 5)
@@ -529,11 +532,11 @@ if __name__ == '__main__':
                     # compression=60,
                 )
 
-                cerebro.adddata(data, name=f'5m_{ticker}')
+                cerebro.adddata(data, name=f'{ticker}')
 
                 # cerebro.resampledata(data,
                 #                                           timeframe=bt.TimeFrame.Minutes,
-                #                                           compression=3, name=f'5m_{ticker}')
+                #                                           compression=60, name=f'{ticker}')
 
 
             # for ticker in tickers:

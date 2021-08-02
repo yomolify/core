@@ -56,6 +56,7 @@ class ST(StrategyBase):
         self.slow_sma_stop_win = False
         self.last_operation = "SELL"
         self.status = "DISCONNECTED"
+        self.placed_orders = None
         self.buy_price_close = None
         self.sell_price_close = None
         self.executed_size = None
@@ -66,9 +67,9 @@ class ST(StrategyBase):
         self.inds = {}
         self.unique = 0
         self.pos = {}
-        # self.orders = dict()
+        self.orders = dict()
         self.stop_order = dict()
-        self.entry_stop_order = dict()
+        self.entry_order = dict()
 
         if ENV == DEVELOPMENT:
             self.check_for_live_data = False
@@ -77,12 +78,15 @@ class ST(StrategyBase):
 
         for d in self.datas:
             ticker = d._name
-            ticker = ticker[3:]
+            # ticker = ticker[3:]
             self.inds[ticker] = {}
             self.pos[ticker] = {}
         for d in self.datas_5m:
             ticker = d._name
-            ticker = ticker[3:]
+            self.pos[ticker]["sl_price"] = None
+            self.pos[ticker]["new_sl_price"] = None
+            # self.pos[ticker]["price"] = None
+            # ticker = ticker[3:]
             # self.inds[ticker]["rsi_5m"] = bt.indicators.RSI(d, plot=False, subplot=False)
             # self.inds[ticker]["adx_5m"] = bt.indicators.ADX(d, plot=True, subplot=True)
             self.inds[ticker]["atr_5m"] = bt.indicators.ATR(d, plot=False, subplot=False)
@@ -149,15 +153,10 @@ class ST(StrategyBase):
             # self.datas_5m.sort(reverse=True, key=lambda d: (self.inds[d._name[3:]]["rsi_5m"][0] * self.inds[d._name[3:]]["adx_5m"][0]) * (self.inds[d._name[3:]]["roc"][0]))
             # self.datas_5m.sort(reverse=True, key=lambda d: abs(self.inds[d._name[3:]]["pct_change"][0]) * abs(self.inds[d._name[3:]]["volsma_slow_5m"][0]))
             # self.datas_5m.sort(reverse=True, key=lambda d: abs(self.inds[d._name[3:]]["volsma_slow_5m"][0]))
-            self.datas_5m.sort(reverse=True, key=lambda d: abs(self.inds[d._name[3:]]["pct_change"][0])) # 652, 642, 6
+            self.datas_5m.sort(reverse=True, key=lambda d: abs(self.inds[d._name]["pct_change"][0]))
             for d in self.datas_5m:
                 ticker = d._name
-                ticker = ticker[3:]
-                self.log(ticker)
-
-            for d in self.datas_5m:
-                ticker = d._name
-                ticker = ticker[3:]
+                # ticker = ticker[3:]
                 current_position = self.get_position(d=d, attribute='size')
                 # if current_position > 0:
                 #     if self.stop_order:
@@ -234,7 +233,7 @@ class ST(StrategyBase):
                         self.log(
                             f'{ticker} LONG Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
                         self.pos[ticker]["sl_price"] = self.pos[ticker]["new_sl_price"]
-                        if ticker in self.stop_order:
+                        if (ticker in self.stop_order) and (self.stop_order[ticker] is not None):
                             self.cancel(self.stop_order[ticker])
                             self.stop_order[ticker] = None
                         self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
@@ -291,61 +290,41 @@ class ST(StrategyBase):
                         self.log(
                             f'{ticker} SHORT Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
                         self.pos[ticker]["sl_price"] = self.pos[ticker]["new_sl_price"]
-                        if ticker in self.stop_order:
+                        if (ticker in self.stop_order) and (self.stop_order[ticker] is not None):
                             self.cancel(self.stop_order[ticker])
                             self.stop_order[ticker] = None
                         self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
 
-                # if self.stop_order:
-                #     self.cancel(self.stop_order)
-                # self.log(f'{ticker} {self.inds[ticker]["sma240_5m"][0]} {self.inds[ticker]["sma20_1h"][0]}')
-
-                # if d.close[0] > self.inds[ticker]["sma5_1h"][0] > self.inds[ticker]["sma20_1h"][0] and d.close[0] > self.inds[ticker]["sma20_5m"][0]:
-                # print(self.inds[ticker]["volatility_5m"][0])
-                # todo hard exit but volatility entry
                 if current_position > 0:
                     if self.inds[ticker]["sma50_5m"][0] < self.inds[ticker]["sma100_5m"][0]:
                         self.close(d)
-                    # elif self.inds[ticker]["sma20_5m"][0] < self.inds[ticker]["sma50_5m"][0]:
-                    #     self.sell(d, size=self.pos[ticker]["size"]/5)
                 elif current_position < 0:
                     if self.inds[ticker]["sma50_5m"][0] > self.inds[ticker]["sma100_5m"][0]:
                         self.close(d)
-                #     self.log('NOO')
-                    # if d.close[0] > self.inds[ticker]["st_5m"][0]:
-                    #     if ticker in self.entry_stop_order:
-                    #         self.cancel(self.entry_stop_order[ticker])
-                    #     self.entry_stop_order[ticker] = self.order_target_percent(d, target=2 * ((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0]))
-                # self.log(self.inds[ticker]["volatility_5m"][0])
 
             # TO OPEN POSITIONS ONLY IN TOP RANKED COINS, UNCOMMENT BLOCK BELOW
-            # for d in self.datas_5m[0:14]:
+            # for d in self.datas_5m[0:7]:
             #     ticker = d._name
-            #     ticker = ticker[3:]
             #     current_position = self.get_position(d=d, attribute='size')
                 if current_position == 0:
-                    if ticker in self.stop_order:
+                    if (ticker in self.stop_order) and (self.stop_order[ticker] is not None):
                         self.cancel(self.stop_order[ticker])
                         self.stop_order[ticker] = None
                     self.pos[ticker]["price"] = None
                     if self.inds[ticker]["sma20_5m"][0] > self.inds[ticker]["sma50_5m"][0] > self.inds[ticker]["sma100_5m"][0] > self.inds[ticker]["sma240_5m"][0]:  # look for longs
-                        if ticker in self.entry_stop_order:
-                            self.cancel(self.entry_stop_order[ticker])
-                        self.entry_stop_order[ticker] = self.add_order(d, target=((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0]))
-                        # self.entry_stop_order[ticker] = self.order_target_percent(d, target=((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0])*0.67, price=d.close[0]-self.inds[ticker]["atr_5m"][0]/3, exectype=bt.Order.Limit)
+                        self.entry_order[ticker] = self.add_order(d, target=((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0]))
+                        # self.entry_order[ticker] = self.order_target_percent(d, target=((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0])*0.67, price=d.close[0]-self.inds[ticker]["atr_5m"][0]/3, exectype=bt.Order.Limit)
                         self.pos[ticker]["sl_price"] = 0.5 * d.close[0]
                         self.pos[ticker]["new_sl_price"] = None
                     elif self.inds[ticker]["sma20_5m"][0] < self.inds[ticker]["sma50_5m"][0] < self.inds[ticker]["sma100_5m"][0] < self.inds[ticker]["sma240_5m"][0]:  # look for longs
-                        if ticker in self.entry_stop_order:
-                            self.cancel(self.entry_stop_order[ticker])
-                        self.entry_stop_order[ticker] = self.add_order(d, target=-((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0]))
-                        # self.entry_stop_order[ticker] = self.order_target_percent(d, target=-((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0])/2, price=d.close[0]+self.inds[ticker]["atr_5m"][0]/2)
+                        self.entry_order[ticker] = self.add_order(d, target=-((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0]))
+                        # self.entry_order[ticker] = self.order_target_percent(d, target=-((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0])/2, price=d.close[0]+self.inds[ticker]["atr_5m"][0]/2)
                         self.pos[ticker]["sl_price"] = 2 * d.close[0]
                         self.pos[ticker]["new_sl_price"] = None
                     # elif d.close[0] < self.inds[ticker]["sma240_5m"][0] and d.close[0] < self.inds[ticker]["st_5m"][0]:  # look for shorts:
-                    #     if ticker in self.entry_stop_order:
-                    #         self.cancel(self.entry_stop_order[ticker])
-                    #     self.entry_stop_order[ticker] = self.order_target_percent(d, target=-((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0]), price=self.inds[ticker]["sma240_5m"][0], exectype=bt.Order.Limit)
+                    #     if ticker in self.entry_order:
+                    #         self.cancel(self.entry_order[ticker])
+                    #     self.entry_order[ticker] = self.order_target_percent(d, target=-((self.p.order_target_percent / 100) * self.inds[ticker]["volatility_5m"][0]), price=self.inds[ticker]["sma240_5m"][0], exectype=bt.Order.Limit)
                     #     self.pos[ticker]["sl_price"] = 1.5 * d.close[0]
                     #     self.pos[ticker]["new_sl_price"] = None
                     # self.order_target_percent(d, target=0.25)
@@ -357,8 +336,16 @@ class ST(StrategyBase):
                 #     self.pos[ticker]["sl_price"] = 10 * d.close[0]
                 #     self.pos[ticker]["new_sl_price"] = None
 
-                if len(self.to_place_orders) > 0:
-                    print(self.to_place_orders)
-                    order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
-                    for order_chunk in order_chunks:
-                        self.place_batch_order(order_chunk)
+            if self.to_place_orders is not None and len(self.to_place_orders) > 0:
+                print(self.to_place_orders)
+                order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
+                for order_chunk in order_chunks:
+                    self.placed_orders = self.place_batch_order(order_chunk)
+
+            for i, d in enumerate(self.datas_5m):
+                ticker = d._name
+                if self.placed_orders is not None:
+                    for placed_order in self.placed_orders:
+                        if placed_order.ccxt_order["symbol"] == ticker:
+                            # Only remember the most recently placed order for a ticker, TODO: improve soon
+                            self.orders[ticker] = placed_order

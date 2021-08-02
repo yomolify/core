@@ -184,13 +184,13 @@ class StrategyBase(bt.Strategy):
                     self.sell(data=order.data, size=self.executed_size*0.3, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*6)
                     self.sell(data=order.data, size=self.executed_size*0.5, exectype=bt.Order.Limit, price=self.buy_price_close + self.entry_bar_height[order.data._name]*8)
                 # For 5 Min CandlestickPatterns
-                if self.strategy == "NewYearlyHighs":
-                    self.stop_orders[ticker].append(self.close(data=order.data, size=self.executed_size, exectype=bt.Order.Stop, price=self.pos[ticker]["sl_price"]))
+                # if self.strategy == "NewYearlyHighs":
+                #     self.stop_orders[ticker].append(self.close(data=order.data, size=self.executed_size, exectype=bt.Order.Stop, price=self.pos[ticker]["sl_price"]))
                 # if self.strategy == "ST":
                 #     self.log('Buy executed, placing stop')
-                #     if order.data._name[3:] in self.stop_order:
-                #         self.stop_order[order.data._name[3:]]
-                #     self.stop_order[order.data._name[3:]] = self.close(data=order.data, price=self.pos[ticker[3:]]["sl_price"], exectype=bt.Order.Stop)
+                #     if order.data._name in self.stop_order:
+                #         self.stop_order[order.data._name]
+                #     self.stop_order[order.data._name] = self.close(data=order.data, price=self.pos[ticker]["sl_price"], exectype=bt.Order.Stop)
 
                 # if self.strategy == "MTF":
                 #     self.log('Buy executed, placing stop')
@@ -246,9 +246,9 @@ class StrategyBase(bt.Strategy):
                     self.log(f'Placing Short Stop @ {self.sl_price}')
                 # if self.strategy == "ST":
                 #     self.log('Sell executed, placing stop')
-                #     if order.data._name[3:] in self.stop_order:
-                #         self.stop_order[order.data._name[3:]]
-                #     self.stop_order[order.data._name[3:]] = self.close(data=order.data, price=self.pos[ticker[3:]]["sl_price"], exectype=bt.Order.Stop)
+                #     if order.data._name in self.stop_order:
+                #         self.stop_order[order.data._name]
+                #     self.stop_order[order.data._name] = self.close(data=order.data, price=self.pos[ticker]["sl_price"], exectype=bt.Order.Stop)
 
                 # if self.strategy == "MTF":
                 #     self.log('Sell executed, placing stop')
@@ -474,10 +474,10 @@ class StrategyBase(bt.Strategy):
                 if ENV == DEVELOPMENT:
                     return_value = self.getposition(d).size
                 else:
-                    return_value = self.getposition(d).size["size"]
+                    return_value = self.getposition(d)['size']
             if attribute == "price":
                 if ENV == DEVELOPMENT:
                     return_value = self.getposition(d).price
                 else:
-                    return_value = self.getposition(d).price["price"]
+                    return_value = self.getposition(d)['entry_price']
         return return_value
