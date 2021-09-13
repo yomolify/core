@@ -27,7 +27,9 @@ class HMAFT(StrategyBase):
         self.bitcoin = self.datas[0]
         self.altcoins = self.datas
         self.inds = {}
+        self.pos = {}
         self.orders = dict()
+        self.stop_order = dict()
         self.bitcoin_atr = bt.indicators.AverageTrueRange(self.bitcoin)
         self.bitcoin_sma = bt.indicators.HullMovingAverage(self.bitcoin.close - self.bitcoin_atr,
                                                            period=self.params.period_sma_bitcoin)
@@ -38,6 +40,9 @@ class HMAFT(StrategyBase):
 
         for d in self.datas:
             ticker = d._name
+            self.pos[ticker] = {}
+            self.pos[ticker]["sl_price"] = None
+            self.pos[ticker]["new_sl_price"] = None
             self.inds[ticker] = {}
             self.inds[ticker]["average_true_range"] = bt.indicators.AverageTrueRange(d)
             self.inds[ticker]["sma_veryfast"] = bt.talib.MA(d.close, matype=bt.talib.MA_Type.T3,
@@ -71,7 +76,136 @@ class HMAFT(StrategyBase):
                            self.inds[d._name]["roc"][0]))
             for i, d in enumerate(available):
                 ticker = d._name
-                current_position = self.get_position(d)
+                current_position = self.get_position(d=d, attribute='size')
+                self.pos[ticker]["price"] = self.get_position(d=d, attribute='price')
+                if current_position > 0:
+                    # StopWin
+                    self.pos[ticker]["profit"] = d.close[0] - self.pos[ticker]["price"]
+                    self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker][
+                        "price"]) * 100
+                    # if len(self.pos[ticker]["profit_arr"]) > 1 and abs(self.pos[ticker]["profit_arr"][-2]) > 0:
+                    #     self.pos[ticker]["profit_roc"].append(((self.pos[ticker]["profit_arr"][-1] - self.pos[ticker]["profit_arr"][-2])/self.pos[ticker]["profit_arr"][-2])*100)
+                    #     self.log(self.pos[ticker]["profit_roc"])
+                    if self.pos[ticker]["profit_percentage"] > 95:
+                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                        self.pos[ticker]["new_sl_price"] = 1.8 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 85:
+                        # self.log(f'{ticker} Long profit > 85%')
+                        self.pos[ticker]["new_sl_price"] = 1.7 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 75:
+                        # self.log(f'{ticker} Long profit > 75%')
+                        self.pos[ticker]["new_sl_price"] = 1.6 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 65:
+                        # self.log(f'{ticker} Long profit > 65%')
+                        self.pos[ticker]["new_sl_price"] = 1.5 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 55:
+                        # self.log(f'{ticker} Long profit > 55%')
+                        self.pos[ticker]["new_sl_price"] = 1.4 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 45:
+                        # self.log(f'{ticker} Long profit > 45%')
+                        self.pos[ticker]["new_sl_price"] = 1.3 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 35:
+                        # self.log(f'{ticker} Long profit > 35%')
+                        self.pos[ticker]["new_sl_price"] = 1.2 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 25:
+                        # self.log(f'{ticker} Long profit > 25%')
+                        self.pos[ticker]["new_sl_price"] = 1.1 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 15:
+                        # self.log(f'{ticker} Long profit > 15%')
+                        self.pos[ticker]["new_sl_price"] = 1.05 * self.pos[ticker]["price"]
+                        # self.pos[ticker]["new_sl_price"] = (1 + ((self.pos[ticker]["profit_percentage"]-4)*0.01)) * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 5:
+                        # self.log(f'{ticker} Long profit > 5')
+                        # self.pos[ticker]["new_sl_price"] = (1 + ((self.pos[ticker]["profit_percentage"]-5)*0.01)) * self.pos[ticker]["price"]
+                        self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
+                    # if self.pos[ticker]["profit_percentage"] < 0 and math.trunc(self.pos[ticker]["profit_percentage"]) % 1 == 0 and not self.flags[ticker][f"add_position_{math.trunc(self.pos[ticker]['profit_percentage']) - 1}"]:
+                    #     self.buy(d, size=(self.pos[ticker]["profit_percentage"] / 100) * current_position)
+                    #     self.flags[ticker][f"add_position_{math.trunc(self.pos[ticker]['profit_percentage'])}"] = True
+                    #     self.log(f'{ticker} adding to position at {self.pos[ticker]["profit_percentage"]}')
+
+                    # if self.pos[ticker]["profit_percentage"] - self.pos[ticker]["profit_percentage_-1"] > 1.1:
+                    #     self.pos[ticker]["new_sl_price"] = (1 + ((self.pos[ticker]["profit_percentage"]-1) * 0.01)) * self.pos[ticker]["price"]
+
+                    # if (self.pos[ticker]["profit_percentage"] - self.pos[ticker]["profit_percentage_-1"]) > 0.2*self.pos[ticker]["profit_percentage_-1"]:
+                    #     self.pos[ticker]["new_sl_price"] = (1 + ((self.pos[ticker]["profit_percentage"]-1) * 0.01)) * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] < 5:
+                    #     self.buy(d, size=abs(self.pos[ticker]["size"])/2)
+                    # if self.pos[ticker]["profit_percentage"] < 5:
+                        # self.log(f'{ticker} Long profit > 5%, updating stop win to 0%')
+                        # self.close(d)
+                    # if self.pos[ticker]["profit_percentage"] > 25:
+                    #     self.pos[ticker]["new_sl_price"] = self.inds[ticker]["ll_fastest_5m"][0]
+                    # elif self.pos[ticker]["profit_percentage"] > 15:
+                    #     self.pos[ticker]["new_sl_price"] = self.inds[ticker]["ll_fast_5m"][0]
+                    # elif self.pos[ticker]["profit_percentage"] > 5:
+                    #     self.pos[ticker]["new_sl_price"] = self.inds[ticker]["ll_5m"][0]
+                    if self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and self.pos[ticker]["new_sl_price"] > self.pos[ticker]["sl_price"]:
+                        self.log(
+                            f'{ticker} LONG Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
+                        self.pos[ticker]["sl_price"] = self.pos[ticker]["new_sl_price"]
+                        if (ticker in self.stop_order) and (self.stop_order[ticker] is not None):
+                            self.cancel(self.stop_order[ticker])
+                            self.stop_order[ticker] = None
+                        self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
+
+                if current_position < 0:
+                    # StopWin
+                    self.pos[ticker]["profit"] = self.pos[ticker]["price"] - d.close[0]
+                    self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker][
+                        "price"]) * 100
+                    # self.pos[ticker]["profit_arr"].append(self.pos[ticker]["profit_percentage"])
+                    if self.pos[ticker]["profit_percentage"] > 95:
+                        # self.log(f'{ticker} Long profit > 35%, updating stop win to 30%')
+                        self.pos[ticker]["new_sl_price"] = 0.555 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 85:
+                        # self.log(f'{ticker} Long profit > 85%')
+                        self.pos[ticker]["new_sl_price"] = 0.588 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 75:
+                        # self.log(f'{ticker} Long profit > 75%')
+                        self.pos[ticker]["new_sl_price"] = 0.625 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 65:
+                        # self.log(f'{ticker} Long profit > 65%')
+                        self.pos[ticker]["new_sl_price"] = 0.67 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 55:
+                        # self.log(f'{ticker} Long profit > 55%')
+                        self.pos[ticker]["new_sl_price"] = 0.71 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 45:
+                        # self.log(f'{ticker} Long profit > 45%')
+                        self.pos[ticker]["new_sl_price"] = 0.77 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 35:
+                        # self.log(f'{ticker} Long profit > 35%')
+                        self.pos[ticker]["new_sl_price"] = 0.83 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 25:
+                        # self.log(f'{ticker} Long profit > 25%')
+                        self.pos[ticker]["new_sl_price"] = 0.9 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 15:
+                        # self.log(f'{ticker} Long profit > 15%')
+                        self.pos[ticker]["new_sl_price"] = 0.95 * self.pos[ticker]["price"]
+                    elif self.pos[ticker]["profit_percentage"] > 5:
+                        # self.log(f'{ticker} Long profit > 5')
+                        self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
+                    # if self.pos[ticker]["profit_percentage"] > self.inds[ticker]["volatility_5m"][0]*25:
+                    #     self.log(f'{ticker} Short profit > 25')
+                    #     self.pos[ticker]["new_sl_price"] = self.inds[ticker]["hh_fastest_5m"][0]
+                    # elif self.pos[ticker]["profit_percentage"] > self.inds[ticker]["volatility_5m"][0]*15:
+                    #     self.log(f'{ticker} Short profit > 15')
+                    #     self.pos[ticker]["new_sl_price"] = self.inds[ticker]["hh_fast_5m"][0]
+                    #     # self.pos[ticker]["new_sl_price"] = (1 + ((self.pos[ticker]["profit_percentage"]+4)*0.01)) * 1 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] > self.inds[ticker]["volatility_5m"][0]*5:
+                    #     self.log(f'{ticker} Short profit > 5')
+                    #     self.pos[ticker]["new_sl_price"] = self.inds[ticker]["hh_5m"][0]
+                        # self.pos[ticker]["new_sl_price"] = (1 + ((self.pos[ticker]["profit_percentage"]+5)*0.01)) * 1 * self.pos[ticker]["price"]
+                    # elif self.pos[ticker]["profit_percentage"] < 5:
+                    #     self.sell(d, size=abs(self.pos[ticker]["size"])/2)
+                    if self.pos[ticker]["new_sl_price"] and self.pos[ticker]["sl_price"] and self.pos[ticker]["new_sl_price"] < self.pos[ticker]["sl_price"]:
+                        self.log(
+                            f'{ticker} SHORT Update stop from {self.pos[ticker]["sl_price"]} to {self.pos[ticker]["new_sl_price"]}')
+                        self.pos[ticker]["sl_price"] = self.pos[ticker]["new_sl_price"]
+                        if (ticker in self.stop_order) and (self.stop_order[ticker] is not None):
+                            self.cancel(self.stop_order[ticker])
+                            self.stop_order[ticker] = None
+                        self.stop_order[ticker] = self.close(data=d, price=self.pos[ticker]["new_sl_price"], exectype=bt.Order.Stop)
+
                 if current_position > 0:
                     if self.inds[ticker]['sma_mid'][0] < self.inds[ticker]['sma_slow'][0]:
                         try:
@@ -87,6 +221,9 @@ class HMAFT(StrategyBase):
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
                 if current_position == 0:
+                    if (ticker in self.stop_order) and (self.stop_order[ticker] is not None):
+                        self.cancel(self.stop_order[ticker])
+                        self.stop_order[ticker] = None
                     volatility = self.inds[ticker]["average_true_range"][0] / d.close[0]
                     volatility_factor = 1 / (volatility * 100)
                     # closes_above_sma = 0
@@ -99,18 +236,22 @@ class HMAFT(StrategyBase):
                             self.orders[ticker] = [
                                 self.add_order(data=d, target=((self.p.order_target_percent / 100) * volatility_factor),
                                                type="market")]
+                            self.pos[ticker]["sl_price"] = 0.5 * d.close[0]
+                            self.pos[ticker]["new_sl_price"] = None
                             # self.orders[ticker] = [self.add_order(data=d, target=self.p.order_target_percent/100, type="market")]
                         except Exception as e:
                             self.log("ERROR: {}".format(sys.exc_info()[0]))
                             self.log("{}".format(e))
 
-                    # if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
-                    #     try:
-                    #         # self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, type="market")]
-                    #         self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100), type="market")]
-                    #     except Exception as e:
-                    #         self.log("ERROR: {}".format(sys.exc_info()[0]))
-                    #         self.log("{}".format(e))
+                    if self.inds[ticker]['sma_veryfast'][0] < self.inds[ticker]['sma_mid'][0] and self.inds[ticker]['sma_slow'][0] < self.inds[ticker]['sma_veryslow'][0]:
+                        try:
+                            # self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100) * volatility_factor, type="market")]
+                            self.orders[ticker] = [self.add_order(data=d, target=-(self.p.order_target_percent/100), type="market")]
+                            self.pos[ticker]["sl_price"] = 2 * d.close[0]
+                            self.pos[ticker]["new_sl_price"] = None
+                        except Exception as e:
+                            self.log("ERROR: {}".format(sys.exc_info()[0]))
+                            self.log("{}".format(e))
             if len(self.to_place_orders) > 0:
                 order_chunks = [self.to_place_orders[x:x + 5] for x in range(0, len(self.to_place_orders), 5)]
                 for order_chunk in order_chunks:

@@ -179,11 +179,12 @@ if __name__ == '__main__':
         todate = datetime(2021, 5, 10)
         fromdate = datetime(2021, 5, 1)
 
-        todate = datetime(2021, 6, 1)
-        fromdate = datetime(2021, 4, 1)
-        #
-        todate = datetime(2021, 7, 23)
-        fromdate = datetime(2021, 1, 1)
+        todate = datetime(2021, 7, 30)
+        fromdate = datetime(2021, 7, 21)
+
+        # Benchmark dates
+        # todate = datetime(2021, 7, 23)
+        # fromdate = datetime(2021, 1, 1)
 
         # TODO - Catch the extreme bottom
         # todate = datetime(2021, 6, 24)
@@ -193,21 +194,23 @@ if __name__ == '__main__':
         # fromdate = datetime(2021, 6, 1)
         # fromdate = datetime(2021, 7, 1)
 
-        leverage = 2
+        leverage = 1
 
         # fromdate = datetime(2021, 6, 26)
 
-        # fromdate = datetime(2021, 5, 1)
-        # todate = datetime(2021, 2, 1)
-        # fromdate = datetime(2021, 1, 1)
-        # todate = datetime.now()
+        # fromdate = datetime(2021, 9, 5)
+        fromdate = datetime(2021, 5, 1)
+        # todate = datetime(2021, 9, 1)
+        # todate = datetime(2021, 8, 1)
+        todate = datetime.now()
+        # todate = datetime(2021, 9, 5)
 
         # fromdate = datetime(2021, 2, 20)
         # todate = datetime(2021, 3, 5)
         # todate = datetime(2021, 3, 25)
 
-        # todate = datetime(2021, 6, 1)
-        # fromdate = datetime(2021, 5, 1)
+        # todate = datetime(2021, 7, 23)
+        # fromdate = datetime(2021, 6, 1)
 
         # todate = datetime(2021, 4, 5)
         # todate = datetime(2021, 6, 20)
@@ -356,10 +359,12 @@ if __name__ == '__main__':
                 tickers = [ 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT'
                     , 'DOT-USDT', 'DOGE-USDT', 'AXS-USDT', 'AAVE-USDT', 'MATIC-USDT', 'BTC-USDT', 'ETH-USDT', 'BNB-USDT']
                 # tickers = ['MKR-USDT', 'BLZ-USDT', 'EGLD-USDT', 'IOTA-USDT', 'SKL-USDT', 'AXS-USDT', 'SXP-USDT', 'SUSHI-USDT', 'RUNE-USDT', 'VET-USDT', 'XTZ-USDT']
-                # tickers = ['OMG-USDT', 'NEO-USDT', 'QTUM-USDT', 'XMR-USDT', 'WAVES-USDT', 'SOL-USDT', 'ZEC-USDT', 'LRC-USDT', 'TOMO-USDT', 'AAVE-USDT', '1INCH-USDT']
+                # tickers = ['OMG-USDT', 'NEO-USDT', 'QTUM-USDT', 'XMR-USDT', 'WAAVES-USDT', 'SOL-USDT', 'ZEC-USDT', 'LRC-USDT', 'TOMO-USDT', 'AAVE-USDT', '1INCH-USDT']
                 # tickers = ['MKR-USDT', 'ETH-USDT', 'BNB-USDT']
                     #
                 # tickers = ['BTC-USDT']
+                # tickers = ['ALGO-USDT']
+                # tickers = ['MATIC-USDT']
                 # 99 and 20
                 # tickers = ['BTC-USDT', 'ETH-USDT', 'BNB-USDT']
                 # tickers = ['ETH-USDT']
@@ -523,8 +528,8 @@ if __name__ == '__main__':
                     # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
                     # query_timeframe='1Min',
-                    # query_timeframe='1H',
-                    query_timeframe='5Min',
+                    query_timeframe='1H',
+                    # query_timeframe='5Min',
                     # timeframe=bt.TimeFrame.Minutes,
                     fromdate=fromdate,
                     todate=todate,

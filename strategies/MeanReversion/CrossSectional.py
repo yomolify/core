@@ -24,7 +24,7 @@ class CrossSectional(StrategyBase):
         self.inds = {}
         for d in self.datas:
             self.inds[d] = {}
-            self.inds[d]["pct"] = bt.indicators.PercentChange(d.close, period=2)
+            self.inds[d]["pct"] = bt.indicators.PercentChange(d.close, period=50)
             self.inds[d]["std"] = bt.indicators.StandardDeviation(d.close, period=200)
 
     def prenext(self):

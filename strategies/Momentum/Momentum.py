@@ -9,8 +9,8 @@ from indicators.Momentum import Momentum
 import backtrader as bt
 import numpy as np
 import pandas as pd
-from scipy import stats
-
+# from scipy import stats
+# 42 and 13
 class Momentum(StrategyBase):
     params = dict(
         momentum=Momentum,
