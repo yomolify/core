@@ -21,6 +21,7 @@ from bokeh.themes import built_in_themes
 from bokeh.io import curdoc
 from bokeh.palettes import all_palettes
 import itertools
+import datetime as dt
 
 
 
@@ -36,7 +37,8 @@ class Momo(StrategyBase):
         vperiod=36,  # lookback period for volatility - default 36 periods
         mperiod=5,  # lookback period for strategy - default 12 periods
         reserve=0.05,  # 5% reserve capital
-        order_target_percent=10
+        order_target_percent=5,
+        pct_change_period=100
     )
 
     def __init__(self):
@@ -44,13 +46,13 @@ class Momo(StrategyBase):
         self.mean_returns = []
         self.strategy = "Momo"
         length = len(self.datas)
-        self.p.order_target_percent = 75/length
-        if self.p.order_target_percent > 10:
-            self.p.order_target_percent = 10
+        # self.p.order_target_percent = 75/length
+        # if self.p.order_target_percent > 10:
+        #     self.p.order_target_percent = 10
         middle_index = length // 2
         # self.datas = self.datas[:middle_index]
         self.datas_1h = self.datas[middle_index:]
-
+        self.i = 0
         self.order = None
         self.buyprice = None
         self.buycomm = None
@@ -107,6 +109,9 @@ class Momo(StrategyBase):
             self.pos[ticker]["profit_arr"] = []
             self.pos[ticker]["profit_roc"] = []
             self.inds[ticker]["atr"] = bt.indicators.ATR(d, plot=False, subplot=False)
+            self.inds[ticker]["roc"] = bt.indicators.ROC(d, plot=False, subplot=False)
+            self.inds[ticker]["adx"] = bt.indicators.ADX(d, plot=False, subplot=False)
+            self.inds[ticker]["rsi"] = bt.indicators.RSI(d, plot=False, subplot=False)
             self.inds[ticker]["volatility"] = 1 / ((self.inds[ticker]["atr"] / d.high) * 100)
             self.inds[ticker]["volsma_slow"] = bt.indicators.EMA(d.close, period=50, plot=False, subplot=False)
             self.inds[ticker]["volsma_fast"] = bt.indicators.EMA(d.close, period=20, plot=False, subplot=False)
@@ -121,7 +126,7 @@ class Momo(StrategyBase):
             self.inds[ticker]["sma50"] = bt.indicators.EMA(d.close, period=50, plot=False, subplot=False)
             self.inds[ticker]["sma100"] = bt.indicators.EMA(d.close, period=100, plot=False, subplot=False)
             self.inds[ticker]["sma240"] = bt.indicators.SMA(d.close, period=240, plot=False, subplot=False)
-            self.inds[ticker]["pct_change"] = bt.indicators.PctChange(d.close, period=200, plot=True, subplot=True)
+            self.inds[ticker]["pct_change"] = bt.indicators.PctChange(d.close, period=self.p.pct_change_period, plot=True, subplot=True)
             self.inds[ticker]["std"] = bt.indicators.StandardDeviation(d.close, period=30, plot=False)
             self.inds[ticker]["pct_change_vol_sma"] = bt.indicators.PctChange(self.inds[ticker]["volsma_fast"], plot=False, subplot=False)
 
@@ -182,10 +187,10 @@ class Momo(StrategyBase):
                         # self.log(f'{ticker} Long profit > 15%')
                         self.pos[ticker]["new_sl_price"] = 1.05 * self.pos[ticker]["price"]
                         # self.pos[ticker]["new_sl_price"] = (1 + ((self.pos[ticker]["profit_percentage"]-4)*0.01)) * self.pos[ticker]["price"]
-                    elif self.pos[ticker]["profit_percentage"] > 5:
+                    # elif self.pos[ticker]["profit_percentage"] > 5:
                         # self.log(f'{ticker} Long profit > 5')
                         # self.pos[ticker]["new_sl_price"] = (1 + ((self.pos[ticker]["profit_percentage"]-5)*0.01)) * self.pos[ticker]["price"]
-                        self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
+                        # self.pos[ticker]["new_sl_price"] = 1 * self.pos[ticker]["price"]
                     # if self.pos[ticker]["profit_percentage"] < 0 and math.trunc(self.pos[ticker]["profit_percentage"]) % 1 == 0 and not self.flags[ticker][f"add_position_{math.trunc(self.pos[ticker]['profit_percentage']) - 1}"]:
                     #     self.buy(d, size=(self.pos[ticker]["profit_percentage"] / 100) * current_position)
                     #     self.flags[ticker][f"add_position_{math.trunc(self.pos[ticker]['profit_percentage'])}"] = True
@@ -286,20 +291,23 @@ class Momo(StrategyBase):
                 #     ticker = d._name
                 #     current_position = self.get_position(d=d, attribute='size')
                 #     self.log(f'{ticker} {self.pos[ticker]["profit_arr"]}')
-                if current_position > 0:
-                    if self.returns[ticker][-1] < self.mean_returns[-1]:
-                        d.close()
+                # if current_position > 0:
+                #     if self.returns[ticker][-1] < self.mean_returns[-1] or self.returns[ticker][-1] < 0:
+                #         self.log(f'{ticker} closing cuz losing momentum wrt mean')
+                #         self.close(d)
 
-                if self.mean_returns[-1] > 0:
-                    self.log(f'{ticker}: {self.returns[ticker][-1]}, Mean: {self.mean_returns[-1]}')
-                    if self.returns[ticker][-1] > 1.01*self.mean_returns[-1]:
+                if True or self.mean_returns[-1] > 0:
+                    # self.log(f'{ticker}: {self.returns[ticker][-1]}, Mean: {self.mean_returns[-1]}')
+                    if self.returns[ticker][-1] > self.mean_returns[-1]:
                         # self.log(f'{ticker}: {self.returns[ticker][-1]} > {self.mean_returns[-1]}')
                         if current_position == 0:
                             if (ticker in self.stop_order) and (self.stop_order[ticker] is not None):
                                 self.cancel(self.stop_order[ticker])
                                 self.stop_order[ticker] = None
                             self.pos[ticker]["price"] = None
-                            self.entry_order[ticker] = self.add_order(d, target=(self.p.order_target_percent / 100))
+                            valid = self.data.datetime.date(0) + dt.timedelta(days=7)
+                            self.entry_order[ticker] = self.add_order(d, target=(self.p.order_target_percent / 100) * self.inds[ticker]["volatility"][0])
+                            self.entry_order[ticker] = self.order_target_percent(d, target=(self.p.order_target_percent / 100) * self.inds[ticker]["volatility"][0], exectype=bt.Order.Limit, price=d.close-2*self.inds[ticker]["atr"][0], valid=valid)
                             # self.entry_order[ticker] = self.add_order(d, target=((self.p.order_target_percent / 100) * self.inds[ticker]["volatility"][0]))
                             # self.entry_order[ticker] = self.order_target_percent(d, target=((self.p.order_target_percent / 100) * self.inds[ticker]["volatility"][0])*0.67, price=d.close[0]-self.inds[ticker]["atr"][0]/3, exectype=bt.Order.Limit)
                             self.pos[ticker]["sl_price"] = 0.5 * d.close[0]
@@ -309,8 +317,10 @@ class Momo(StrategyBase):
                             # self.entry_order[ticker] = self.order_target_percent(d, target=-((self.p.order_target_percent / 100) * self.inds[ticker]["volatility"][0])/2, price=d.close[0]+self.inds[ticker]["atr"][0]/2)
                             # self.pos[ticker]["sl_price"] = 2 * d.close[0]
                             # self.pos[ticker]["new_sl_price"] = None
-                else:
-                    self.close(d)
+                # else:
+                #     if current_position > 0:
+                #         self.log(f'{ticker} mean of market is negative so close')
+                #         self.close(d)
 
                 if self.to_place_orders is not None and len(self.to_place_orders) > 0:
                     print(self.to_place_orders)
@@ -326,6 +336,46 @@ class Momo(StrategyBase):
                                 # Only remember the most recently placed order for a ticker, TODO: improve soon
                                 self.orders[ticker] = placed_order
 
+            if self.i % 20 == 0:
+                self.rebalance_portfolio()
+                self.delayed_tickers = []
+            self.i += 1
+
+    def rebalance_portfolio(self):
+        # TODO: If momentum of position is lost, transfer exposure to stronger coins
+        # Make a list of top 10 pct change coins that we are not in a position of
+        no_position_coins = list(filter(lambda c: self.get_position(d=c, attribute='size') == 0, self.datas))
+        no_position_coins.sort(reverse=True, key=lambda d: self.inds[d._name]["pct_change"][0])
+        no_position_coins = no_position_coins[:10]
+
+        # Get list of positions
+        in_position_coins = list(filter(lambda c: self.get_position(d=c, attribute='size') > 0, self.datas))
+        # Sort positions by pct change
+        in_position_coins.sort(key=lambda d: self.inds[d._name]["pct_change"][0])
+        # Switch first from positions with first from top 10 pct change coins
+        for i, coin in enumerate(in_position_coins):
+            self.log(f'{coin._name} {self.inds[coin._name]["pct_change"][0]} {(no_position_coins[0])._name} {self.inds[(no_position_coins[0])._name]["pct_change"][0]}')
+            if self.inds[coin._name]["pct_change"][0] < self.inds[(no_position_coins[0])._name]["pct_change"][0]:
+                self.close(coin)
+                self.add_order(no_position_coins[0], target=(self.p.order_target_percent / 100) * self.inds[(no_position_coins[0])._name]["volatility"][0])
+
+        # Old rebalancing code
+        # self.rankings = list(filter(lambda d: len(d) > 10, self.datas))
+        # self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
+        # # Rebalance any coins in lowest momentum that are in positions
+        # for i, d in enumerate(self.rankings[:10]):
+        #     current_position = self.get_position(d=d, attribute='size')
+        #     if current_position:
+        #         try:
+        #             if abs(self.inds[d._name]["roc"][0]) > 0.02:
+        #                 order = self.add_order(data=d, target=abs(self.inds[d._name]["roc"][0]), type="market")
+        #                 self.log(f'Rebalancing {d._name}')
+        #             else:
+        #                 self.add_order(data=d, target=0, type='market')
+        #                 self.log(f"Dead {d._name}. ROC: {round(abs(self.inds[d._name]['roc'][0]), 3)}, RSI: {round((self.inds[d._name]['rsi'][0]), 1)} ADX: {round((self.inds[d._name]['adx'][0]), 1)} RSI*ADX: {round((self.inds[d._name]['rsi'][0])*(self.inds[d._name]['adx'][0]), 0)}")
+        #         except Exception as e:
+        #             self.log("ERROR: {}".format(sys.exc_info()[0]))
+        #             self.log("{}".format(e))
 
     def calc_mean_returns(self):
         available = list(filter(lambda d: len(d) > 10, self.datas))  # only look at data that existed last week

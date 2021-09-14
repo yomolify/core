@@ -3,7 +3,8 @@ import sys
 from strategies.base import StrategyBase
 from config import ENV, PRODUCTION, TRADING, DEVELOPMENT
 from indicators.swing import Swing
-
+import datetime as dt
+import math
 class SwingHL(StrategyBase):
 
     params = (
@@ -21,7 +22,7 @@ class SwingHL(StrategyBase):
     def __init__(self):
         StrategyBase.__init__(self)
         self.strategy = "SwingHL"
-        self.order_fraction = 10*len(self.datas)
+        self.order_fraction = 50*len(self.datas)
         self.i = 0
         self.bitcoin = self.datas[0]
         self.altcoins = self.datas
@@ -29,6 +30,9 @@ class SwingHL(StrategyBase):
         self.long_entrys = {}
         self.long_tps = {}
         self.orders = dict()
+        self.pos = {}
+        self.flags = {}
+
 
         self.entry_bar_height = {}
         if ENV == DEVELOPMENT:
@@ -39,10 +43,14 @@ class SwingHL(StrategyBase):
         for d in self.datas:
             ticker = d._name
             self.inds[ticker] = {}
+            self.pos[ticker] = {}
             self.entry_bar_height[ticker] = None
             self.long_entrys[ticker] = []
             self.long_tps[ticker] = []
             self.orders[ticker] = []
+            self.flags[ticker] = {}
+            for i in range(10, -100, -1):
+                self.flags[ticker][f"added_on_dip_{i}"] = False
             # self.inds[ticker]["rolling_high"] = bt.indicators.Highest(d.close, period=self.params.period_rolling_high, plot=False, subplot=False)
             # self.inds[ticker]["rolling_low"] = bt.indicators.Lowest(d.close, period=self.params.period_rolling_low, plot=False, subplot=False)
             # self.inds[ticker]["sma_veryfast"] = bt.ind.SimpleMovingAverage(d.close,
@@ -82,22 +90,22 @@ class SwingHL(StrategyBase):
                 entry_price = self.get_position(d=d, attribute='price')
                 # if self.inds[ticker]["sma_fast"][0] < self.inds[ticker]["sma_slow"][0]:
                 #     self.close(d)
+                if current_position > 0:
+                    self.pos[ticker]["price"] = self.get_position(d=d, attribute='price')
+                    self.pos[ticker]["profit"] = d.close[0] - self.pos[ticker]["price"]
+                    self.pos[ticker]["profit_percentage"] = (self.pos[ticker]["profit"] / self.pos[ticker][
+                        "price"]) * 100
+                    # if self.pos[ticker]["profit_percentage"] < -10h:
+                    if self.pos[ticker]["profit_percentage"] < 0 and math.trunc(self.pos[ticker]["profit_percentage"]) % 10 == 0 and not self.flags[ticker][f"added_on_dip_{math.trunc(self.pos[ticker]['profit_percentage'])}"] and math.trunc(self.pos[ticker]['profit_percentage']):
+                        value = self.broker.getvalue()
+                        max_buyable = value / d.close[0]
+                        self.log(f'{ticker} adding on dip at {self.pos[ticker]["profit_percentage"]}')
+                        valid = self.data.datetime.date(0) + dt.timedelta(days=1)
+                        self.orders[ticker].append(self.buy(d, size=abs(math.trunc(self.pos[ticker]["profit_percentage"]))/10 * 0.5 * max_buyable / self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7] - 0.1 * self.inds[ticker]["atr"][0], valid=valid))
+                        self.orders[ticker].append(self.buy(d, size=abs(math.trunc(self.pos[ticker]["profit_percentage"]))/10 * max_buyable / self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7] - self.inds[ticker]["atr"][0], valid=valid))
+                        self.orders[ticker].append(self.buy(d, size=abs(math.trunc(self.pos[ticker]["profit_percentage"]))/10 * 2 * max_buyable / self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7] - 2 * self.inds[ticker]["atr"][0], valid=valid))
+                        self.flags[ticker][f"added_on_dip_{math.trunc(self.pos[ticker]['profit_percentage'])}"] = True
 
-                # if current_position > 0:
-                #     # if self.inds[ticker]['zerolag'][0] > self.inds[ticker]['ema'][0] and (d.open[0] > self.inds[ticker]['ema'][0] and d.close[0] < self.inds[ticker]['ema'][0]):
-                #     if self.inds[ticker]["sell_sig"]:
-                #         try:
-                #             order = self.order_target_percent(data=d, target=0)
-                #         except Exception as e:
-                #             self.log("ERROR: {}".format(sys.exc_info()[0]))
-                #             self.log("{}".format(e))
-                # elif current_position < 0:
-                #     if d.high[0] > self.inds[ticker]['rolling_high'][-1]:
-                #         try:
-                #             order = self.add_order(data=d, target=0, type="market")
-                #         except Exception as e:
-                #             self.log("ERROR: {}".format(sys.exc_info()[0]))
-                #             self.log("{}".format(e))
                 # if current_position == 0:
                     # volatility = self.inds[ticker]["atr"][0]/d.close[0]
                     # volatility_factor = 1/(volatility*100)
@@ -109,15 +117,17 @@ class SwingHL(StrategyBase):
                         self.entry_bar_height[ticker] = self.inds[ticker]["atr"][0]/2
                         self.log(f'Long entrys at {d.close[-7]} and {d.close[-7]-self.inds[ticker]["atr"][0]}')
                         value = self.broker.getvalue()
-                        max_buyable = value/d.close[0]
+                        max_buyable = (value/d.close[0]) * volatility_factor
                         self.log(f'{ticker} {max_buyable}')
                         # self.order_target_percent(data=d, target=((self.p.order_target_percent / 100) * volatility_factor), exectype=bt.Order.Limit, price=d.close[-7])
                         # self.order_target_percent(data=d, target=((self.p.order_target_percent / 100) * volatility_factor), exectype=bt.Order.Limit, price=d.close[-7]-self.inds[ticker]["atr"][0])
                         # self.order_target_percent(data=d, target=((self.p.order_target_percent / 100) * volatility_factor), exectype=bt.Order.Limit, price=d.close[-7]-2*self.inds[ticker]["atr"][0])
                         # divide by 15 for eth
-                        self.orders[ticker].append(self.buy(d, size=0.5*max_buyable/self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7]-0.1*self.inds[ticker]["atr"][0]))
-                        self.orders[ticker].append(self.buy(d, size=max_buyable/self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7]-self.inds[ticker]["atr"][0]))
-                        self.orders[ticker].append(self.buy(d, size=2*max_buyable/self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7]-2*self.inds[ticker]["atr"][0]))
+                        # 128 and 54 without TIF
+                        valid = self.data.datetime.date(0) + dt.timedelta(days=1)
+                        self.orders[ticker].append(self.buy(d, size=0.5*max_buyable/self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7]-0.1*self.inds[ticker]["atr"][0], valid=valid))
+                        self.orders[ticker].append(self.buy(d, size=max_buyable/self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7]-self.inds[ticker]["atr"][0], valid=valid))
+                        self.orders[ticker].append(self.buy(d, size=2*max_buyable/self.order_fraction, exectype=bt.Order.Limit, price=d.close[-7]-2*self.inds[ticker]["atr"][0], valid=valid))
                         # self.buy(d, size=8, exectype=bt.Order.Limit, price=d.close[-7])
                         # self.buy(d, size=8, exectype=bt.Order.Limit, price=d.close[-7] - self.inds[ticker]["atr"][0])
                         # self.long_entrys[ticker].append(self.buy(d, size=1, exectype=bt.Order.Limit, price=d.close[-7]-self.inds[ticker]["atr"][0]))
