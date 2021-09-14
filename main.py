@@ -201,8 +201,8 @@ if __name__ == '__main__':
         fromdate = datetime(2021, 1, 1)
         fromdate = datetime(2021, 7, 1)
         # todate = datetime(2021, 9, 10)
-        # todate = datetime(2021, 8, 1)
-        todate = datetime.now()
+        todate = datetime(2021, 9, 14)
+        # todate = datetime.now()
 
         # BTCUSDT listed on Binance
         # fromdate = datetime(2017, 8, 16)

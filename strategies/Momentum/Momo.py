@@ -350,15 +350,24 @@ class Momo(StrategyBase):
 
         # Get list of positions
         in_position_coins = list(filter(lambda c: self.get_position(d=c, attribute='size') > 0, self.datas))
-        # Sort positions by pct change
         in_position_coins.sort(key=lambda d: self.inds[d._name]["pct_change"][0])
-        # Switch first from positions with first from top 10 pct change coins
         for i, coin in enumerate(in_position_coins):
-            self.log(f'{coin._name} {self.inds[coin._name]["pct_change"][0]} {(no_position_coins[0])._name} {self.inds[(no_position_coins[0])._name]["pct_change"][0]}')
             if self.inds[coin._name]["pct_change"][0] < self.inds[(no_position_coins[0])._name]["pct_change"][0]:
+                self.log(f'Close {coin._name} {self.inds[coin._name]["pct_change"][0]} & Open {(no_position_coins[0])._name} {self.inds[(no_position_coins[0])._name]["pct_change"][0]}')
                 self.close(coin)
                 self.add_order(no_position_coins[0], target=(self.p.order_target_percent / 100) * self.inds[(no_position_coins[0])._name]["volatility"][0])
+                # break
+        # Sort positions by pct change
+        # if len(in_position_coins):
+        #     in_position_coins.sort(key=lambda d: self.inds[d._name]["pct_change"][0])
+        #     # Switch first from positions with first from top 10 pct change coins
+        #     if self.inds[(in_position_coins[0])._name]["pct_change"][0] < self.inds[(no_position_coins[0])._name]["pct_change"][0]:
+        #         self.log(f'{(in_position_coins[0])._name} {self.inds[in_position_coins[0]._name]["pct_change"][0]} {(no_position_coins[0])._name} {self.inds[(no_position_coins[0])._name]["pct_change"][0]}')
+        #         self.close(in_position_coins[0])
+        #         self.add_order(no_position_coins[0], target=(self.p.order_target_percent / 100) * self.inds[(no_position_coins[0])._name]["volatility"][0])
 
+        # for i, coin in enumerate(in_position_coins):
+        #
         # Old rebalancing code
         # self.rankings = list(filter(lambda d: len(d) > 10, self.datas))
         # self.rankings.sort(key=lambda d: (self.inds[d._name]["rsi"][0])*(self.inds[d._name]["adx"][0]))
