@@ -4,10 +4,6 @@ import time
 import warnings
 # import datetime
 from datetime import datetime, timedelta
-leverage = 1
-# fromdate = datetime(2021, 10, 20)
-fromdate = datetime(2021, 9, 1)
-todate = datetime(2021, 11, 1)
 import os.path
 import sys  # To find out the script name (in argv[0])
 import json
@@ -102,56 +98,10 @@ if ENV == PRODUCTION:  # Live trading with Binance
         }
     }
 
-def _run_resampler(data_timeframe,
-                   data_compression,
-                   resample_timeframe,
-                   resample_compression,
-                   runtime_seconds=27,
-                   starting_value=200,
-                   tick_interval=timedelta(seconds=1),
-                   num_gen_bars=None,
-                   start_delays=None,
-                   num_data=1,
-                   ) -> bt.Strategy:
-    _logger.info("Constructing Cerebro")
-
-    # cerebro = bt.Cerebro()
-    # Comment below two lines for paper trading. When uncommented, live trading will occur
-    # broker = store.getbroker(broker_mapping=broker_mapping)
-    # cerebro.setbroker(broker)
-    # Till here
-    # cerebro.addstrategy(LiveDemoStrategy)
-    # cerebro.broker.setcash(10000.0)
-    # cerebro.addsizer(FullMoney)
-    cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-
-    cerebro.addanalyzer(RecorderAnalyzer)
-    cerebro.addanalyzer(BacktraderPlottingLive, volume=False, scheme=Blackly(
-        hovertool_timeformat='%F %R:%S'), lookback=12000)
-    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
-
-    # hist_start_date = datetime.utcnow() - timedelta(hours=1000)
-    hist_start_date = datetime.utcnow() - timedelta(hours=100)
-    dataname = "{}/{}".format(args.base, args.quote)
-    data = store.getdata(dataname=dataname, name=dataname.replace('/', ''),
-                         timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-                         #  compression=60, ohlcv_limit=50, drop_newest=True, backfill_start=True) #, historical=True)
-                         compression=60, ohlcv_limit=500, drop_newest=False, backfill_start=True)  # , historical=True)
-    data.addfilter(bt.filters.Renko, size=1, align=10.0)
-
-    cerebro.resampledata(data, timeframe=resample_timeframe, compression=resample_compression)
-
-    # return the recorded bars attribute from the first strategy
-    res = cerebro.run()
-    return cerebro, res[0]
-
-
-# Figure out exactly how and when the renko bars are formed and then backtest renko strategy
-
 if __name__ == '__main__':
-    cerebro = bt.Cerebro(quicknotify=True)
+    cerebro = bt.Cerebro(quicknotify=True, oldbuysell=True)
     warnings.filterwarnings("ignore")
-    print(ENV)
+    print("Running in {} and {} trading".format(ENV, TRADING))
 
     if ENV == PRODUCTION:  # Live trading with Binance
         if TRADING == 'LIVE':
@@ -159,105 +109,78 @@ if __name__ == '__main__':
             cerebro.setbroker(broker)
         else:
             cerebro.broker.setcash(10000.0)
-        logging.basicConfig(format='%(asctime)s %(name)s:%(levelname)s:%(message)s', level=logging.INFO)
-        cerebro, strat = _run_resampler(data_timeframe=bt.TimeFrame.Minutes,
-                                        # data_compression=60,
-                                        data_compression=1,
-                                        resample_timeframe=bt.TimeFrame.Minutes,
-                                        # resample_compression=60,
-                                        resample_compression=1,
-                                        runtime_seconds=60000,
-                                        tick_interval=timedelta(seconds=60),
-                                        start_delays=[None, None],
-                                        num_gen_bars=[0, 10],
-                                        num_data=2,
-                                        )
+        cerebro.addsizer(FullMoney)
+        cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
+        cerebro.broker.setcommission(leverage=2)
+        if strategy_class == 'NewYearlyHighs' or strategy_class == 'SMA' or strategy_class == 'TestSMA' or strategy_class == 'ST':
+            tickers = [ 'XRP/USDT', 'EOS/USDT', 'LTC/USDT', 'TRX/USDT', 'ETC/USDT', 'LINK/USDT'
+                    , 'DOT/USDT', 'DOGE/USDT', 'AXS/USDT', 'AAVE/USDT', 'MATIC/USDT', 'BTC/USDT', 'ETH/USDT', 'BNB/USDT']
+            # tickers = ['BTC/USDT', 'XRP/USDT']
 
-    else:
-        # backtesting
-    # if __name__ == '__main__':
-        cerebro = bt.Cerebro(quicknotify=True, oldbuysell=True)
-        warnings.filterwarnings("ignore")
-        print("Running in {} and {} trading".format(ENV, TRADING))
+            # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT',
+            #            'BAT/USDT',
+            #            'BCH/USDT',
+            #            'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
+            #            'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
+            #            'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'IOTA/USDT', 'KAVA/USDT', 'KNC/USDT', 'LINK/USDT',
+            #            'LTC/USDT',
+            #            'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT',
+            #            'SNX/USDT',
+            #            'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT',
+            #            'TRX/USDT',
+            #            'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT',
+            #            'YFII/USDT',
+            #            'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT',
+            #            'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
+            #            'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT', 'AXS/USDT', 'ZEN/USDT',
+            #            'ALPHA/USDT',
+            #            'CTK/USDT', 'BEL/USDT', 'CVC/USDT', 'DEFI/USDT', 'SKL/USDT', 'GRT/USDT', '1INCH/USDT']
+            # new coins
+            # CHZ / USDT
+            # SAND / USDT
+            # ANKR / USDT
+            # LUNA / USD
+            # AKRO/USDT
+            # hist_start_date = datetime.utcnow() - timedelta(hours=501)
+            hist_start_date = datetime.utcnow() - timedelta(minutes=241)
+            for ticker in tickers:
+                # Original
+                data = store.getdata(dataname=ticker, name=ticker,
+                                     timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
+                                     compression=5, ohlcv_limit=241, drop_newest=True)  # , historical=True)
+                # data = store.getdata(dataname=ticker, name=ticker,
+                #                      fromdate=hist_start_date,
+                #                      tf='1Min')
 
-        # if ENV == PRODUCTION:  # Live trading with Binance
-        #     if TRADING == 'LIVE':
-        #         broker = store.getbroker(broker_mapping=broker_mapping)
-        #         cerebro.setbroker(broker)
-        #     else:
-        #         cerebro.broker.setcash(10000.0)
-        #     cerebro.addsizer(FullMoney)
-        #     cerebro.addstrategy(strategy, exectype=ExecType[args.exectype])
-        #     cerebro.broker.setcommission(leverage=2)
-        #     if strategy_class == 'NewYearlyHighs' or strategy_class == 'SMA' or strategy_class == 'TestSMA' or strategy_class == 'ST':
-        #         tickers = [ 'XRP/USDT', 'EOS/USDT', 'LTC/USDT', 'TRX/USDT', 'ETC/USDT', 'LINK/USDT'
-        #                 , 'DOT/USDT', 'DOGE/USDT', 'AXS/USDT', 'AAVE/USDT', 'MATIC/USDT', 'BTC/USDT', 'ETH/USDT', 'BNB/USDT']
-        #         # tickers = ['BTC/USDT', 'XRP/USDT']
+                # Using backtrader-binance
+                # store = BinanceStore(
+                #     api_key='7leSzp8xkXUzLqJHiYpoz0aiY0iXsUWKp3mk4WWyA8gorADSuEKBeGXo2HQgVA2K',
+                #     api_secret='neuxdUFrNaP6nE38ZSHHdpPtgvCldk3oeCGCfDzjVH0AJne6NKgukITUrLWCKBPD',
+                #     coin_refer=f'{ticker[:-5]}',
+                #     coin_target='USDT',
+                #     testnet=False)
+                # from_date = datetime.utcnow() - timedelta(minutes=1 * 20)
+                # data = store.getdata(
+                #     timeframe_in_minutes=1,
+                #     start_date=from_date)
+                cerebro.adddata(data)
+        cerebro.run()
+    else:  # Backtesting with CSV file
+        # datapath = '../fetch-historical-data'
         #
-        #         # tickers = ['BTC/USDT', 'ADA/USDT', 'ALGO/USDT', 'ATOM/USDT', 'AVAX/USDT', 'BAL/USDT', 'BAND/USDT',
-        #         #            'BAT/USDT',
-        #         #            'BCH/USDT',
-        #         #            'BLZ/USDT', 'BNB/USDT', 'BZRX/USDT', 'COMP/USDT', 'CRV/USDT', 'DASH/USDT', 'DOGE/USDT',
-        #         #            'DOT/USDT', 'EGLD/USDT', 'ENJ/USDT', 'EOS/USDT', 'ETC/USDT', 'ETH/USDT', 'FLM/USDT', 'FTM/USDT',
-        #         #            'HNT/USDT', 'ICX/USDT', 'IOST/USDT', 'IOTA/USDT', 'KAVA/USDT', 'KNC/USDT', 'LINK/USDT',
-        #         #            'LTC/USDT',
-        #         #            'MKR/USDT', 'NEO/USDT', 'OMG/USDT', 'ONT/USDT', 'QTUM/USDT', 'REN/USDT', 'RLC/USDT', 'RUNE/USDT',
-        #         #            'SNX/USDT',
-        #         #            'SOL/USDT', 'SRM/USDT', 'STORJ/USDT', 'SUSHI/USDT', 'SXP/USDT', 'THETA/USDT', 'TRB/USDT',
-        #         #            'TRX/USDT',
-        #         #            'UNI/USDT', 'VET/USDT', 'WAVES/USDT', 'XLM/USDT', 'XMR/USDT', 'XRP/USDT', 'XTZ/USDT',
-        #         #            'YFII/USDT',
-        #         #            'YFI/USDT', 'ZEC/USDT', 'ZIL/USDT', 'ZRX/USDT',
-        #         #            'TOMO/USDT', 'RSR/USDT', 'NEAR/USDT', 'MATIC/USDT',
-        #         #            'AAVE/USDT', 'FIL/USDT', 'KSM/USDT', 'LRC/USDT', 'OCEAN/USDT', 'AXS/USDT', 'ZEN/USDT',
-        #         #            'ALPHA/USDT',
-        #         #            'CTK/USDT', 'BEL/USDT', 'CVC/USDT', 'DEFI/USDT', 'SKL/USDT', 'GRT/USDT', '1INCH/USDT']
-        #         # new coins
-        #         # CHZ / USDT
-        #         # SAND / USDT
-        #         # ANKR / USDT
-        #         # LUNA / USD
-        #         # AKRO/USDT
-        #         # hist_start_date = datetime.utcnow() - timedelta(hours=501)
-        #         hist_start_date = datetime.utcnow() - timedelta(minutes=241)
-        #         for ticker in tickers:
-        #             # Original
-        #             data = store.getdata(dataname=ticker, name=ticker,
-        #                                  timeframe=bt.TimeFrame.Minutes, fromdate=hist_start_date,
-        #                                  compression=5, ohlcv_limit=241, drop_newest=True)  # , historical=True)
-        #             # data = store.getdata(dataname=ticker, name=ticker,
-        #             #                      fromdate=hist_start_date,
-        #             #                      tf='1Min')
-        #
-        #             # Using backtrader-binance
-        #             # store = BinanceStore(
-        #             #     api_key='7leSzp8xkXUzLqJHiYpoz0aiY0iXsUWKp3mk4WWyA8gorADSuEKBeGXo2HQgVA2K',
-        #             #     api_secret='neuxdUFrNaP6nE38ZSHHdpPtgvCldk3oeCGCfDzjVH0AJne6NKgukITUrLWCKBPD',
-        #             #     coin_refer=f'{ticker[:-5]}',
-        #             #     coin_target='USDT',
-        #             #     testnet=False)
-        #             # from_date = datetime.utcnow() - timedelta(minutes=1 * 20)
-        #             # data = store.getdata(
-        #             #     timeframe_in_minutes=1,
-        #             #     start_date=from_date)
-        #             cerebro.adddata(data)
-        #     cerebro.run()
-        # else:  # Backtesting with CSV file
-            # datapath = '../fetch-historical-data'
-            #
-            # Benchmark backtest
-            # todate = datetime.now()
-        # todate = datetime(2021, 6, 20)
-        # fromdate = datetime(2021, 6, 10)
-        #
-        # todate = datetime(2021, 6, 10)
-        # fromdate = datetime(2021, 6, 1)
-        #
-        # todate = datetime(2021, 5, 10)
-        # fromdate = datetime(2021, 5, 1)
-        #
-        # todate = datetime(2021, 7, 30)
-        # fromdate = datetime(2021, 7, 21)
+        # Benchmark backtest
+        # todate = datetime.now()
+        todate = datetime(2021, 6, 20)
+        fromdate = datetime(2021, 6, 10)
+
+        todate = datetime(2021, 6, 10)
+        fromdate = datetime(2021, 6, 1)
+
+        todate = datetime(2021, 5, 10)
+        fromdate = datetime(2021, 5, 1)
+
+        todate = datetime(2021, 7, 30)
+        fromdate = datetime(2021, 7, 21)
 
         # Benchmark dates
         # todate = datetime(2021, 7, 23)
@@ -271,15 +194,17 @@ if __name__ == '__main__':
         # fromdate = datetime(2021, 6, 1)
         # fromdate = datetime(2021, 7, 1)
 
+        leverage = 1
 
         # fromdate = datetime(2021, 6, 26)
 
         # fromdate = datetime(2021, 1, 1)
         # todate = datetime(2021, 5, 18)
 
-
+        fromdate = datetime(2021, 6, 7)
+        todate = datetime(2021, 8, 30)
         # todate = datetime.now()
-        #
+
         # BTCUSDT listed on Binance
         # fromdate = datetime(2017, 8, 16)
         # fromdate = datetime(todate.year-1, todate.month, todate.day-16)
@@ -390,45 +315,22 @@ if __name__ == '__main__':
                           'ALPHA-USDT',
                           'CTK-USDT', 'BEL-USDT', 'CVC-USDT', 'DEFI-USDT', 'SKL-USDT', 'GRT-USDT', '1INCH-USDT']
                 # All Spot USDT pairs
-                # Stables
-                # 'TUSD-USDT','PAX-USDT', 'USDC-USDT', 'BUSD-USDT', 'SUSD-USDT',
-                # Currencies
-                # 'GBP-USDT',   'PAXG-USDT',
-                # LVTs
-                # 'BTCUP-USDT', 'BTCDOWN-USDT', 'ETHUP-USDT', 'ETHDOWN-USDT',, 'ADAUP-USDT', 'ADADOWN-USDT', 'LINKUP-USDT',
-                # 'LINKDOWN-USDT, 'BNBUP-USDT', 'BNBDOWN-USDT','XTZUP-USDT', 'XTZDOWN-USDT', 'EOSUP-USDT', 'EOSDOWN-USDT',
-                # 'TRXUP-USDT', 'TRXDOWN-USDT', 'XRPUP-USDT', 'XRPDOWN-USDT', 'DOTUP-USDT', 'DOTDOWN-USDT', 'LTCUP-USDT', 'LTCDOWN-USDT',
-                # 'UNIUP-USDT', 'UNIDOWN-USDT', 'SXPUP-USDT', 'SXPDOWN-USDT', 'FILUP-USDT', 'FILDOWN-USDT', 'YFIUP-USDT', 'YFIDOWN-USDT',
-                # 'BCHUP-USDT', 'BCHDOWN-USDT', 'AAVEUP-USDT', 'AAVEDOWN-USDT', 'SUSHIUP-USDT', 'SUSHIDOWN-USDT', 'XLMUP-USDT', 'XLMDOWN-USDT',
-                # '1INCHUP-USDT', '1INCHDOWN-USDT',
-                tickers = ['BTC-USDT', 'ETH-USDT', 'BNB-USDT', 'NEO-USDT', 'LTC-USDT', 'QTUM-USDT', 'ADA-USDT', 'XRP-USDT',
-                           'EOS-USDT', 'IOTA-USDT', 'XLM-USDT', 'ONT-USDT', 'TRX-USDT', 'ETC-USDT', 'ICX-USDT', 'NULS-USDT',
-                           'VET-USDT', 'BCH-USDT', 'LINK-USDT', 'WAVES-USDT', 'BTT-USDT', 'ONG-USDT', 'HOT-USDT', 'ZIL-USDT',
-                           'ZRX-USDT', 'FET-USDT', 'BAT-USDT', 'XMR-USDT', 'ZEC-USDT', 'IOST-USDT', 'CELR-USDT', 'DASH-USDT',
-                           'NANO-USDT', 'OMG-USDT', 'THETA-USDT', 'ENJ-USDT', 'MITH-USDT', 'MATIC-USDT', 'ATOM-USDT', 'TFUEL-USDT',
-                           'ONE-USDT', 'FTM-USDT', 'ALGO-USDT', 'GTO-USDT', 'DOGE-USDT', 'DUSK-USDT', 'ANKR-USDT', 'WIN-USDT',
-                           'COS-USDT', 'MTL-USDT', 'TOMO-USDT', 'PERL-USDT', 'DENT-USDT', 'MFT-USDT', 'KEY-USDT',
-                           'DOCK-USDT', 'WAN-USDT', 'FUN-USDT', 'CVC-USDT', 'CHZ-USDT', 'BAND-USDT', 'BEAM-USDT', 'XTZ-USDT', 'REN-USDT',
-                           'RVN-USDT', 'HBAR-USDT', 'NKN-USDT', 'STX-USDT', 'KAVA-USDT', 'ARPA-USDT', 'IOTX-USDT', 'RLC-USDT',
-                           'CTXC-USDT', 'TROY-USDT', 'VITE-USDT', 'FTT-USDT', 'EUR-USDT', 'OGN-USDT', 'DREP-USDT', 'TCT-USDT',
-                           'WRX-USDT', 'BTS-USDT', 'LSK-USDT', 'BNT-USDT', 'LTO-USDT', 'AION-USDT', 'MBL-USDT', 'COTI-USDT', 'STPT-USDT',
-                           'WTC-USDT', 'DATA-USDT', 'SOL-USDT', 'CTSI-USDT', 'HIVE-USDT', 'CHR-USDT',  'GXS-USDT', 'ARDR-USDT',
-                           'MDT-USDT', 'STMX-USDT', 'KNC-USDT', 'REP-USDT', 'LRC-USDT', 'PNT-USDT', 'COMP-USDT', 'SC-USDT', 'ZEN-USDT', 'SNX-USDT',
-                           'VTHO-USDT', 'DGB-USDT', 'SXP-USDT', 'MKR-USDT', 'DCR-USDT', 'STORJ-USDT', 'MANA-USDT', 'AUD-USDT', 'YFI-USDT', 'BAL-USDT',
-                           'BLZ-USDT', 'IRIS-USDT', 'KMD-USDT', 'JST-USDT', 'SRM-USDT', 'ANT-USDT', 'CRV-USDT', 'SAND-USDT', 'OCEAN-USDT', 'NMR-USDT',
-                           'DOT-USDT', 'LUNA-USDT', 'RSR-USDT', 'WNXM-USDT', 'TRB-USDT', 'BZRX-USDT', 'SUSHI-USDT', 'YFII-USDT', 'KSM-USDT',
-                           'EGLD-USDT', 'DIA-USDT', 'RUNE-USDT', 'FIO-USDT', 'UMA-USDT', 'BEL-USDT', 'WING-USDT', 'UNI-USDT', 'NBS-USDT', 'OXT-USDT',
-                           'AVAX-USDT', 'HNT-USDT', 'FLM-USDT',  'ORN-USDT', 'UTK-USDT', 'XVS-USDT', 'ALPHA-USDT', 'AAVE-USDT', 'NEAR-USDT',
-                           'FIL-USDT', 'INJ-USDT', 'AUDIO-USDT', 'CTK-USDT', 'AKRO-USDT', 'AXS-USDT', 'HARD-USDT', 'DNT-USDT', 'STRAX-USDT', 'UNFI-USDT',
-                           'ROSE-USDT', 'AVA-USDT', 'XEM-USDT', 'SKL-USDT', 'GRT-USDT', 'JUV-USDT', 'PSG-USDT', '1INCH-USDT', 'REEF-USDT', 'OG-USDT',
-                           'ATM-USDT', 'ASR-USDT', 'CELO-USDT', 'RIF-USDT', 'BTCST-USDT', 'TRU-USDT', 'CKB-USDT', 'TWT-USDT', 'FIRO-USDT', 'LIT-USDT',
-                           'SFP-USDT', 'DODO-USDT', 'CAKE-USDT', 'ACM-USDT', 'BADGER-USDT', 'FIS-USDT', 'OM-USDT', 'POND-USDT', 'DEGO-USDT',
-                           'ALICE-USDT', 'LINA-USDT', 'PERP-USDT', 'RAMP-USDT', 'SUPER-USDT', 'CFX-USDT', 'EPS-USDT', 'AUTO-USDT', 'TKO-USDT',
-                           'PUNDIX-USDT', 'TLM-USDT', 'BTG-USDT', 'MIR-USDT', 'BAR-USDT', 'FORTH-USDT', 'BAKE-USDT', 'BURGER-USDT', 'SLP-USDT',
-                           'SHIB-USDT', 'ICP-USDT', 'AR-USDT', 'POLS-USDT', 'MDX-USDT', 'MASK-USDT', 'LPT-USDT', 'NU-USDT', 'XVG-USDT', 'ATA-USDT',
-                           'GTC-USDT', 'TORN-USDT']
-                # Bad data
-                # 'COCOS-USDT',
+                # Stables + LVTs
+                # 'TUSD-USDT','PAX-USDT''USDC-USDT', , 'BUSD-USDT' 'BTCUP-USDT', 'BTCDOWN-USDT', 'ETHUP-USDT', 'ETHDOWN-USDT',, 'ADAUP-USDT', 'ADADOWN-USDT', 'LINKUP-USDT', 'LINKDOWN-USDT, 'BNBUP-USDT', 'BNBDOWN-USDT',
+                # tickers = ['BTC-USDT', 'ETH-USDT', 'BNB-USDT', 'NEO-USDT', 'LTC-USDT', 'QTUM-USDT', 'ADA-USDT', 'XRP-USDT',
+                #            'EOS-USDT', 'IOTA-USDT', 'XLM-USDT', 'ONT-USDT', 'TRX-USDT', 'ETC-USDT', 'ICX-USDT', 'NULS-USDT',
+                #            'VET-USDT', 'BCH-USDT', 'LINK-USDT', 'WAVES-USDT', 'BTT-USDT', 'ONG-USDT', 'HOT-USDT', 'ZIL-USDT',
+                #            'ZRX-USDT', 'FET-USDT', 'BAT-USDT', 'XMR-USDT', 'ZEC-USDT', 'IOST-USDT', 'CELR-USDT', 'DASH-USDT',
+                #            'NANO-USDT', 'OMG-USDT', 'THETA-USDT', 'ENJ-USDT', 'MITH-USDT', 'MATIC-USDT', 'ATOM-USDT', 'TFUEL-USDT',
+                #            'ONE-USDT', 'FTM-USDT', 'ALGO-USDT', 'GTO-USDT', 'DOGE-USDT', 'DUSK-USDT', 'ANKR-USDT', 'WIN-USDT',
+                #            'COS-USDT', 'COCOS-USDT', 'MTL-USDT', 'TOMO-USDT', 'PERL-USDT', 'DENT-USDT', 'MFT-USDT', 'KEY-USDT',
+                #            'DOCK-USDT', 'WAN-USDT', 'FUN-USDT', 'CVC-USDT', 'CHZ-USDT', 'BAND-USDT', 'BEAM-USDT', 'XTZ-USDT', 'REN-USDT',
+                #            'RVN-USDT', 'HBAR-USDT', 'NKN-USDT', 'STX-USDT', 'KAVA-USDT', 'ARPA-USDT', 'IOTX-USDT', 'RLC-USDT',
+                #            'CTXC-USDT', 'TROY-USDT', 'VITE-USDT', 'FTT-USDT', 'EUR-USDT', 'OGN-USDT', 'DREP-USDT', 'TCT-USDT',
+                #            'WRX-USDT', 'BTS-USDT', 'LSK-USDT', 'BNT-USDT', 'LTO-USDT', 'AION-USDT', 'MBL-USDT', 'COTI-USDT', 'STPT-USDT',
+                #            'WTC-USDT', 'DATA-USDT', 'SOL-USDT', 'CTSI-USDT', 'HIVE-USDT', 'CHR-USDT',  'GXS-USDT', 'ARDR-USDT',
+                #            'MDT-USDT', 'STMX-USDT', 'KNC-USDT', 'REP-USDT', 'LRC-USDT', 'PNT-USDT', 'COMP-USDT', 'SC-USDT', 'ZEN-USDT', 'SNX-USDT']
+                           # 'VTHO-USDT', 'DGB-USDT', 'GBP-USDT', 'SXP-USDT', 'MKR-USDT', 'DCR-USDT', 'STORJ-USDT', 'XTZUP-USDT', 'XTZDOWN-USDT', 'MANA-USDT', 'AUD-USDT', 'YFI-USDT', 'BAL-USDT', 'BLZ-USDT', 'IRIS-USDT', 'KMD-USDT', 'JST-USDT', 'SRM-USDT', 'ANT-USDT', 'CRV-USDT', 'SAND-USDT', 'OCEAN-USDT', 'NMR-USDT', 'DOT-USDT', 'LUNA-USDT', 'RSR-USDT', 'PAXG-USDT', 'WNXM-USDT', 'TRB-USDT', 'BZRX-USDT', 'SUSHI-USDT', 'YFII-USDT', 'KSM-USDT', 'EGLD-USDT', 'DIA-USDT', 'RUNE-USDT', 'FIO-USDT', 'UMA-USDT', 'EOSUP-USDT', 'EOSDOWN-USDT', 'TRXUP-USDT', 'TRXDOWN-USDT', 'XRPUP-USDT', 'XRPDOWN-USDT', 'DOTUP-USDT', 'DOTDOWN-USDT', 'BEL-USDT', 'WING-USDT', 'LTCUP-USDT', 'LTCDOWN-USDT', 'UNI-USDT', 'NBS-USDT', 'OXT-USDT', 'AVAX-USDT', 'HNT-USDT', 'FLM-USDT', 'UNIUP-USDT', 'UNIDOWN-USDT', 'ORN-USDT', 'UTK-USDT', 'XVS-USDT', 'ALPHA-USDT', 'AAVE-USDT', 'NEAR-USDT', 'SXPUP-USDT', 'SXPDOWN-USDT', 'FIL-USDT', 'FILUP-USDT', 'FILDOWN-USDT', 'YFIUP-USDT', 'YFIDOWN-USDT', 'INJ-USDT', 'AUDIO-USDT', 'CTK-USDT', 'BCHUP-USDT', 'BCHDOWN-USDT', 'AKRO-USDT', 'AXS-USDT', 'HARD-USDT', 'DNT-USDT', 'STRAX-USDT', 'UNFI-USDT', 'ROSE-USDT', 'AVA-USDT', 'XEM-USDT', 'AAVEUP-USDT', 'AAVEDOWN-USDT', 'SKL-USDT', 'SUSD-USDT', 'SUSHIUP-USDT', 'SUSHIDOWN-USDT', 'XLMUP-USDT', 'XLMDOWN-USDT', 'GRT-USDT', 'JUV-USDT', 'PSG-USDT', '1INCH-USDT', 'REEF-USDT', 'OG-USDT', 'ATM-USDT', 'ASR-USDT', 'CELO-USDT', 'RIF-USDT', 'BTCST-USDT', 'TRU-USDT', 'CKB-USDT', 'TWT-USDT', 'FIRO-USDT', 'LIT-USDT', 'SFP-USDT', 'DODO-USDT', 'CAKE-USDT', 'ACM-USDT', 'BADGER-USDT', 'FIS-USDT', 'OM-USDT', 'POND-USDT', 'DEGO-USDT', 'ALICE-USDT', 'LINA-USDT', 'PERP-USDT', 'RAMP-USDT', 'SUPER-USDT', 'CFX-USDT', 'EPS-USDT', 'AUTO-USDT', 'TKO-USDT', 'PUNDIX-USDT', 'TLM-USDT', '1INCHUP-USDT', '1INCHDOWN-USDT', 'BTG-USDT', 'MIR-USDT', 'BAR-USDT', 'FORTH-USDT', 'BAKE-USDT', 'BURGER-USDT', 'SLP-USDT', 'SHIB-USDT', 'ICP-USDT', 'AR-USDT', 'POLS-USDT', 'MDX-USDT', 'MASK-USDT', 'LPT-USDT', 'NU-USDT', 'XVG-USDT', 'ATA-USDT', 'GTC-USDT', 'TORN-USDT']
                 # tickers = ['BAND-USDT', 'AAVE-USDT', 'FTM-USDT', 'DOGE-USDT', 'FIL-USDT', 'KSM-USDT',
                 #           'ALPHA-USDT']
                 # tickers = [ 'XRP-USDT', 'EOS-USDT', 'LTC-USDT', 'TRX-USDT', 'ETC-USDT', 'LINK-USDT'
@@ -441,8 +343,8 @@ if __name__ == '__main__':
                 # tickers = ['ALGO-USDT']
                 # tickers = ['MATIC-USDT']
                 # 99 and 20
-                # tickers = ['BTC-USDT', 'ETH-USDT', 'BNB-USDT']
-                # tickers = ['BTC-USDT']
+                tickers = ['BTC-USDT', 'ETH-USDT', 'BNB-USDT']
+                tickers = ['BTC-USDT']
                 # tickers = ['ETH-USDT']
                 # tickers = ['AXS-USDT']
                 # tickers = ['LTC-USDT']
@@ -600,19 +502,19 @@ if __name__ == '__main__':
             #
             for ticker in tickers:
                 data = bt.feeds.MarketStore(
-                    # symbol=f'binancefutures_{ticker}',
-                    symbol=f'binance_{ticker}',
+                    symbol=f'binancefutures_{ticker}',
+                    # symbol=f'binance_{ticker}',
                     name=f'{ticker}',
                     # query_timeframe='1Min',
-                    query_timeframe='1H',
-                    # query_timeframe='5Min',
+                    # query_timeframe='1H',
+                    query_timeframe='5Min',
                     # timeframe=bt.TimeFrame.Minutes,
                     fromdate=fromdate,
                     todate=todate,
                     # compression=1,
                     # compression=60,
                 )
-                # data.addfilter(bt.filters.Renko, size=0.5, align=1.0, roundstart=True, hilo=True)
+                data.addfilter(bt.filters.Renko, size=1, align=10.0)
 
                 cerebro.adddata(data, name=f'{ticker}')
 
@@ -672,7 +574,6 @@ if __name__ == '__main__':
         # 3224 16
         cerebro.addsizer(FullMoney)
         cerebro.broker.setcommission(commission=0.0004, leverage=leverage)
-        # cerebro.broker.setcommission(commission=-0.00025, leverage=leverage)
         # cerebro.broker.setcommission(commission=0.00075, leverage=leverage)
         print('Starting {}'.format(args.strategy))
         cerebro.addobserver(bta.observers.SLTPTracking)

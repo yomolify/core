@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="08af1c43-832c-451a-93ee-358192a561ad" name="bybit-4gb" url="http:///ec2-18-140-249-247.ap-southeast-1.compute.amazonaws.com">
+        <fileTransfer rootFolder="/home/ec2-user" accessType="SFTP" port="22" sshConfigId="f85c360f-bb6f-438d-87d4-a75afe17ca40" sshConfig="bybit-4gb">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
